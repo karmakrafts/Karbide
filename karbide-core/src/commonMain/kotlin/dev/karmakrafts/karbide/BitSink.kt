@@ -80,8 +80,8 @@ private data class BitSinkImpl( // @formatter:off
     override fun close() {
         if (isClosed) return
         if (isSinkOwned) sink.close()
-        if (bit != 0) {
-            // Flush last unfinished byte to the sink
+        if (bit != LAST_BIT) { // If we aren't exactly on the last bit of the last byte..
+            // ..flush last unfinished byte to the sink
             sink.writeUByte(currentByte)
         }
         byte = 0L
