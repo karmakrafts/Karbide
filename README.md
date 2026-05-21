@@ -11,8 +11,8 @@
 This library allows treating any kotlinx.io `Source` or `Sink` as a bit stream!
 
 It introduces `BitSink` and `BitSource` interfaces, which can be obtained simply
-by calling `bitSink()` or `bitSource()` on any `Sink` or `Source`.
-Custom implementation may also be used.
+by calling `bitSink()` or `bitSource()` on any `Sink` or `Source`,
+which allow reading and writing data in increments smaller than a byte.
 
 ### How to use it
 
