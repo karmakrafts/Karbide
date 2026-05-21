@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.0.0]
+
 ### Added
 
 - `BitSource` interface for reading bit streams
