@@ -6,7 +6,7 @@ import kotlinx.io.writeUByte
 /**
  * Interface for writing individual bits to a sink.
  */
-interface BitWriter : AutoCloseable {
+interface BitSink : AutoCloseable {
     /**
      * The current byte offset in the sink.
      */
@@ -34,10 +34,10 @@ interface BitWriter : AutoCloseable {
     fun padBits(count: Int, value: UByte)
 }
 
-private data class BitWriterImpl( // @formatter:off
+private data class BitSinkImpl( // @formatter:off
     private val sink: Sink,
     private val isSinkOwned: Boolean
-) : BitWriter { // @formatter:on
+) : BitSink { // @formatter:on
     companion object {
         private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
     }
@@ -91,11 +91,11 @@ private data class BitWriterImpl( // @formatter:off
 }
 
 /**
- * Create a new [BitWriter] from the current [Sink].
+ * Create a new [BitSink] from the current [Sink].
  *
- * @param isSinkOwned Whether the [Sink] is owned by the [BitWriter] and should be closed when it is.
- * @return A new [BitWriter] instance.
+ * @param isSinkOwned Whether the [Sink] is owned by the [BitSink] and should be closed when it is.
+ * @return A new [BitSink] instance.
  */
-fun Sink.bitWriter(
+fun Sink.bitSink(
     isSinkOwned: Boolean = true
-): BitWriter = BitWriterImpl(this, isSinkOwned)
+): BitSink = BitSinkImpl(this, isSinkOwned)

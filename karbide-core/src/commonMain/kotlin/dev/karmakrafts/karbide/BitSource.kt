@@ -6,7 +6,7 @@ import kotlinx.io.readUByte
 /**
  * Interface for reading individual bits from a source.
  */
-interface BitReader : AutoCloseable {
+interface BitSource : AutoCloseable {
     /**
      * The current byte offset in the source.
      */
@@ -43,10 +43,10 @@ interface BitReader : AutoCloseable {
     fun alignToNextByte()
 }
 
-private data class BitReaderImpl( // @formatter:off
+private data class BitSourceImpl( // @formatter:off
     val source: Source,
     private val isSourceOwned: Boolean
-) : BitReader { // @formatter:on
+) : BitSource { // @formatter:on
     companion object {
         private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
     }
@@ -107,11 +107,11 @@ private data class BitReaderImpl( // @formatter:off
 }
 
 /**
- * Create a new [BitReader] from the current [Source].
+ * Create a new [BitSource] from the current [Source].
  *
- * @param isSourceOwned Whether the [Source] is owned by the [BitReader] and should be closed when it is.
- * @return A new [BitReader] instance.
+ * @param isSourceOwned Whether the [Source] is owned by the [BitSource] and should be closed when it is.
+ * @return A new [BitSource] instance.
  */
-fun Source.bitReader(
+fun Source.bitSource(
     isSourceOwned: Boolean = true
-): BitReader = BitReaderImpl(this, isSourceOwned)
+): BitSource = BitSourceImpl(this, isSourceOwned)

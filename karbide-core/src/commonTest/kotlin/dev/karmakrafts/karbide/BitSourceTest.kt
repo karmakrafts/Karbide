@@ -8,14 +8,14 @@ import kotlinx.io.writeUShort
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BitReaderTest {
+class BitSourceTest {
     @Test
     fun `Read bits within same byte`() {
         val buffer = Buffer()
         buffer.writeUByte(0b0000_0011U)
-        buffer.bitReader().use { reader ->
-            reader.skipNibble()
-            assertEquals(3U.toUByte(), reader.readNibble())
+        buffer.bitSource().use { source ->
+            source.skipNibble()
+            assertEquals(3U.toUByte(), source.readNibble())
         }
     }
 
@@ -25,9 +25,9 @@ class BitReaderTest {
         buffer.writeUByte(0b0000_0000U)
         buffer.writeUByte(0b0000_0000U)
         buffer.writeUByte(0b0000_0011U)
-        buffer.bitReader().use { reader ->
-            reader.skipBits(UShort.SIZE_BITS)
-            assertEquals(3U.toUByte(), reader.readUByte())
+        buffer.bitSource().use { source ->
+            source.skipBits(UShort.SIZE_BITS)
+            assertEquals(3U.toUByte(), source.readUByte())
         }
     }
 
@@ -46,18 +46,18 @@ class BitReaderTest {
         buffer.writeLong(1.23456789.toRawBits())
         buffer.writeLong(1.23456789.toRawBits().reverseBytes())
 
-        buffer.bitReader().use { reader ->
-            assertEquals(0x12.toByte(), reader.readByte())
-            assertEquals(0x1234.toShort(), reader.readShort())
-            assertEquals(0x1234.toShort(), reader.readShortLe())
-            assertEquals(0x12345678, reader.readInt())
-            assertEquals(0x12345678, reader.readIntLe())
-            assertEquals(0x1234567890ABCDEFL, reader.readLong())
-            assertEquals(0x1234567890ABCDEFL, reader.readLongLe())
-            assertEquals(1.234f, reader.readFloat(), 0.001F)
-            assertEquals(1.234f, reader.readFloatLe(), 0.001F)
-            assertEquals(1.23456789, reader.readDouble())
-            assertEquals(1.23456789, reader.readDoubleLe())
+        buffer.bitSource().use { source ->
+            assertEquals(0x12.toByte(), source.readByte())
+            assertEquals(0x1234.toShort(), source.readShort())
+            assertEquals(0x1234.toShort(), source.readShortLe())
+            assertEquals(0x12345678, source.readInt())
+            assertEquals(0x12345678, source.readIntLe())
+            assertEquals(0x1234567890ABCDEFL, source.readLong())
+            assertEquals(0x1234567890ABCDEFL, source.readLongLe())
+            assertEquals(1.234f, source.readFloat(), 0.001F)
+            assertEquals(1.234f, source.readFloatLe(), 0.001F)
+            assertEquals(1.23456789, source.readDouble())
+            assertEquals(1.23456789, source.readDoubleLe())
         }
     }
 
@@ -72,14 +72,14 @@ class BitReaderTest {
         buffer.writeULong(0x1234567890ABCDEFUL)
         buffer.writeULong(0x1234567890ABCDEFUL.reverseBytes())
 
-        buffer.bitReader().use { reader ->
-            assertEquals(0x12U.toUByte(), reader.readUByte())
-            assertEquals(0x1234U.toUShort(), reader.readUShort())
-            assertEquals(0x1234U.toUShort(), reader.readUShortLe())
-            assertEquals(0x12345678U, reader.readUInt())
-            assertEquals(0x12345678U, reader.readUIntLe())
-            assertEquals(0x1234567890ABCDEFUL, reader.readULong())
-            assertEquals(0x1234567890ABCDEFUL, reader.readULongLe())
+        buffer.bitSource().use { source ->
+            assertEquals(0x12U.toUByte(), source.readUByte())
+            assertEquals(0x1234U.toUShort(), source.readUShort())
+            assertEquals(0x1234U.toUShort(), source.readUShortLe())
+            assertEquals(0x12345678U, source.readUInt())
+            assertEquals(0x12345678U, source.readUIntLe())
+            assertEquals(0x1234567890ABCDEFUL, source.readULong())
+            assertEquals(0x1234567890ABCDEFUL, source.readULongLe())
         }
     }
 
@@ -89,8 +89,8 @@ class BitReaderTest {
         val data = byteArrayOf(0x01, 0x02)
         buffer.write(data)
 
-        buffer.bitReader().use { reader ->
-            val bytes = reader.readByteArray(2)
+        buffer.bitSource().use { source ->
+            val bytes = source.readByteArray(2)
             assertEquals(0x01, bytes[0])
             assertEquals(0x02, bytes[1])
         }
@@ -105,14 +105,14 @@ class BitReaderTest {
         buffer.writeUByte(0xD1U)
         buffer.writeUByte(0x58U)
 
-        buffer.bitReader().use { reader ->
-            assertEquals(1U.toUByte(), reader.readBit())
-            reader.skipBit() // skip 0
-            reader.skipNibble() // skip 0xF
-            assertEquals(0x12.toByte(), reader.readByte())
-            reader.skipNibbles(2) // skip 0xA, 0xB
-            reader.skipByte() // skip 0x34
-            reader.skipBytes(1) // skip 0x56
+        buffer.bitSource().use { source ->
+            assertEquals(1U.toUByte(), source.readBit())
+            source.skipBit() // skip 0
+            source.skipNibble() // skip 0xF
+            assertEquals(0x12.toByte(), source.readByte())
+            source.skipNibbles(2) // skip 0xA, 0xB
+            source.skipByte() // skip 0x34
+            source.skipBytes(1) // skip 0x56
         }
     }
 }

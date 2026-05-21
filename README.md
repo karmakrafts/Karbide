@@ -10,8 +10,8 @@
 
 This library allows treating any kotlinx.io `Source` or `Sink` as a bit stream!
 
-It introduces `BitWriter` and `BitReader` interfaces, which can be obtained simply
-by calling `bitWriter()` or `bitReader()` on any `Sink` or `Source`.
+It introduces `BitSink` and `BitSource` interfaces, which can be obtained simply
+by calling `bitSink()` or `bitSource()` on any `Sink` or `Source`.
 Custom implementation may also be used.
 
 ### How to use it
