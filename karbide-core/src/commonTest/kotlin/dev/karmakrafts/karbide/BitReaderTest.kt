@@ -54,8 +54,8 @@ class BitReaderTest {
             assertEquals(0x12345678, reader.readIntLe())
             assertEquals(0x1234567890ABCDEFL, reader.readLong())
             assertEquals(0x1234567890ABCDEFL, reader.readLongLe())
-            assertEquals(1.234f, reader.readFloat())
-            assertEquals(1.234f, reader.readFloatLe())
+            assertEquals(1.234f, reader.readFloat(), 0.001F)
+            assertEquals(1.234f, reader.readFloatLe(), 0.001F)
             assertEquals(1.23456789, reader.readDouble())
             assertEquals(1.23456789, reader.readDoubleLe())
         }

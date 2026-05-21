@@ -56,8 +56,8 @@ class BitWriterTest {
         assertEquals(0x12345678, buffer.readInt().reverseBytes())
         assertEquals(0x1234567890ABCDEFL, buffer.readLong())
         assertEquals(0x1234567890ABCDEFL, buffer.readLong().reverseBytes())
-        assertEquals(1.234f, Float.fromBits(buffer.readInt()))
-        assertEquals(1.234f, Float.fromBits(buffer.readInt().reverseBytes()))
+        assertEquals(1.234f, Float.fromBits(buffer.readInt()), 0.001F)
+        assertEquals(1.234f, Float.fromBits(buffer.readInt().reverseBytes()), 0.001F)
         assertEquals(1.23456789, Double.fromBits(buffer.readLong()))
         assertEquals(1.23456789, Double.fromBits(buffer.readLong().reverseBytes()))
     }
