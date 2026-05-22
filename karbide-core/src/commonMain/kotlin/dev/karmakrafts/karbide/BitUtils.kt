@@ -5,10 +5,10 @@ package dev.karmakrafts.karbide
  *
  * @return The [Byte] with its bits reversed.
  */
-fun Byte.reverseBits(): Byte {
+fun Byte.reverseBits(count: Int = Byte.SIZE_BITS): Byte {
     var reversed = 0
     var value = toInt()
-    repeat(Byte.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1)
         value = value ushr 1
     }
@@ -20,10 +20,10 @@ fun Byte.reverseBits(): Byte {
  *
  * @return The [Short] with its bits reversed.
  */
-fun Short.reverseBits(): Short {
+fun Short.reverseBits(count: Int = Short.SIZE_BITS): Short {
     var reversed = 0
     var value = toInt()
-    repeat(Short.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1)
         value = value ushr 1
     }
@@ -35,10 +35,10 @@ fun Short.reverseBits(): Short {
  *
  * @return The [Int] with its bits reversed.
  */
-fun Int.reverseBits(): Int {
+fun Int.reverseBits(count: Int = Int.SIZE_BITS): Int {
     var reversed = 0
     var value = this
-    repeat(Int.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1)
         value = value ushr 1
     }
@@ -50,10 +50,10 @@ fun Int.reverseBits(): Int {
  *
  * @return The [Long] with its bits reversed.
  */
-fun Long.reverseBits(): Long {
+fun Long.reverseBits(count: Int = Long.SIZE_BITS): Long {
     var reversed = 0L
     var value = this
-    repeat(Long.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1L)
         value = value ushr 1
     }
@@ -65,10 +65,10 @@ fun Long.reverseBits(): Long {
  *
  * @return The [UByte] with its bits reversed.
  */
-fun UByte.reverseBits(): UByte {
+fun UByte.reverseBits(count: Int = UByte.SIZE_BITS): UByte {
     var reversed = 0U
     var value = toUInt()
-    repeat(UByte.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1U)
         value = value shr 1
     }
@@ -80,10 +80,10 @@ fun UByte.reverseBits(): UByte {
  *
  * @return The [UShort] with its bits reversed.
  */
-fun UShort.reverseBits(): UShort {
+fun UShort.reverseBits(count: Int = UShort.SIZE_BITS): UShort {
     var reversed = 0U
     var value = toUInt()
-    repeat(UShort.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1U)
         value = value shr 1
     }
@@ -95,10 +95,10 @@ fun UShort.reverseBits(): UShort {
  *
  * @return The [UInt] with its bits reversed.
  */
-fun UInt.reverseBits(): UInt {
+fun UInt.reverseBits(count: Int = UInt.SIZE_BITS): UInt {
     var reversed = 0U
     var value = this
-    repeat(UInt.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1U)
         value = value shr 1
     }
@@ -110,10 +110,10 @@ fun UInt.reverseBits(): UInt {
  *
  * @return The [ULong] with its bits reversed.
  */
-fun ULong.reverseBits(): ULong {
+fun ULong.reverseBits(count: Int = ULong.SIZE_BITS): ULong {
     var reversed = 0UL
     var value = this
-    repeat(ULong.SIZE_BITS) {
+    repeat(count) {
         reversed = (reversed shl 1) or (value and 0b1UL)
         value = value shr 1
     }
