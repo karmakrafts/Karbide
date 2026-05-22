@@ -3,6 +3,7 @@ package dev.karmakrafts.karbide
 /**
  * Reverses the bits of this [Byte].
  *
+ * @param count The number of bits to reverse.
  * @return The [Byte] with its bits reversed.
  */
 fun Byte.reverseBits(count: Int = Byte.SIZE_BITS): Byte {
@@ -18,6 +19,7 @@ fun Byte.reverseBits(count: Int = Byte.SIZE_BITS): Byte {
 /**
  * Reverses the bits of this [Short].
  *
+ * @param count The number of bits to reverse.
  * @return The [Short] with its bits reversed.
  */
 fun Short.reverseBits(count: Int = Short.SIZE_BITS): Short {
@@ -33,6 +35,7 @@ fun Short.reverseBits(count: Int = Short.SIZE_BITS): Short {
 /**
  * Reverses the bits of this [Int].
  *
+ * @param count The number of bits to reverse.
  * @return The [Int] with its bits reversed.
  */
 fun Int.reverseBits(count: Int = Int.SIZE_BITS): Int {
@@ -48,6 +51,7 @@ fun Int.reverseBits(count: Int = Int.SIZE_BITS): Int {
 /**
  * Reverses the bits of this [Long].
  *
+ * @param count The number of bits to reverse.
  * @return The [Long] with its bits reversed.
  */
 fun Long.reverseBits(count: Int = Long.SIZE_BITS): Long {
@@ -63,6 +67,7 @@ fun Long.reverseBits(count: Int = Long.SIZE_BITS): Long {
 /**
  * Reverses the bits of this [UByte].
  *
+ * @param count The number of bits to reverse.
  * @return The [UByte] with its bits reversed.
  */
 fun UByte.reverseBits(count: Int = UByte.SIZE_BITS): UByte {
@@ -78,6 +83,7 @@ fun UByte.reverseBits(count: Int = UByte.SIZE_BITS): UByte {
 /**
  * Reverses the bits of this [UShort].
  *
+ * @param count The number of bits to reverse.
  * @return The [UShort] with its bits reversed.
  */
 fun UShort.reverseBits(count: Int = UShort.SIZE_BITS): UShort {
@@ -93,6 +99,7 @@ fun UShort.reverseBits(count: Int = UShort.SIZE_BITS): UShort {
 /**
  * Reverses the bits of this [UInt].
  *
+ * @param count The number of bits to reverse.
  * @return The [UInt] with its bits reversed.
  */
 fun UInt.reverseBits(count: Int = UInt.SIZE_BITS): UInt {
@@ -108,6 +115,7 @@ fun UInt.reverseBits(count: Int = UInt.SIZE_BITS): UInt {
 /**
  * Reverses the bits of this [ULong].
  *
+ * @param count The number of bits to reverse.
  * @return The [ULong] with its bits reversed.
  */
 fun ULong.reverseBits(count: Int = ULong.SIZE_BITS): ULong {
