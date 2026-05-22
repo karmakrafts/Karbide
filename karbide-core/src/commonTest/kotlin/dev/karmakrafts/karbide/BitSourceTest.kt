@@ -10,6 +10,18 @@ import kotlin.test.assertEquals
 
 class BitSourceTest {
     @Test
+    fun `Read an odd number of bits`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0b0000_0011U)
+        buffer.writeUByte(0b1000_0000U)
+        buffer.bitSource().use { source ->
+            assertEquals(0U.toUByte(), source.readNibble())
+            assertEquals(3U.toUByte(), source.readNibble())
+            assertEquals(1U.toUByte(), source.readBit())
+        }
+    }
+
+    @Test
     fun `Read bits within same byte`() {
         val buffer = Buffer()
         buffer.writeUByte(0b0000_0011U)
@@ -113,6 +125,17 @@ class BitSourceTest {
             source.skipNibbles(2) // skip 0xA, 0xB
             source.skipByte() // skip 0x34
             source.skipBytes(1) // skip 0x56
+        }
+    }
+    @Test
+    fun `Skip until next byte`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0b1011_1111U)
+        buffer.writeUByte(0x4AU)
+        buffer.bitSource().use { source ->
+            assertEquals(1U.toUByte(), source.readBit())
+            source.skipUntilNextByte()
+            assertEquals(0x4AU.toUByte(), source.readUByte())
         }
     }
 }

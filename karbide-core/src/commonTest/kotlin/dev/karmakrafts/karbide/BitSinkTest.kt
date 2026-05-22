@@ -11,6 +11,19 @@ import kotlin.test.assertEquals
 
 class BitSinkTest {
     @Test
+    fun `Write an odd number of bits`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeNibble(0b0000U)
+            sink.writeNibble(0b0011U)
+            sink.writeBit(0b1U)
+        }
+        assertEquals(3U.toUByte(), buffer.readUByte())
+        // In MSB order, we read 0b1000_0000 so we get 128
+        assertEquals(128U.toUByte(), buffer.readUByte())
+    }
+
+    @Test
     fun `Write bits within same byte`() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
@@ -114,5 +127,29 @@ class BitSinkTest {
         assertEquals(0xFC.toUByte(), buffer.readUByte())
         assertEquals(0x00.toUByte(), buffer.readUByte())
         assertEquals(0x00.toUByte(), buffer.readUByte())
+    }
+
+    @Test
+    fun `Pad until next byte`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeBit(1U)
+            sink.padUntilNextByte()
+            sink.writeBit(1U)
+            sink.padToNextByte(1U)
+        }
+
+        assertEquals(0x80.toUByte(), buffer.readUByte())
+        assertEquals(0xFF.toUByte(), buffer.readUByte())
+    }
+
+    @Test
+    fun `Flush on close`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeBit(1U)
+        }
+        // After closing, the partial byte (0b1000_0000 = 128) should be flushed
+        assertEquals(128U.toUByte(), buffer.readUByte())
     }
 }

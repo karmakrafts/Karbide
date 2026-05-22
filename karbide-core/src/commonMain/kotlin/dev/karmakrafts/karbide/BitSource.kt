@@ -40,7 +40,7 @@ interface BitSource : AutoCloseable {
     /**
      * Align the reader to the next byte boundary.
      */
-    fun alignToNextByte()
+    fun skipUntilNextByte()
 }
 
 private data class BitSourceImpl( // @formatter:off
@@ -92,10 +92,7 @@ private data class BitSourceImpl( // @formatter:off
         }
     }
 
-    override fun alignToNextByte() {
-        val count = Byte.SIZE_BITS - bit
-        return skipBits(count)
-    }
+    override fun skipUntilNextByte() = skipBits(Byte.SIZE_BITS - bit)
 
     override fun close() {
         if (isClosed) return

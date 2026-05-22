@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Changed
+
+- Fixed potential bug in `BitSink` where the last byte is not flushed correctly
+
+### Added
+
+- More unit tests for padding, flushing and odd bit boundaries
+
 ## [1.0.0]
 
 ### Added

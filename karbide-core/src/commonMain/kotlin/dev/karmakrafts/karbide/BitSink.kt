@@ -2,6 +2,7 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Sink
 import kotlinx.io.writeUByte
+import kotlin.math.max
 
 /**
  * Interface for writing individual bits to a sink.
@@ -32,6 +33,18 @@ interface BitSink : AutoCloseable {
      * @param value The value of the bits to write (0 or 1).
      */
     fun padBits(count: Int, value: UByte)
+
+    /**
+     * Write the specified number of padding bits to the sink.
+     *
+     * @param value The value of the bits to write (0 or 1).
+     */
+    fun padToNextByte(value: UByte)
+
+    /**
+     * Write the specified number of padding bits (0) to the sink until the next byte boundary.
+     */
+    fun padUntilNextByte()
 }
 
 private data class BitSinkImpl( // @formatter:off
@@ -64,9 +77,11 @@ private data class BitSinkImpl( // @formatter:off
     }
 
     override fun writeBits(count: Int, bits: ULong) {
+        if (count == 0) return
         val lastBit = count - 1
         for (bitIndex in 0..<count) {
-            val bit = ((bits shr (lastBit - bitIndex)) and 0b1UL).toUByte()
+            val toShift = max(0, lastBit - bitIndex)
+            val bit = ((bits shr toShift) and 0b1UL).toUByte()
             writeNextBit(bit)
         }
     }
@@ -77,13 +92,16 @@ private data class BitSinkImpl( // @formatter:off
         }
     }
 
+    override fun padToNextByte(value: UByte) {
+        padBits(LAST_BIT - bit + 1, value)
+    }
+
+    override fun padUntilNextByte() = padToNextByte(0U)
+
     override fun close() {
         if (isClosed) return
+        if (bit != 0) sink.writeUByte(currentByte)
         if (isSinkOwned) sink.close()
-        if (bit != LAST_BIT) { // If we aren't exactly on the last bit of the last byte..
-            // ..flush last unfinished byte to the sink
-            sink.writeUByte(currentByte)
-        }
         byte = 0L
         bit = 0
         isClosed = true
