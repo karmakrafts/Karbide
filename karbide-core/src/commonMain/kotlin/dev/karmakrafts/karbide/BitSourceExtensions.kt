@@ -29,25 +29,11 @@ fun BitSource.readByte(): Byte = readBits(Byte.SIZE_BITS).toByte()
 fun BitSource.readShort(): Short = readBits(Short.SIZE_BITS).toShort()
 
 /**
- * Read a [Short] (16 bits) from the [BitSource] in little endian byte order.
- *
- * @return The short read.
- */
-fun BitSource.readShortLe(): Short = readBits(Short.SIZE_BITS).toShort().reverseBytes()
-
-/**
  * Read an [Int] (32 bits) from the [BitSource].
  *
  * @return The integer read.
  */
 fun BitSource.readInt(): Int = readBits(Int.SIZE_BITS).toInt()
-
-/**
- * Read an [Int] (32 bits) from the [BitSource] in little endian byte order.
- *
- * @return The integer read.
- */
-fun BitSource.readIntLe(): Int = readBits(Int.SIZE_BITS).toInt().reverseBytes()
 
 /**
  * Read a [Long] (64 bits) from the [BitSource].
@@ -57,13 +43,6 @@ fun BitSource.readIntLe(): Int = readBits(Int.SIZE_BITS).toInt().reverseBytes()
 fun BitSource.readLong(): Long = readBits(Long.SIZE_BITS).toLong()
 
 /**
- * Read a [Long] (64 bits) from the [BitSource] in little endian byte order.
- *
- * @return The long read.
- */
-fun BitSource.readLongLe(): Long = readBits(Long.SIZE_BITS).toLong().reverseBytes()
-
-/**
  * Read a [Float] (32 bits) from the [BitSource].
  *
  * @return The float read.
@@ -71,25 +50,11 @@ fun BitSource.readLongLe(): Long = readBits(Long.SIZE_BITS).toLong().reverseByte
 fun BitSource.readFloat(): Float = Float.fromBits(readBits(Float.SIZE_BITS).toInt())
 
 /**
- * Read a [Float] (32 bits) from the [BitSource] in little endian byte order.
- *
- * @return The float read.
- */
-fun BitSource.readFloatLe(): Float = Float.fromBits(readBits(Float.SIZE_BITS).toInt().reverseBytes())
-
-/**
  * Read a [Double] (64 bits) from the [BitSource].
  *
  * @return The double read.
  */
 fun BitSource.readDouble(): Double = Double.fromBits(readBits(Double.SIZE_BITS).toLong())
-
-/**
- * Read a [Double] (64 bits) from the [BitSource] in little endian byte order.
- *
- * @return The double read.
- */
-fun BitSource.readDoubleLe(): Double = Double.fromBits(readBits(Double.SIZE_BITS).toLong().reverseBytes())
 
 /**
  * Read a [UByte] (8 bits) from the [BitSource].
@@ -106,13 +71,6 @@ fun BitSource.readUByte(): UByte = readBits(UByte.SIZE_BITS).toUByte()
 fun BitSource.readUShort(): UShort = readBits(UShort.SIZE_BITS).toUShort()
 
 /**
- * Read a [UShort] (16 bits) from the [BitSource] in little endian byte order.
- *
- * @return The unsigned short read.
- */
-fun BitSource.readUShortLe(): UShort = readBits(UShort.SIZE_BITS).toUShort().reverseBytes()
-
-/**
  * Read a [UInt] (32 bits) from the [BitSource].
  *
  * @return The unsigned integer read.
@@ -120,25 +78,11 @@ fun BitSource.readUShortLe(): UShort = readBits(UShort.SIZE_BITS).toUShort().rev
 fun BitSource.readUInt(): UInt = readBits(UInt.SIZE_BITS).toUInt()
 
 /**
- * Read a [UInt] (32 bits) from the [BitSource] in little endian byte order.
- *
- * @return The unsigned integer read.
- */
-fun BitSource.readUIntLe(): UInt = readBits(UInt.SIZE_BITS).toUInt().reverseBytes()
-
-/**
  * Read a [ULong] (64 bits) from the [BitSource].
  *
  * @return The unsigned long read.
  */
 fun BitSource.readULong(): ULong = readBits(ULong.SIZE_BITS)
-
-/**
- * Read a [ULong] (64 bits) from the [BitSource] in little endian byte order.
- *
- * @return The unsigned long read.
- */
-fun BitSource.readULongLe(): ULong = readBits(ULong.SIZE_BITS).reverseBytes()
 
 /**
  * Read a [ByteArray] of the specified size from the [BitSource].
@@ -149,6 +93,14 @@ fun BitSource.readULongLe(): ULong = readBits(ULong.SIZE_BITS).reverseBytes()
 fun BitSource.readByteArray(count: Int): ByteArray = ByteArray(count) {
     readByte()
 }
+
+/**
+ * Read a [String] of the specified length from the [BitSource].
+ *
+ * @param length The number of characters to read.
+ * @return The string read.
+ */
+fun BitSource.readString(length: Int): String = readByteArray(length).decodeToString()
 
 /**
  * Skip a single bit in the [BitSource].

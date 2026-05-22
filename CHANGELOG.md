@@ -3,6 +3,8 @@
 ### Added
 
 - `count` parameter for all `reverseBits` extensions with default value
+- LSB read- and write-extensions for `BitSource` and `BitSink`
+- Little Endian LSB read- and write-extensions for `BitSource` and `BitSink`
 
 ## [1.1.0]
 

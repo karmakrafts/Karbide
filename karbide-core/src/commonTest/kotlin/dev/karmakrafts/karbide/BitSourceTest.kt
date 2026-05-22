@@ -127,6 +127,7 @@ class BitSourceTest {
             source.skipBytes(1) // skip 0x56
         }
     }
+
     @Test
     fun `Skip until next byte`() {
         val buffer = Buffer()
@@ -136,6 +137,114 @@ class BitSourceTest {
             assertEquals(1U.toUByte(), source.readBit())
             source.skipUntilNextByte()
             assertEquals(0x4AU.toUByte(), source.readUByte())
+        }
+    }
+
+    @Test
+    fun `Read bits in LSB order`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xC5U)
+        buffer.bitSource().use { source ->
+            assertEquals(0b0011UL, source.readBitsLsb(4))
+            assertEquals(0b1010UL, source.readBitsLsb(4))
+        }
+    }
+
+    @Test
+    fun `Read bits in LSB order beyond byte boundary`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0x72U)
+        buffer.writeUByte(0xD0U)
+        buffer.bitSource().use { source ->
+            assertEquals(0b1011_0100_1110UL, source.readBitsLsb(12))
+        }
+    }
+
+    @Test
+    fun `Read numeric types in LSB order`() {
+        val buffer = Buffer()
+        buffer.writeByte(0x12.toByte().reverseBits())
+        buffer.writeShort(0x1234.toShort().reverseBits())
+        buffer.writeInt(0x12345678.reverseBits())
+        buffer.writeLong(0x1234567890ABCDEFL.reverseBits())
+        buffer.writeInt(1.234f.toRawBits().reverseBits())
+        buffer.writeLong(1.23456789.toRawBits().reverseBits())
+
+        buffer.bitSource().use { source ->
+            assertEquals(0x12.toByte(), source.readByteLsb())
+            assertEquals(0x1234.toShort(), source.readShortLsb())
+            assertEquals(0x12345678, source.readIntLsb())
+            assertEquals(0x1234567890ABCDEFL, source.readLongLsb())
+            assertEquals(1.234f, source.readFloatLsb(), 0.001F)
+            assertEquals(1.23456789, source.readDoubleLsb())
+        }
+    }
+
+    @Test
+    fun `Read unsigned numeric types in LSB order`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0x12U.toUByte().reverseBits())
+        buffer.writeUShort(0x1234U.toUShort().reverseBits())
+        buffer.writeUInt(0x12345678U.reverseBits())
+        buffer.writeULong(0x1234567890ABCDEFUL.reverseBits())
+
+        buffer.bitSource().use { source ->
+            assertEquals(0x12U.toUByte(), source.readUByteLsb())
+            assertEquals(0x1234U.toUShort(), source.readUShortLsb())
+            assertEquals(0x12345678U, source.readUIntLsb())
+            assertEquals(0x1234567890ABCDEFUL, source.readULongLsb())
+        }
+    }
+
+    @Test
+    fun `Read byte array and string in LSB order`() {
+        val buffer = Buffer()
+        val data = byteArrayOf(0x01, 0x02, 0x03)
+        for (b in data) {
+            buffer.writeByte(b.reverseBits())
+        }
+        for (c in "ABC") {
+            buffer.writeByte(c.code.toByte().reverseBits())
+        }
+
+        buffer.bitSource().use { source ->
+            val readData = source.readByteArrayLsb(data.size)
+            for (i in data.indices) {
+                assertEquals(data[i], readData[i])
+            }
+            assertEquals("ABC", source.readStringLsb(3))
+        }
+    }
+
+    @Test
+    fun `Read numeric types in LE LSB order`() {
+        val buffer = Buffer()
+        buffer.writeShort(0x1234.toShort().reverseBytes().reverseBits())
+        buffer.writeInt(0x12345678.reverseBytes().reverseBits())
+        buffer.writeLong(0x1234567890ABCDEFL.reverseBytes().reverseBits())
+        buffer.writeInt(1.234f.toRawBits().reverseBytes().reverseBits())
+        buffer.writeLong(1.23456789.toRawBits().reverseBytes().reverseBits())
+
+        buffer.bitSource().use { source ->
+            assertEquals(0x1234.toShort(), source.readShortLeLsb())
+            assertEquals(0x12345678, source.readIntLeLsb())
+            assertEquals(0x1234567890ABCDEFL, source.readLongLeLsb())
+            assertEquals(1.234f, source.readFloatLeLsb(), 0.001F)
+            assertEquals(1.23456789, source.readDoubleLeLsb())
+        }
+    }
+
+    @Test
+    fun `Read unsigned numeric types in LE LSB order`() {
+        val buffer = Buffer()
+        buffer.writeUShort(0x1234U.toUShort().reverseBytes().reverseBits())
+        buffer.writeUInt(0x12345678U.reverseBytes().reverseBits())
+        buffer.writeULong(0x1234567890ABCDEFUL.reverseBytes().reverseBits())
+
+        buffer.bitSource().use { source ->
+            assertEquals(0x1234U.toUShort(), source.readUShortLeLsb())
+            assertEquals(0x12345678U, source.readUIntLeLsb())
+            assertEquals(0x1234567890ABCDEFUL, source.readULongLeLsb())
         }
     }
 }

@@ -152,4 +152,115 @@ class BitSinkTest {
         // After closing, the partial byte (0b1000_0000 = 128) should be flushed
         assertEquals(128U.toUByte(), buffer.readUByte())
     }
+
+    @Test
+    fun `Write bits in LSB order`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeBitsLsb(4, 0b0011UL)
+            sink.writeBitsLsb(4, 0b1010UL)
+        }
+        // 0b0011 LSB reversed (4 bits) is 0b1100
+        // 0b1010 LSB reversed (4 bits) is 0b0101
+        // Together they form 0b1100_0101 = 0xC5
+        assertEquals(0xC5U.toUByte(), buffer.readUByte())
+    }
+
+    @Test
+    fun `Write bits in LSB order beyond byte boundary`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeBitsLsb(12, 0b1011_0100_1110UL)
+        }
+        // 0b1011_0100_1110 LSB reversed is 0b0111_0010_1101
+        // First byte: 0b0111_0010 = 0x72
+        // Second byte: 0b1101_0000 = 0xD0 (flushed on close)
+        assertEquals(0x72U.toUByte(), buffer.readUByte())
+        assertEquals(0xD0U.toUByte(), buffer.readUByte())
+    }
+
+    @Test
+    fun `Write numeric types in LSB order`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeByteLsb(0x12)
+            sink.writeShortLsb(0x1234)
+            sink.writeIntLsb(0x12345678)
+            sink.writeLongLsb(0x1234567890ABCDEFL)
+            sink.writeFloatLsb(1.234f)
+            sink.writeDoubleLsb(1.23456789)
+        }
+
+        assertEquals(0x12.toByte().reverseBits(), buffer.readByte())
+        assertEquals(0x1234.toShort().reverseBits(), buffer.readShort())
+        assertEquals(0x12345678.reverseBits(), buffer.readInt())
+        assertEquals(0x1234567890ABCDEFL.reverseBits(), buffer.readLong())
+        assertEquals(1.234f, Float.fromBits(buffer.readInt().reverseBits()), 0.001F)
+        assertEquals(1.23456789, Double.fromBits(buffer.readLong().reverseBits()))
+    }
+
+    @Test
+    fun `Write unsigned numeric types in LSB order`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeUByteLsb(0x12U)
+            sink.writeUShortLsb(0x1234U)
+            sink.writeUIntLsb(0x12345678U)
+            sink.writeULongLsb(0x1234567890ABCDEFUL)
+        }
+
+        assertEquals(0x12U.toUByte().reverseBits(), buffer.readUByte())
+        assertEquals(0x1234U.toUShort().reverseBits(), buffer.readUShort())
+        assertEquals(0x12345678U.reverseBits(), buffer.readUInt())
+        assertEquals(0x1234567890ABCDEFUL.reverseBits(), buffer.readULong())
+    }
+
+    @Test
+    fun `Write byte array and string in LSB order`() {
+        val buffer = Buffer()
+        val data = byteArrayOf(0x01, 0x02, 0x03)
+        buffer.bitSink().use { sink ->
+            sink.writeByteArrayLsb(data)
+            sink.writeStringLsb("ABC")
+        }
+
+        for (b in data) {
+            assertEquals(b.reverseBits(), buffer.readByte())
+        }
+        for (c in "ABC") {
+            assertEquals(c.code.toByte().reverseBits(), buffer.readByte())
+        }
+    }
+
+    @Test
+    fun `Write numeric types in LE LSB order`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeShortLeLsb(0x1234)
+            sink.writeIntLeLsb(0x12345678)
+            sink.writeLongLeLsb(0x1234567890ABCDEFL)
+            sink.writeFloatLeLsb(1.234f)
+            sink.writeDoubleLeLsb(1.23456789)
+        }
+
+        assertEquals(0x1234.toShort().reverseBytes().reverseBits(), buffer.readShort())
+        assertEquals(0x12345678.reverseBytes().reverseBits(), buffer.readInt())
+        assertEquals(0x1234567890ABCDEFL.reverseBytes().reverseBits(), buffer.readLong())
+        assertEquals(1.234f, Float.fromBits(buffer.readInt().reverseBits().reverseBytes()), 0.001F)
+        assertEquals(1.23456789, Double.fromBits(buffer.readLong().reverseBits().reverseBytes()))
+    }
+
+    @Test
+    fun `Write unsigned numeric types in LE LSB order`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeUShortLeLsb(0x1234U)
+            sink.writeUIntLeLsb(0x12345678U)
+            sink.writeULongLeLsb(0x1234567890ABCDEFUL)
+        }
+
+        assertEquals(0x1234U.toUShort().reverseBytes().reverseBits(), buffer.readUShort())
+        assertEquals(0x12345678U.reverseBytes().reverseBits(), buffer.readUInt())
+        assertEquals(0x1234567890ABCDEFUL.reverseBytes().reverseBits(), buffer.readULong())
+    }
 }
