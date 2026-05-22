@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.3.0]
+
 ### Added
 
 - LSB read- and write-extensions for `BitSource` and `BitSink`
