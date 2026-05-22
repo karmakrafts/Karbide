@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- `reverseBits()` extension for all signed integer types
+- `reverseBits()` extension for all unsigned integer types
+
 ## [1.0.1]
 
 ### Changed
