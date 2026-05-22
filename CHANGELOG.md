@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.2.0]
+
 ### Added
 
 - `count` parameter for all `reverseBits` extensions with default value
