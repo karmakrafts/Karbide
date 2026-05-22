@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Added
 
 - `reverseBits()` extension for all signed integer types
