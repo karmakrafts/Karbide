@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.0.1]
+
 ### Changed
 
 - Fixed potential bug in `BitSink` where the last byte is not flushed correctly
