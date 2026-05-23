@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- `ByteArraySink` for accumulating data from a `Sink` into a regular `ByteArray`
+- `ByteArraySource` for consuming a regular `ByteArray` as a `RawSource`
+
 ## [1.4.0]
 
 ### Added

@@ -14,6 +14,8 @@ It introduces `BitSink` and `BitSource` interfaces, which can be obtained simply
 by calling `bitSink()` or `bitSource()` on any `Sink` or `Source`,
 which allow reading and writing data in increments smaller than a byte.
 
+It also provides various extensions and utilities for working with bits and bytes.
+
 ### How to use it
 
 First, add the official Maven Central repository to your settings.gradle.kts:
