@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.5.0]
+
 ### Added
 
 - `ByteArraySink` for accumulating data from a `Sink` into a regular `ByteArray`
