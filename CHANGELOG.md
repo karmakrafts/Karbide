@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.4.0]
+
 ### Added
 
 - `BitOrder` enum for defining the default bit order of sinks and sources
