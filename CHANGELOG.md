@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Added
+
+- `BitSink.flush()` function for flushing internally buffered data on demand
+
+### Removed
+
+- `BitSink.padUntilNextByte()` removed in favor of `BitSink.padToNextByte(UByte)`
+
 ## [1.5.0]
 
 ### Added

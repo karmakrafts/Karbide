@@ -47,9 +47,10 @@ interface BitSink : AutoCloseable {
     fun padToNextByte(value: UByte)
 
     /**
-     * Write the specified number of padding bits (0) to the sink until the next byte boundary.
+     * Flush any remaining data buffered internally into the
+     * underlying [Sink].
      */
-    fun padUntilNextByte()
+    fun flush()
 }
 
 private data class BitSinkImpl( // @formatter:off
@@ -116,11 +117,14 @@ private data class BitSinkImpl( // @formatter:off
         padBits(LAST_BIT - bit + 1, value)
     }
 
-    override fun padUntilNextByte() = padToNextByte(0U)
+    override fun flush() {
+        if (bit == 0) return
+        sink.writeUByte(currentByte)
+    }
 
     override fun close() {
         if (isClosed) return
-        if (bit != 0) sink.writeUByte(currentByte)
+        flush()
         if (isSinkOwned) sink.close()
         byte = 0L
         bit = 0

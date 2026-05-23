@@ -133,7 +133,7 @@ class BitSinkTest {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBit(1U)
-            sink.padUntilNextByte()
+            sink.padToNextByte(0U)
             sink.writeBit(1U)
             sink.padToNextByte(1U)
         }
