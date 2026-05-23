@@ -19,7 +19,6 @@ class BitSinkTest {
             sink.writeBit(0b1U)
         }
         assertEquals(3U.toUByte(), buffer.readUByte())
-        // In MSB order, we read 0b1000_0000 so we get 128
         assertEquals(128U.toUByte(), buffer.readUByte())
     }
 
@@ -149,7 +148,6 @@ class BitSinkTest {
         buffer.bitSink().use { sink ->
             sink.writeBit(1U)
         }
-        // After closing, the partial byte (0b1000_0000 = 128) should be flushed
         assertEquals(128U.toUByte(), buffer.readUByte())
     }
 
@@ -160,9 +158,6 @@ class BitSinkTest {
             sink.writeBitsLsb(4, 0b0011UL)
             sink.writeBitsLsb(4, 0b1010UL)
         }
-        // 0b0011 LSB reversed (4 bits) is 0b1100
-        // 0b1010 LSB reversed (4 bits) is 0b0101
-        // Together they form 0b1100_0101 = 0xC5
         assertEquals(0xC5U.toUByte(), buffer.readUByte())
     }
 
@@ -172,9 +167,6 @@ class BitSinkTest {
         buffer.bitSink().use { sink ->
             sink.writeBitsLsb(12, 0b1011_0100_1110UL)
         }
-        // 0b1011_0100_1110 LSB reversed is 0b0111_0010_1101
-        // First byte: 0b0111_0010 = 0x72
-        // Second byte: 0b1101_0000 = 0xD0 (flushed on close)
         assertEquals(0x72U.toUByte(), buffer.readUByte())
         assertEquals(0xD0U.toUByte(), buffer.readUByte())
     }
@@ -262,5 +254,15 @@ class BitSinkTest {
         assertEquals(0x1234U.toUShort().reverseBytes().reverseBits(), buffer.readUShort())
         assertEquals(0x12345678U.reverseBytes().reverseBits(), buffer.readUInt())
         assertEquals(0x1234567890ABCDEFUL.reverseBytes().reverseBits(), buffer.readULong())
+    }
+
+    @Test
+    fun `Write bits with LSB first bit order`() {
+        val buffer = Buffer()
+        buffer.bitSink(bitOrder = BitOrder.LSB_FIRST).use { sink ->
+            sink.writeBits(4, 0b1011UL)
+            sink.writeBits(4, 0b0101UL)
+        }
+        assertEquals(0xADU.toUByte(), buffer.readUByte())
     }
 }

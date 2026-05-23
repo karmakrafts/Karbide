@@ -119,12 +119,12 @@ class BitSourceTest {
 
         buffer.bitSource().use { source ->
             assertEquals(1U.toUByte(), source.readBit())
-            source.skipBit() // skip 0
-            source.skipNibble() // skip 0xF
+            source.skipBit()
+            source.skipNibble()
             assertEquals(0x12.toByte(), source.readByte())
-            source.skipNibbles(2) // skip 0xA, 0xB
-            source.skipByte() // skip 0x34
-            source.skipBytes(1) // skip 0x56
+            source.skipNibbles(2)
+            source.skipByte()
+            source.skipBytes(1)
         }
     }
 
@@ -245,6 +245,16 @@ class BitSourceTest {
             assertEquals(0x1234U.toUShort(), source.readUShortLeLsb())
             assertEquals(0x12345678U, source.readUIntLeLsb())
             assertEquals(0x1234567890ABCDEFUL, source.readULongLeLsb())
+        }
+    }
+
+    @Test
+    fun `Read bits with LSB first bit order`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xADU)
+        buffer.bitSource(bitOrder = BitOrder.LSB_FIRST).use { source ->
+            assertEquals(0b1011UL, source.readBits(4))
+            assertEquals(0b0101UL, source.readBits(4))
         }
     }
 }

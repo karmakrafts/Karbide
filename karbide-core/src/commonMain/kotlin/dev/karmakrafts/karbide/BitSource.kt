@@ -8,6 +8,11 @@ import kotlinx.io.readUByte
  */
 interface BitSource : AutoCloseable {
     /**
+     * The bit order of this bit source.
+     */
+    val bitOrder: BitOrder
+
+    /**
      * The current byte offset in the source.
      */
     val byte: Long
@@ -45,7 +50,8 @@ interface BitSource : AutoCloseable {
 
 private data class BitSourceImpl( // @formatter:off
     val source: Source,
-    private val isSourceOwned: Boolean
+    private val isSourceOwned: Boolean,
+    override val bitOrder: BitOrder
 ) : BitSource { // @formatter:on
     companion object {
         private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
@@ -62,6 +68,9 @@ private data class BitSourceImpl( // @formatter:off
 
     private var currentByte: UByte = nextByte()
 
+    private val _readBits: (Int) -> ULong = if (bitOrder == BitOrder.MSB_FIRST) ::readBitsMsb
+    else ::readBitsLsb
+
     private fun nextByte(): UByte = if (source.exhausted()) 0U.toUByte() else source.readUByte()
 
     private fun nextBit() {
@@ -74,7 +83,19 @@ private data class BitSourceImpl( // @formatter:off
         byte++
     }
 
-    override fun readBits(count: Int): ULong {
+    private fun readBitsLsb(count: Int): ULong {
+        if (count == 0) return 0UL
+        val lastBit = count - 1
+        var result = 0UL
+        for (bitIndex in 0..<count) {
+            val bit = (currentByte.toULong() shr bit) and 0b1UL
+            result = result or (bit shl (lastBit - bitIndex))
+            nextBit()
+        }
+        return result
+    }
+
+    private fun readBitsMsb(count: Int): ULong {
         if (count == 0) return 0UL
         val lastBit = count - 1
         var result = 0UL
@@ -85,6 +106,8 @@ private data class BitSourceImpl( // @formatter:off
         }
         return result
     }
+
+    override fun readBits(count: Int): ULong = _readBits(count)
 
     override fun skipBits(count: Int) {
         repeat(count) {
@@ -107,8 +130,9 @@ private data class BitSourceImpl( // @formatter:off
  * Create a new [BitSource] from the current [Source].
  *
  * @param isSourceOwned Whether the [Source] is owned by the [BitSource] and should be closed when it is.
+ * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
 fun Source.bitSource(
-    isSourceOwned: Boolean = true
-): BitSource = BitSourceImpl(this, isSourceOwned)
+    isSourceOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSource = BitSourceImpl(this, isSourceOwned, bitOrder)

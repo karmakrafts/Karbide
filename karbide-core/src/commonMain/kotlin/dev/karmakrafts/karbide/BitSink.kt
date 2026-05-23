@@ -9,6 +9,11 @@ import kotlin.math.max
  */
 interface BitSink : AutoCloseable {
     /**
+     * The bit order of this bit sink.
+     */
+    val bitOrder: BitOrder
+
+    /**
      * The current byte offset in the sink.
      */
     val byte: Long
@@ -49,7 +54,8 @@ interface BitSink : AutoCloseable {
 
 private data class BitSinkImpl( // @formatter:off
     private val sink: Sink,
-    private val isSinkOwned: Boolean
+    private val isSinkOwned: Boolean,
+    override val bitOrder: BitOrder
 ) : BitSink { // @formatter:on
     companion object {
         private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
@@ -64,7 +70,21 @@ private data class BitSinkImpl( // @formatter:off
 
     private var currentByte: UByte = 0U.toUByte()
 
-    private fun writeNextBit(value: UByte) {
+    private val writeNextBit: (UByte) -> Unit = if (bitOrder == BitOrder.MSB_FIRST) ::writeNextBitMsb
+    else ::writeNextBitLsb
+
+    private fun writeNextBitLsb(value: UByte) {
+        currentByte = (currentByte.toUInt() or ((value.toUInt() and 0b1U) shl bit)).toUByte()
+        if (bit < LAST_BIT) bit++
+        else {
+            sink.writeUByte(currentByte)
+            currentByte = 0U.toUByte()
+            bit = 0
+            byte++
+        }
+    }
+
+    private fun writeNextBitMsb(value: UByte) {
         val bitIndex = LAST_BIT - bit
         currentByte = (currentByte.toUInt() or ((value.toUInt() and 0b1U) shl bitIndex)).toUByte()
         if (bit < LAST_BIT) bit++
@@ -112,8 +132,9 @@ private data class BitSinkImpl( // @formatter:off
  * Create a new [BitSink] from the current [Sink].
  *
  * @param isSinkOwned Whether the [Sink] is owned by the [BitSink] and should be closed when it is.
+ * @param bitOrder Whether bits are written out LSB or MSB first.
  * @return A new [BitSink] instance.
  */
 fun Sink.bitSink(
-    isSinkOwned: Boolean = true
-): BitSink = BitSinkImpl(this, isSinkOwned)
+    isSinkOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSink = BitSinkImpl(this, isSinkOwned, bitOrder)

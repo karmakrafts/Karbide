@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Added
+
+- `BitOrder` enum for defining the default bit order of sinks and sources
+- `bitOrder` parameter for `Source.bitSource()` and `Sink.bitSink()` extensions
+
 ## [1.3.0]
 
 ### Added

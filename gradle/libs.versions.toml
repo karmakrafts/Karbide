@@ -3,7 +3,7 @@
 java = "17"
 
 androidGradle = "9.2.1" # https://developer.android.com/reference/tools/gradle-api
-karbide = "1.3.0"
+karbide = "1.4.0"
 kotlin = "2.3.21" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.9.0" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.2.0" # https://github.com/Kotlin/dokka/releases
