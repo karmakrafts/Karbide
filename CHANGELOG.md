@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.6.0]
+
 ### Added
 
 - `BitSink.flush()` function for flushing internally buffered data on demand
