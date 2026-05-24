@@ -3,6 +3,8 @@
 ### Added
 
 - `BitSink.flush()` function for flushing internally buffered data on demand
+- `Source` extensions for reading multibyte values in LE order using the optimized version of `reverseBytes`
+- `Sink` extensions for writing multibyte values in LE order using the optimized version of `reverseBytes`
 
 ### Removed
 
