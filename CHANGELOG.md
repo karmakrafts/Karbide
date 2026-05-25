@@ -3,6 +3,7 @@
 ### Changed
 
 - Optimized `reverseBits` extensions on native targets using `__builtin_bitreverse` intrinsics
+- Optimized `BitSink` implementation to not copy data bit by bit
 
 ## [1.6.0]
 
