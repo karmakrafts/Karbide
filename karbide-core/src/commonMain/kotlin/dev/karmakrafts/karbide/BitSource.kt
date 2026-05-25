@@ -2,6 +2,7 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Source
 import kotlinx.io.readUByte
+import kotlin.math.min
 
 /**
  * Interface for reading individual bits from a source.
@@ -46,82 +47,99 @@ interface BitSource : AutoCloseable {
      * Align the reader to the next byte boundary.
      */
     fun skipUntilNextByte()
+
+    /**
+     * Reset the internal state of this source.
+     * This will reset [bit] and [byte] counters to 0.
+     */
+    fun reset()
 }
 
 private data class BitSourceImpl( // @formatter:off
-    val source: Source,
+    private val source: Source,
     private val isSourceOwned: Boolean,
     override val bitOrder: BitOrder
 ) : BitSource { // @formatter:on
-    companion object {
-        private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
-    }
-
     private var isClosed: Boolean = false
 
     override var byte: Long = 0L
         private set
-    override var bit: Int = 0
-        private set
+
+    override val bit: Int get() = (bitsRead % Byte.SIZE_BITS).toInt()
+
     override val exhausted: Boolean
-        get() = source.exhausted() && bit == LAST_BIT
+        get() = bitInBuffer == 0 && source.exhausted()
 
-    private var currentByte: UByte = nextByte()
+    private var bitsRead: Long = 0L
+    private var bitInBuffer: Int = 0
+    private var buffer: ULong = 0UL
 
-    private val _readBits: (Int) -> ULong = if (bitOrder == BitOrder.MSB_FIRST) ::readBitsMsb
-    else ::readBitsLsb
-
-    private fun nextByte(): UByte = if (source.exhausted()) 0U.toUByte() else source.readUByte()
-
-    private fun nextBit() {
-        if (bit < LAST_BIT) {
-            bit++
-            return
+    private fun fillBuffer() {
+        while (bitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
+            var byteValue = source.readUByte()
+            if (bitOrder == BitOrder.MSB_FIRST) {
+                byteValue = byteValue.reverseBits()
+            }
+            buffer = buffer or (byteValue.toULong() shl bitInBuffer)
+            bitInBuffer += Byte.SIZE_BITS
         }
-        currentByte = nextByte()
-        bit = 0
-        byte++
     }
 
-    private fun readBitsLsb(count: Int): ULong {
+    override fun readBits(count: Int): ULong {
         if (count == 0) return 0UL
-        val lastBit = count - 1
+        var remaining = count
         var result = 0UL
-        for (bitIndex in 0..<count) {
-            val bit = (currentByte.toULong() shr bit) and 0b1UL
-            result = result or (bit shl (lastBit - bitIndex))
-            nextBit()
+        while (remaining > 0) {
+            fillBuffer()
+            if (bitInBuffer == 0) break
+            val take = min(remaining, bitInBuffer)
+            val chunk = if (take == ULong.SIZE_BITS) buffer
+            else {
+                val mask = (1UL shl take) - 1UL
+                buffer and mask
+            }
+            val reversedChunk = chunk.reverseBits(take)
+            result = result or (reversedChunk shl (remaining - take))
+            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shr take
+            bitInBuffer -= take
+            remaining -= take
+            bitsRead += take
         }
+        byte = bitsRead shr 3
         return result
     }
-
-    private fun readBitsMsb(count: Int): ULong {
-        if (count == 0) return 0UL
-        val lastBit = count - 1
-        var result = 0UL
-        for (bitIndex in 0..<count) {
-            val bit = (currentByte.toULong() shr (LAST_BIT - bit)) and 0b1UL
-            result = result or (bit shl (lastBit - bitIndex))
-            nextBit()
-        }
-        return result
-    }
-
-    override fun readBits(count: Int): ULong = _readBits(count)
 
     override fun skipBits(count: Int) {
-        repeat(count) {
-            nextBit()
+        var remaining = count
+        while (remaining > 0) {
+            fillBuffer()
+            if (bitInBuffer == 0) break
+            val take = min(remaining, bitInBuffer)
+            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shr take
+            bitInBuffer -= take
+            remaining -= take
+            bitsRead += take
         }
+        byte = bitsRead shr 3
     }
 
-    override fun skipUntilNextByte() = skipBits(Byte.SIZE_BITS - bit)
+    override fun skipUntilNextByte() {
+        val count = (Byte.SIZE_BITS - bit) and 7
+        if (count > 0) skipBits(count)
+    }
+
+    override fun reset() {
+        if (isClosed) return
+        buffer = 0UL
+        bitInBuffer = 0
+        bitsRead = 0
+        byte = 0
+    }
 
     override fun close() {
         if (isClosed) return
         if (isSourceOwned) source.close()
-        byte = 0L
-        bit = 0
+        reset()
         isClosed = true
     }
 }

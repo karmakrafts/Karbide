@@ -1,10 +1,15 @@
 ## [Unreleased]
 
+### Added
+
+- `BitSink.reset` function for resetting bit and byte counts
+- `BitSource.reset` function for resetting bit and byte counts
+
 ### Changed
 
+- Optimized `BitSink` and `BitSource` implementations using buffered reading and bitwise operations
 - Optimized `reverseBits` extensions on native targets using `__builtin_bitreverse` intrinsics
 - Optimized `reverseBits` extensions on JVM targets using `Integer/Long.reverse` intrinsics
-- Optimized `BitSink` implementation to not copy data bit by bit
 
 ## [1.6.0]
 

@@ -51,6 +51,12 @@ interface BitSink : AutoCloseable {
      * underlying [Sink].
      */
     fun flush()
+
+    /**
+     * Reset the internal state of this sink.
+     * This will reset [bit] and [byte] counters to 0.
+     */
+    fun reset()
 }
 
 private data class BitSinkImpl( // @formatter:off
@@ -114,7 +120,7 @@ private data class BitSinkImpl( // @formatter:off
         val bitValue = value.toULong() and 0b1UL
         val bits = when (bitValue) { // @formatter:off
             1UL -> when (count) {
-                64 -> ULong.MAX_VALUE
+                ULong.SIZE_BITS -> ULong.MAX_VALUE
                 else -> (1UL shl count) - 1UL
             }
             else -> 0UL
@@ -128,16 +134,22 @@ private data class BitSinkImpl( // @formatter:off
     }
 
     override fun flush() {
-        if (bit == 0) return
+        if (isClosed || bit == 0) return
         flushCurrentByte()
+        reset()
+    }
+
+    override fun reset() {
+        if (isClosed) return
+        buffer = 0UL
+        bitInBuffer = 0
+        byte = 0
     }
 
     override fun close() {
         if (isClosed) return
         flush()
         if (isSinkOwned) sink.close()
-        byte = 0L
-        bitInBuffer = 0
         isClosed = true
     }
 }
