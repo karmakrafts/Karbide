@@ -2,7 +2,7 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Sink
 import kotlinx.io.writeUByte
-import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Interface for writing individual bits to a sink.
@@ -58,68 +58,78 @@ private data class BitSinkImpl( // @formatter:off
     private val isSinkOwned: Boolean,
     override val bitOrder: BitOrder
 ) : BitSink { // @formatter:on
-    companion object {
-        private const val LAST_BIT: Int = Byte.SIZE_BITS - 1
-    }
-
     private var isClosed: Boolean = false
 
     override var byte: Long = 0L
         private set
-    override var bit: Int = 0
-        private set
 
-    private var currentByte: UByte = 0U.toUByte()
+    override val bit: Int get() = bitInBuffer and 7 // % 8
 
-    private val writeNextBit: (UByte) -> Unit = if (bitOrder == BitOrder.MSB_FIRST) ::writeNextBitMsb
-    else ::writeNextBitLsb
+    private var bitInBuffer: Int = 0
+    private var buffer: ULong = 0UL
 
-    private fun writeNextBitLsb(value: UByte) {
-        currentByte = (currentByte.toUInt() or ((value.toUInt() and 0b1U) shl bit)).toUByte()
-        if (bit < LAST_BIT) bit++
-        else {
-            sink.writeUByte(currentByte)
-            currentByte = 0U.toUByte()
-            bit = 0
-            byte++
-        }
+    private fun flushCurrentByte() {
+        val value = if (bitOrder == BitOrder.MSB_FIRST) buffer.toUByte().reverseBits() else buffer.toUByte()
+        sink.writeUByte(value)
     }
 
-    private fun writeNextBitMsb(value: UByte) {
-        val bitIndex = LAST_BIT - bit
-        currentByte = (currentByte.toUInt() or ((value.toUInt() and 0b1U) shl bitIndex)).toUByte()
-        if (bit < LAST_BIT) bit++
-        else {
-            sink.writeUByte(currentByte)
-            currentByte = 0U.toUByte()
-            bit = 0
+    /**
+     * Drains all available whole bytes to the underlying sink.
+     */
+    private fun drainBytes() {
+        while (bitInBuffer >= Byte.SIZE_BITS) {
+            flushCurrentByte()
+            buffer = buffer shr Byte.SIZE_BITS
+            bitInBuffer -= Byte.SIZE_BITS
             byte++
         }
     }
 
     override fun writeBits(count: Int, bits: ULong) {
-        if (count == 0) return
-        val lastBit = count - 1
-        for (bitIndex in 0..<count) {
-            val toShift = max(0, lastBit - bitIndex)
-            val bit = ((bits shr toShift) and 0b1UL).toUByte()
-            writeNextBit(bit)
+        var remaining = count
+        var value = bits
+        while (remaining > 0) {
+            val space = ULong.SIZE_BITS - bitInBuffer
+            val take = min(remaining, space)
+            // Extract bits we want to move over
+            val chunk = if (take == ULong.SIZE_BITS) value
+            else {
+                val mask = (1UL shl take) - 1UL
+                value and mask
+            }
+            // Move the chunk into the buffer respecting the write order of this sink
+            val shiftedChunk = chunk.reverseBits(take) shl bitInBuffer
+            buffer = buffer or shiftedChunk
+
+            // Update state
+            bitInBuffer += take
+            value = value shr take
+            remaining -= take
+            // Drain any whole accumulated bytes from the buffer
+            drainBytes()
         }
     }
 
     override fun padBits(count: Int, value: UByte) {
-        repeat(count) {
-            writeNextBit(value)
-        }
+        val bitValue = value.toULong() and 0b1UL
+        val bits = when (bitValue) { // @formatter:off
+            1UL -> when (count) {
+                64 -> ULong.MAX_VALUE
+                else -> (1UL shl count) - 1UL
+            }
+            else -> 0UL
+        } // @formatter:on
+        writeBits(count, bits)
     }
 
     override fun padToNextByte(value: UByte) {
-        padBits(LAST_BIT - bit + 1, value)
+        val count = (Byte.SIZE_BITS - bit) and 7
+        if (count > 0) padBits(count, value)
     }
 
     override fun flush() {
         if (bit == 0) return
-        sink.writeUByte(currentByte)
+        flushCurrentByte()
     }
 
     override fun close() {
@@ -127,7 +137,7 @@ private data class BitSinkImpl( // @formatter:off
         flush()
         if (isSinkOwned) sink.close()
         byte = 0L
-        bit = 0
+        bitInBuffer = 0
         isClosed = true
     }
 }
