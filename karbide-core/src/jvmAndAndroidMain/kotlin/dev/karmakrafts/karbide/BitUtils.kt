@@ -7,16 +7,8 @@ import java.lang.Long as JLong
 
 actual fun Byte.reverseBits(count: Int): Byte = reverseBitsCommon(count)
 actual fun Short.reverseBits(count: Int): Short = reverseBitsCommon(count)
-
-actual fun Int.reverseBits(count: Int): Int {
-    return if (count == Int.SIZE_BITS) JInt.reverse(this)
-    else reverseBitsCommon(count)
-}
-
-actual fun Long.reverseBits(count: Int): Long {
-    return if (count == Long.SIZE_BITS) JLong.reverse(this)
-    else reverseBitsCommon(count)
-}
+actual fun Int.reverseBits(count: Int): Int = JInt.reverse(this) ushr (Int.SIZE_BITS - count)
+actual fun Long.reverseBits(count: Int): Long = JLong.reverse(this) ushr (Long.SIZE_BITS - count)
 
 actual fun UByte.reverseBits(count: Int): UByte = reverseBitsCommon(count)
 actual fun UShort.reverseBits(count: Int): UShort = reverseBitsCommon(count)
