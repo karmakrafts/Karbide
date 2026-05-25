@@ -65,7 +65,7 @@ private data class BitSourceImpl( // @formatter:off
     override var byte: Long = 0L
         private set
 
-    override val bit: Int get() = (bitsRead % Byte.SIZE_BITS).toInt()
+    override val bit: Int get() = (bitsRead and 7).toInt()
 
     override val exhausted: Boolean
         get() = bitInBuffer == 0 && source.exhausted()
@@ -105,7 +105,7 @@ private data class BitSourceImpl( // @formatter:off
             remaining -= take
             bitsRead += take
         }
-        byte = bitsRead shr 3
+        byte += bitsRead shr 3
         return result
     }
 
@@ -120,7 +120,7 @@ private data class BitSourceImpl( // @formatter:off
             remaining -= take
             bitsRead += take
         }
-        byte = bitsRead shr 3
+        byte += bitsRead shr 3
     }
 
     override fun skipUntilNextByte() {
@@ -132,7 +132,7 @@ private data class BitSourceImpl( // @formatter:off
         if (isClosed) return
         buffer = 0UL
         bitInBuffer = 0
-        bitsRead = 0
+        bitsRead = 0L
         byte = 0
     }
 
