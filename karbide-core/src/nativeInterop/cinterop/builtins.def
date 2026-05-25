@@ -1,0 +1,31 @@
+package = dev.karmakrafts.karbide.builtins
+
+---
+
+#include <stdint.h>
+
+#define KARBIDE_EXPORT __attribute__((visibility("default")))
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+KARBIDE_EXPORT inline uint8_t karbide_bitreverse8(uint8_t value) {
+    return __builtin_bitreverse8(value);
+}
+
+KARBIDE_EXPORT inline uint16_t karbide_bitreverse16(uint16_t value) {
+    return __builtin_bitreverse16(value);
+}
+
+KARBIDE_EXPORT inline uint32_t karbide_bitreverse32(uint32_t value) {
+    return __builtin_bitreverse32(value);
+}
+
+KARBIDE_EXPORT inline uint64_t karbide_bitreverse64(uint64_t value) {
+    return __builtin_bitreverse64(value);
+}
+
+#ifdef __cplusplus
+};
+#endif

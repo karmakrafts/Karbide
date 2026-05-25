@@ -51,7 +51,15 @@ kotlin {
     defaultCompilerOptions()
     withSourcesJar()
     withAndroidLibrary("$group.core")
-    withNative()
+    withNative {
+        compilations {
+            named("main") {
+                cinterops {
+                    create("builtins")
+                }
+            }
+        }
+    }
     withJvm()
     withWeb {
         withBrowser {

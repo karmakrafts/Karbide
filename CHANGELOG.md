@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Changed
+
+- Optimized `reverseBits` extensions on native targets using `__builtin_bitreverse` intrinsics
+
 ## [1.6.0]
 
 ### Added
