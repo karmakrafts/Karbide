@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.7.0]
+
 ### Added
 
 - `BitSink.reset` function for resetting bit and byte counts
