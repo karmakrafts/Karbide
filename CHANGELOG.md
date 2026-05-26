@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Added
+
+- `BitSource.peekBits` function for per-bit lookahead
+- `BitSource.requestBits` function for requesting n bits to be available
+- `BitSource.requireBits` function for requiring at least n bits to be available
+
 ## [1.7.0]
 
 ### Added

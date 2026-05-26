@@ -1,5 +1,6 @@
 package dev.karmakrafts.karbide
 
+import kotlinx.io.EOFException
 import kotlinx.io.Source
 import kotlinx.io.readUByte
 import kotlin.math.min
@@ -25,8 +26,35 @@ interface BitSource : AutoCloseable {
 
     /**
      * Whether the source has been exhausted and all bits have been read.
+     *
+     * This is only true when the internal bit buffer is empty and the underlying source is exhausted. Use
+     * [requestBits] or [requireBits] to check whether a specific number of bits can be read.
      */
     val exhausted: Boolean
+
+    /**
+     * Request that at least [count] bits are available without consuming them.
+     *
+     * @param count The number of bits that should be available.
+     * @return `true` if at least [count] bits can be read, `false` otherwise.
+     */
+    fun requestBits(count: Int): Boolean
+
+    /**
+     * Require that at least [count] bits are available without consuming them.
+     *
+     * @param count The number of bits that should be available.
+     * @throws EOFException If fewer than [count] bits are available.
+     */
+    fun requireBits(count: Int)
+
+    /**
+     * Read the specified number of bits without consuming them.
+     *
+     * @param count The number of bits to peek.
+     * @return The bits read as a [ULong].
+     */
+    fun peekBits(count: Int): ULong
 
     /**
      * Read the specified number of bits from the source.
@@ -62,9 +90,7 @@ private data class BitSourceImpl( // @formatter:off
 ) : BitSource { // @formatter:on
     private var isClosed: Boolean = false
 
-    override var byte: Long = 0L
-        private set
-
+    override val byte: Long get() = bitsRead shr 3
     override val bit: Int get() = (bitsRead and 7).toInt()
 
     override val exhausted: Boolean
@@ -73,6 +99,10 @@ private data class BitSourceImpl( // @formatter:off
     private var bitsRead: Long = 0L
     private var bitInBuffer: Int = 0
     private var buffer: ULong = 0UL
+
+    private fun checkReadCount(count: Int) {
+        require(count in 0..ULong.SIZE_BITS) { "count must be between 0 and ${ULong.SIZE_BITS}" }
+    }
 
     private fun fillBuffer() {
         while (bitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
@@ -85,13 +115,11 @@ private data class BitSourceImpl( // @formatter:off
         }
     }
 
-    override fun readBits(count: Int): ULong {
-        if (count == 0) return 0UL
+    private fun readBufferedBits(count: Int): ULong {
         var remaining = count
         var result = 0UL
         while (remaining > 0) {
             fillBuffer()
-            if (bitInBuffer == 0) break
             val take = min(remaining, bitInBuffer)
             val chunk = if (take == ULong.SIZE_BITS) buffer
             else {
@@ -105,22 +133,67 @@ private data class BitSourceImpl( // @formatter:off
             remaining -= take
             bitsRead += take
         }
-        byte += bitsRead shr 3
         return result
     }
 
+    override fun requestBits(count: Int): Boolean {
+        require(count >= 0) { "count must not be negative" }
+        if (count <= bitInBuffer) return true
+        val missingBits = count.toLong() - bitInBuffer
+        val missingBytes = (missingBits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS
+        return source.request(missingBytes)
+    }
+
+    override fun requireBits(count: Int) {
+        if (requestBits(count)) return
+        throw EOFException("Source exhausted before $count bits could be read")
+    }
+
+    override fun peekBits(count: Int): ULong {
+        checkReadCount(count)
+        if (count == 0) return 0UL
+        requireBits(count)
+        fillBuffer()
+        check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
+        var remaining = count
+        var bufferedBits = bitInBuffer
+        var bufferedValue = buffer
+        var result = 0UL
+        while (remaining > 0) {
+            val take = min(remaining, bufferedBits)
+            val chunk = if (take == ULong.SIZE_BITS) bufferedValue
+            else {
+                val mask = (1UL shl take) - 1UL
+                bufferedValue and mask
+            }
+            val reversedChunk = chunk.reverseBits(take)
+            result = result or (reversedChunk shl (remaining - take))
+            bufferedValue = if (take == ULong.SIZE_BITS) 0UL else bufferedValue shr take
+            bufferedBits -= take
+            remaining -= take
+        }
+        return result
+    }
+
+    override fun readBits(count: Int): ULong {
+        checkReadCount(count)
+        if (count == 0) return 0UL
+        requireBits(count)
+        return readBufferedBits(count)
+    }
+
     override fun skipBits(count: Int) {
+        require(count >= 0) { "count must not be negative" }
+        requireBits(count)
         var remaining = count
         while (remaining > 0) {
             fillBuffer()
-            if (bitInBuffer == 0) break
             val take = min(remaining, bitInBuffer)
             buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shr take
             bitInBuffer -= take
             remaining -= take
             bitsRead += take
         }
-        byte += bitsRead shr 3
     }
 
     override fun skipUntilNextByte() {
@@ -133,7 +206,6 @@ private data class BitSourceImpl( // @formatter:off
         buffer = 0UL
         bitInBuffer = 0
         bitsRead = 0L
-        byte = 0
     }
 
     override fun close() {

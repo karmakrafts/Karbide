@@ -1,5 +1,6 @@
 package dev.karmakrafts.karbide
 
+import kotlinx.io.EOFException
 import kotlinx.io.Buffer
 import kotlinx.io.writeUByte
 import kotlinx.io.writeUInt
@@ -7,6 +8,9 @@ import kotlinx.io.writeULong
 import kotlinx.io.writeUShort
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class BitSourceTest {
     @Test
@@ -255,6 +259,50 @@ class BitSourceTest {
         buffer.bitSource(bitOrder = BitOrder.LSB_FIRST).use { source ->
             assertEquals(0b1011UL, source.readBits(4))
             assertEquals(0b0101UL, source.readBits(4))
+        }
+    }
+
+    @Test
+    fun `Read bits throws before consuming partial data`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xACU)
+        buffer.bitSource().use { source ->
+            assertFalse(source.requestBits(9))
+            assertFailsWith<EOFException> { source.readBits(9) }
+            assertEquals(0L, source.byte)
+            assertEquals(0, source.bit)
+            assertEquals(0xACUL, source.readBits(8))
+            assertTrue(source.exhausted)
+        }
+    }
+
+    @Test
+    fun `Skip bits throws before consuming partial data`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xACU)
+        buffer.bitSource().use { source ->
+            assertFailsWith<EOFException> { source.skipBits(9) }
+            assertEquals(0L, source.byte)
+            assertEquals(0, source.bit)
+            assertEquals(0xACUL, source.readBits(8))
+            assertTrue(source.exhausted)
+        }
+    }
+
+    @Test
+    fun `Peek bits does not consume data`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0b1100_1010U)
+        buffer.writeUByte(0b0110_0000U)
+        buffer.bitSource().use { source ->
+            assertEquals(0b110UL, source.readBits(3))
+            assertTrue(source.requestBits(10))
+            assertFalse(source.requestBits(14))
+            assertEquals(0b01010UL, source.peekBits(5))
+            assertEquals(0L, source.byte)
+            assertEquals(3, source.bit)
+            assertEquals(0b01010UL, source.readBits(5))
+            assertEquals(0b0110UL, source.readBits(4))
         }
     }
 }

@@ -1,6 +1,95 @@
 package dev.karmakrafts.karbide
 
 /**
+ * Read the specified number of bits from the [BitSource] in least significant bit first order
+ * without consuming them.
+ *
+ * @param count The number of bits to read.
+ * @return The bits read as a [ULong].
+ */
+fun BitSource.peekBitsLsb(count: Int): ULong = peekBits(count).reverseBits(count)
+
+/**
+ * Read a [Byte] (8 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The byte read.
+ */
+fun BitSource.peekByteLsb(): Byte = peekBitsLsb(Byte.SIZE_BITS).toByte()
+
+/**
+ * Read a [Short] (16 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The short read.
+ */
+fun BitSource.peekShortLsb(): Short = peekBitsLsb(Short.SIZE_BITS).toShort()
+
+/**
+ * Read an [Int] (32 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The integer read.
+ */
+fun BitSource.peekIntLsb(): Int = peekBitsLsb(Int.SIZE_BITS).toInt()
+
+/**
+ * Read a [Long] (64 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The long read.
+ */
+fun BitSource.peekLongLsb(): Long = peekBitsLsb(Long.SIZE_BITS).toLong()
+
+/**
+ * Read a [Float] (32 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The float read.
+ */
+fun BitSource.peekFloatLsb(): Float = Float.fromBits(peekIntLsb())
+
+/**
+ * Read a [Double] (64 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The double read.
+ */
+fun BitSource.peekDoubleLsb(): Double = Double.fromBits(peekLongLsb())
+
+/**
+ * Read a [UByte] (8 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The unsigned byte read.
+ */
+fun BitSource.peekUByteLsb(): UByte = peekBitsLsb(UByte.SIZE_BITS).toUByte()
+
+/**
+ * Read a [UShort] (16 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The unsigned short read.
+ */
+fun BitSource.peekUShortLsb(): UShort = peekBitsLsb(UShort.SIZE_BITS).toUShort()
+
+/**
+ * Read a [UInt] (32 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The unsigned integer read.
+ */
+fun BitSource.peekUIntLsb(): UInt = peekBitsLsb(UInt.SIZE_BITS).toUInt()
+
+/**
+ * Read a [ULong] (64 bits) from the [BitSource] in LSB order without
+ * consuming the bits.
+ *
+ * @return The unsigned long read.
+ */
+fun BitSource.peekULongLsb(): ULong = peekBitsLsb(ULong.SIZE_BITS)
+
+/**
  * Read the specified number of bits from the [BitSource] in least significant bit first order.
  *
  * @param count The number of bits to read.
