@@ -183,7 +183,7 @@ private data class BitSourceImpl( // @formatter:off
     }
 
     override fun skipBits(count: Int) {
-        require(count >= 0) { "count must not be negative" }
+        require(count >= 0) { "Bit count must not be negative" }
         requireBits(count)
         var remaining = count
         while (remaining > 0) {
@@ -223,6 +223,7 @@ private data class BitSourceImpl( // @formatter:off
  * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
-fun Source.bitSource(
-    isSourceOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
-): BitSource = BitSourceImpl(this, isSourceOwned, bitOrder)
+fun Source.bitSource( // @formatter:off
+    isSourceOwned: Boolean = true,
+    bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSource = BitSourceImpl(this, isSourceOwned, bitOrder) // @formatter:on

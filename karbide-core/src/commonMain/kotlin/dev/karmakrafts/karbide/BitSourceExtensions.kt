@@ -1,5 +1,105 @@
 package dev.karmakrafts.karbide
 
+// ------------------------------ Peeking ------------------------------
+
+/**
+ * Read a single bit from the [BitSource]
+ * without consuming it.
+ *
+ * @return The bit read as a [UByte].
+ */
+fun BitSource.peekBit(): UByte = peekBits(1).toUByte()
+
+/**
+ * Read a nibble (4 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The nibble read as a [UByte].
+ */
+fun BitSource.peekNibble(): UByte = peekBits(4).toUByte()
+
+/**
+ * Read a [Byte] (8 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The byte read.
+ */
+fun BitSource.peekByte(): Byte = peekBits(Byte.SIZE_BITS).toByte()
+
+/**
+ * Read a [Short] (16 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The short read.
+ */
+fun BitSource.peekShort(): Short = peekBits(Short.SIZE_BITS).toShort()
+
+/**
+ * Read an [Int] (32 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The integer read.
+ */
+fun BitSource.peekInt(): Int = peekBits(Int.SIZE_BITS).toInt()
+
+/**
+ * Read a [Long] (64 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The long read.
+ */
+fun BitSource.peekLong(): Long = peekBits(Long.SIZE_BITS).toLong()
+
+/**
+ * Read a [Float] (32 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The float read.
+ */
+fun BitSource.peekFloat(): Float = Float.fromBits(peekBits(Float.SIZE_BITS).toInt())
+
+/**
+ * Read a [Double] (64 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The double read.
+ */
+fun BitSource.peekDouble(): Double = Double.fromBits(peekBits(Double.SIZE_BITS).toLong())
+
+/**
+ * Read a [UByte] (8 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The unsigned byte read.
+ */
+fun BitSource.peekUByte(): UByte = peekBits(UByte.SIZE_BITS).toUByte()
+
+/**
+ * Read a [UShort] (16 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The unsigned short read.
+ */
+fun BitSource.peekUShort(): UShort = peekBits(UShort.SIZE_BITS).toUShort()
+
+/**
+ * Read a [UInt] (32 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The unsigned integer read.
+ */
+fun BitSource.peekUInt(): UInt = peekBits(UInt.SIZE_BITS).toUInt()
+
+/**
+ * Read a [ULong] (64 bits) from the [BitSource]
+ * without consuming the bits.
+ *
+ * @return The unsigned long read.
+ */
+fun BitSource.peekULong(): ULong = peekBits(ULong.SIZE_BITS)
+
+// ------------------------------ Reading ------------------------------
+
 /**
  * Read a single bit from the [BitSource].
  *

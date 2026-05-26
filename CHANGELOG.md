@@ -2,9 +2,13 @@
 
 ### Added
 
-- `BitSource.peekBits` function for per-bit lookahead
+- `BitSource.peekBits(Lsb)` function for per-bit lookahead
 - `BitSource.requestBits` function for requesting n bits to be available
 - `BitSource.requireBits` function for requiring at least n bits to be available
+- `BitSource.peek<type>` extension functions for typed lookahead
+- `BitSource.peek<type>Lsb` extension functions for typed LSB lookahead
+- `BitSource.peek<type>Le` extension functions for typed LE lookahead
+- `BitSource.peek<type>LeLsb` extension functions for typed LE LSB lookahead
 
 ## [1.7.0]
 

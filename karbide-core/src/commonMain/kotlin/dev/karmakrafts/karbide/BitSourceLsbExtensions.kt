@@ -1,5 +1,7 @@
 package dev.karmakrafts.karbide
 
+// ------------------------------ Peeking ------------------------------
+
 /**
  * Read the specified number of bits from the [BitSource] in least significant bit first order
  * without consuming them.
@@ -88,6 +90,8 @@ fun BitSource.peekUIntLsb(): UInt = peekBitsLsb(UInt.SIZE_BITS).toUInt()
  * @return The unsigned long read.
  */
 fun BitSource.peekULongLsb(): ULong = peekBitsLsb(ULong.SIZE_BITS)
+
+// ------------------------------ Reading ------------------------------
 
 /**
  * Read the specified number of bits from the [BitSource] in least significant bit first order.

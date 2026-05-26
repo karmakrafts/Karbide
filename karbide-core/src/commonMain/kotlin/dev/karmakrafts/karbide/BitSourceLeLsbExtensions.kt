@@ -1,5 +1,73 @@
 package dev.karmakrafts.karbide
 
+// ------------------------------ Peeking ------------------------------
+
+/**
+ * Read a [Short] (16 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The short read.
+ */
+fun BitSource.peekShortLeLsb(): Short = peekShortLsb().reverseBytes()
+
+/**
+ * Read an [Int] (32 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The integer read.
+ */
+fun BitSource.peekIntLeLsb(): Int = peekIntLsb().reverseBytes()
+
+/**
+ * Read a [Long] (64 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The long read.
+ */
+fun BitSource.peekLongLeLsb(): Long = peekLongLsb().reverseBytes()
+
+/**
+ * Read a [Float] (32 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The float read.
+ */
+fun BitSource.peekFloatLeLsb(): Float = Float.fromBits(peekIntLeLsb())
+
+/**
+ * Read a [Double] (64 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The double read.
+ */
+fun BitSource.peekDoubleLeLsb(): Double = Double.fromBits(peekLongLeLsb())
+
+/**
+ * Read a [UShort] (16 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The unsigned short read.
+ */
+fun BitSource.peekUShortLeLsb(): UShort = peekUShortLsb().reverseBytes()
+
+/**
+ * Read a [UInt] (32 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The unsigned integer read.
+ */
+fun BitSource.peekUIntLeLsb(): UInt = peekUIntLsb().reverseBytes()
+
+/**
+ * Read a [ULong] (64 bits) from the [BitSource] in little endian and LSB order
+ * without consuming the bits.
+ *
+ * @return The unsigned long read.
+ */
+fun BitSource.peekULongLeLsb(): ULong = peekULongLsb().reverseBytes()
+
+// ------------------------------ Reading ------------------------------
+
 /**
  * Read a [Short] (16 bits) from the [BitSource] in little endian and LSB order.
  *
