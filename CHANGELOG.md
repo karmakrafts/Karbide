@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.8.0]
+
 ### Added
 
 - `BitSource.peekBits(Lsb)` function for per-bit lookahead
