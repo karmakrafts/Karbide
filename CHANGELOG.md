@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Kotlin 2.4.0
+- Updated to Karma Conventions 1.17.0
+- Downgraded to Gradle 9.4.1 because of IDEA compatibility regression
+
 ## [1.8.0]
 
 ### Added
