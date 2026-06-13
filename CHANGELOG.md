@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Added
+
+- WASM WASI support
+
+### Changed
+
+- Updated to Karma Conventions 1.18.0
+
 ## [1.9.0]
 
 ### Changed

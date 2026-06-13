@@ -1,7 +1,7 @@
 package dev.karmakrafts.karbide
 
-import kotlinx.io.EOFException
 import kotlinx.io.Buffer
+import kotlinx.io.EOFException
 import kotlinx.io.writeUByte
 import kotlinx.io.writeUInt
 import kotlinx.io.writeULong

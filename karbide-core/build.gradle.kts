@@ -24,6 +24,7 @@ import dev.karmakrafts.conventions.kotlin.withBrowser
 import dev.karmakrafts.conventions.kotlin.withJvm
 import dev.karmakrafts.conventions.kotlin.withNative
 import dev.karmakrafts.conventions.kotlin.withNodeJs
+import dev.karmakrafts.conventions.kotlin.withWasmWasi
 import dev.karmakrafts.conventions.kotlin.withWeb
 import dev.karmakrafts.conventions.setProjectInfo
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -67,11 +68,19 @@ kotlin {
         }
         withNodeJs()
     }
+    withWasmWasi {
+        withNodeJs()
+    }
     applyDefaultHierarchyTemplate {
         common {
             group("jvmAndAndroid") {
                 withJvm()
                 withAndroidLibrary()
+            }
+            group("jsAndWasm") {
+                withJs()
+                withWasmJs()
+                withWasmWasi()
             }
         }
     }
