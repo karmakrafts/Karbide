@@ -8,6 +8,13 @@
 [![](https://img.shields.io/badge/2.4.0-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/)
 [![](https://img.shields.io/badge/documentation-black?logo=kotlin)](https://docs.karmakrafts.dev/karbide-core)
 
+![](https://img.shields.io/badge/-JVM-blue?logo=kotlin&labelColor=black)
+![](https://img.shields.io/badge/-Android-green?logo=kotlin&labelColor=black)
+![](https://img.shields.io/badge/-Native-lightgray?logo=kotlin&labelColor=black)
+![](https://img.shields.io/badge/-JS-gold?logo=kotlin&labelColor=black)
+![](https://img.shields.io/badge/-WASM/JS-orange?logo=kotlin&labelColor=black)
+![](https://img.shields.io/badge/-WASM/WASI-purple?logo=kotlin&labelColor=black)
+
 This library allows treating any kotlinx.io `Source` or `Sink` as a bit stream!
 
 It introduces `BitSink` and `BitSource` interfaces, which can be obtained simply
