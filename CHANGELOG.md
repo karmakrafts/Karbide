@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.0]
+
 ### Added
 
 - WASM WASI support
