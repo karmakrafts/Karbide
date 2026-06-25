@@ -77,8 +77,7 @@ kotlin {
                 withJvm()
                 withAndroidLibrary()
             }
-            group("jsAndWasm") {
-                withJs()
+            group("wasmJsAndWasi") {
                 withWasmJs()
                 withWasmWasi()
             }

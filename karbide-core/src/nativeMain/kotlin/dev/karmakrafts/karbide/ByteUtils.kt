@@ -1,9 +1,34 @@
 package dev.karmakrafts.karbide
 
-import platform.builtin.builtin_bswap16
-import platform.builtin.builtin_bswap32
-import platform.builtin.builtin_bswap64
+/**
+ * Hand-rolled Kotlin version performs better than intrinsic because of interop overhead
+ */
 
-actual fun Short.reverseBytes(): Short = builtin_bswap16(this)
-actual fun Int.reverseBytes(): Int = builtin_bswap32(this)
-actual fun Long.reverseBytes(): Long = builtin_bswap64(this)
+actual fun Short.reverseBytes(): Short {
+    val value = toUInt()
+    return (((value shl 8) and 0xFF00U) or ((value shr 8) and 0x00FFU)).toShort()
+}
+
+actual fun Int.reverseBytes(): Int {
+    val value = toUInt()
+    // @formatter:off
+    return (((value and 0x000000FFU) shl 24) or
+        ((value and 0x0000FF00U) shl 8) or
+        ((value and 0x00FF0000U) shr 8) or
+        ((value and 0xFF000000U) shr 24)).toInt()
+    // @formatter:on
+}
+
+actual fun Long.reverseBytes(): Long {
+    val value = toULong()
+    // @formatter:off
+    return (((value and 0x00000000000000FFUL) shl 56) or
+        ((value and 0x000000000000FF00UL) shl 40) or
+        ((value and 0x0000000000FF0000UL) shl 24) or
+        ((value and 0x00000000FF000000UL) shl  8) or
+        ((value and 0x000000FF00000000UL) shr  8) or
+        ((value and 0x0000FF0000000000UL) shr 24) or
+        ((value and 0x00FF000000000000UL) shr 40) or
+        ((value and 0xFF00000000000000UL) shr 56)).toLong()
+    // @formatter:on
+}

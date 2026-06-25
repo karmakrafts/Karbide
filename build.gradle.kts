@@ -16,11 +16,9 @@
 
 import dev.karmakrafts.conventions.GitLabCI
 import dev.karmakrafts.conventions.apache2License
-import dev.karmakrafts.conventions.authenticatedSonatype
 import dev.karmakrafts.conventions.defaultDependencyLocking
 import dev.karmakrafts.conventions.setRepository
 import dev.karmakrafts.conventions.signPublications
-import java.time.Duration
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 plugins {
@@ -30,7 +28,6 @@ plugins {
     alias(libs.plugins.karmaConventions)
     signing
     `maven-publish`
-    alias(libs.plugins.gradleNexus)
 }
 
 group = "dev.karmakrafts.karbide"
@@ -41,7 +38,7 @@ version = GitLabCI.getDefaultVersion(libs.versions.karbide)
     version = rootProject.version
     if (GitLabCI.isCI) defaultDependencyLocking()
 
-    if("benchmarks" in project.name) return@subprojects
+    if ("benchmarks" in project.name) return@subprojects
 
     apply {
         plugin<MavenPublishPlugin>()
@@ -57,10 +54,4 @@ version = GitLabCI.getDefaultVersion(libs.versions.karbide)
     signing {
         signPublications()
     }
-}
-
-nexusPublishing {
-    authenticatedSonatype()
-    connectTimeout = Duration.ofSeconds(30)
-    clientTimeout = Duration.ofMinutes(45)
 }
