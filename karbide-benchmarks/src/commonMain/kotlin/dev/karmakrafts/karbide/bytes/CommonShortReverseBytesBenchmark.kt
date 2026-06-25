@@ -1,16 +1,16 @@
-package dev.karmakrafts.karbide
+package dev.karmakrafts.karbide.bytes
 
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import kotlin.jvm.JvmName
 import kotlin.random.Random
-import kotlin.time.Clock
+import kotlin.time.Clock.System
 
 @Suppress("UNUSED")
 @State(Scope.Benchmark)
 open class CommonShortReverseBytesBenchmark {
-    private val random: Random = Random(Clock.System.now().epochSeconds)
+    private val random: Random = Random(System.now().epochSeconds)
 
     private fun Short.reverseBytes(): Short {
         val value = toUInt()

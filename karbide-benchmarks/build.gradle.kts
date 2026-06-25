@@ -30,7 +30,6 @@ plugins {
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
-        freeCompilerArgs.add("-Xes-long-as-bigint")
     }
     defaultCompilerOptions()
     withJvm()
@@ -72,6 +71,20 @@ benchmark {
     }
     configurations {
         named("main") {
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("reverseBytes") {
+            include("dev.karmakrafts.karbide.bytes.*ReverseBytes*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("reverseBits") {
+            include("dev.karmakrafts.karbide.bits.*ReverseBits*")
             warmups = 10
             iterations = 10
             iterationTime = 1

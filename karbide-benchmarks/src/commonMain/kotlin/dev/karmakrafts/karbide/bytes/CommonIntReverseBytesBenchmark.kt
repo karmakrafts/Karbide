@@ -1,4 +1,4 @@
-package dev.karmakrafts.karbide
+package dev.karmakrafts.karbide.bytes
 
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope

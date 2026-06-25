@@ -1,14 +1,20 @@
+@file:OptIn(ExperimentalNativeApi::class)
+
 package dev.karmakrafts.karbide
+
+import kotlin.experimental.ExperimentalNativeApi
 
 /**
  * Hand-rolled Kotlin version performs better than intrinsic because of interop overhead
  */
 
+@NoInline
 actual fun Short.reverseBytes(): Short {
     val value = toUInt()
     return (((value shl 8) and 0xFF00U) or ((value shr 8) and 0x00FFU)).toShort()
 }
 
+@NoInline
 actual fun Int.reverseBytes(): Int {
     val value = toUInt()
     // @formatter:off
@@ -19,6 +25,7 @@ actual fun Int.reverseBytes(): Int {
     // @formatter:on
 }
 
+@NoInline
 actual fun Long.reverseBytes(): Long {
     val value = toULong()
     // @formatter:off

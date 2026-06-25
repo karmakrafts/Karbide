@@ -1,5 +1,6 @@
-package dev.karmakrafts.karbide
+package dev.karmakrafts.karbide.bits
 
+import dev.karmakrafts.karbide.reverseBits
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
@@ -9,10 +10,10 @@ import kotlin.time.Clock.System
 
 @Suppress("UNUSED")
 @State(Scope.Benchmark)
-open class KarbideIntReverseBytesBenchmark {
+open class KarbideIntReverseBitsBenchmark {
     private val random: Random = Random(System.now().epochSeconds)
 
     @JvmName("run")
     @Benchmark
-    fun run(): Int = random.nextInt().reverseBytes()
+    fun run(): Int = random.nextInt().reverseBits()
 }

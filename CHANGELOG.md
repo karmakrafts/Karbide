@@ -4,7 +4,8 @@
 
 - Updated to Gradle 9.6.0
 - Updated to Karma Conventions 1.18.1
-- Performance improvements for the `reverseBytes` intrinsic on native targets
+- Performance improvements for the `reverseBytes` intrinsics on Kotlin/Native
+- Performance improvements for the `reverseBytes` intrinsics on Kotlin/JS
 
 ## [1.10.0]
 
