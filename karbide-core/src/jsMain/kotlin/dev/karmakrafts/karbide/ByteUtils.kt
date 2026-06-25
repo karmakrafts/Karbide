@@ -39,7 +39,7 @@ private external fun reverseBytesImpl(x: Int): Int
 actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 
 actual fun Long.reverseBytes(): Long {
-    // TODO: Until BigInt support is stable in Kotlin/JS, we double throughput by using two bswap32 calls
+    // TODO: Until BigInt support is stable in Kotlin/JS, we increase throughput by using two bswap32 calls
     val lo = toInt().reverseBytes()
     val hi = (this ushr 32).toInt().reverseBytes()
     return (lo.toLong() shl 32) or (hi.toLong() and 0xFFFFFFFF)
