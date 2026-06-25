@@ -28,6 +28,10 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+        freeCompilerArgs.add("-Xes-long-as-bigint")
+    }
     defaultCompilerOptions()
     withJvm()
     withNative()
