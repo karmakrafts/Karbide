@@ -8,6 +8,7 @@ package dev.karmakrafts.karbide
  */
 expect fun Byte.reverseBits(count: Int = Byte.SIZE_BITS): Byte
 
+@PublishedApi
 internal fun Byte.reverseBitsCommon(count: Int = Byte.SIZE_BITS): Byte {
     var reversed = 0
     var value = toInt()
@@ -26,6 +27,7 @@ internal fun Byte.reverseBitsCommon(count: Int = Byte.SIZE_BITS): Byte {
  */
 expect fun Short.reverseBits(count: Int = Short.SIZE_BITS): Short
 
+@PublishedApi
 internal fun Short.reverseBitsCommon(count: Int = Short.SIZE_BITS): Short {
     var reversed = 0
     var value = toInt()
@@ -44,6 +46,7 @@ internal fun Short.reverseBitsCommon(count: Int = Short.SIZE_BITS): Short {
  */
 expect fun Int.reverseBits(count: Int = Int.SIZE_BITS): Int
 
+@PublishedApi
 internal fun Int.reverseBitsCommon(count: Int = Int.SIZE_BITS): Int {
     var reversed = 0
     var value = this
@@ -62,6 +65,7 @@ internal fun Int.reverseBitsCommon(count: Int = Int.SIZE_BITS): Int {
  */
 expect fun Long.reverseBits(count: Int = Long.SIZE_BITS): Long
 
+@PublishedApi
 internal fun Long.reverseBitsCommon(count: Int = Long.SIZE_BITS): Long {
     var reversed = 0L
     var value = this
@@ -80,6 +84,7 @@ internal fun Long.reverseBitsCommon(count: Int = Long.SIZE_BITS): Long {
  */
 expect fun UByte.reverseBits(count: Int = UByte.SIZE_BITS): UByte
 
+@PublishedApi
 internal fun UByte.reverseBitsCommon(count: Int = UByte.SIZE_BITS): UByte {
     var reversed = 0U
     var value = toUInt()
@@ -98,6 +103,7 @@ internal fun UByte.reverseBitsCommon(count: Int = UByte.SIZE_BITS): UByte {
  */
 expect fun UShort.reverseBits(count: Int = UShort.SIZE_BITS): UShort
 
+@PublishedApi
 internal fun UShort.reverseBitsCommon(count: Int = UShort.SIZE_BITS): UShort {
     var reversed = 0U
     var value = toUInt()
@@ -116,6 +122,7 @@ internal fun UShort.reverseBitsCommon(count: Int = UShort.SIZE_BITS): UShort {
  */
 expect fun UInt.reverseBits(count: Int = UInt.SIZE_BITS): UInt
 
+@PublishedApi
 internal fun UInt.reverseBitsCommon(count: Int = UInt.SIZE_BITS): UInt {
     var reversed = 0U
     var value = this
@@ -134,6 +141,7 @@ internal fun UInt.reverseBitsCommon(count: Int = UInt.SIZE_BITS): UInt {
  */
 expect fun ULong.reverseBits(count: Int = ULong.SIZE_BITS): ULong
 
+@PublishedApi
 internal fun ULong.reverseBitsCommon(count: Int = ULong.SIZE_BITS): ULong {
     var reversed = 0UL
     var value = this

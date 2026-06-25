@@ -66,7 +66,14 @@ actual fun Long.reverseBits(count: Int): Long {
     return ((lo.toLong() shl 32) or (hi.toLong() and 0xFFFFFFFF)) ushr (Long.SIZE_BITS - count)
 }
 
-actual fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
-actual fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
-actual fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
-actual fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()

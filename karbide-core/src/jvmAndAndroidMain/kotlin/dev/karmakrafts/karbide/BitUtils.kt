@@ -10,7 +10,14 @@ actual fun Short.reverseBits(count: Int): Short = (JInt.reverse(toInt()) ushr (I
 actual fun Int.reverseBits(count: Int): Int = JInt.reverse(this) ushr (Int.SIZE_BITS - count)
 actual fun Long.reverseBits(count: Int): Long = JLong.reverse(this) ushr (Long.SIZE_BITS - count)
 
-actual fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
-actual fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
-actual fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
-actual fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
+
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()
