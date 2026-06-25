@@ -51,3 +51,18 @@ kotlin {
 ```
 
 Or, if you are only using Kotlin/JVM, add it to your top-level dependencies block instead.
+
+### Performance
+
+For all benchmark results, check out the `docs` directory in this repository.
+
+#### Bitops
+
+<p>
+  <img src="docs/karbide_bitops_perf_jvm.png" width="45%"  alt="Karbide JVM bitops performance graph"/>
+  <img src="docs/karbide_bitops_perf_native.png" width="45%"  alt="Karbide Native bitops performance graph"/>
+</p>
+<p>
+  <img src="docs/karbide_bitops_perf_js.png" width="45%"  alt="Karbide JS bitops performance graph"/>
+  <img src="docs/karbide_bitops_perf_wasm_js.png" width="45%"  alt="Karbide WASM/JS bitops performance graph"/>
+</p>
