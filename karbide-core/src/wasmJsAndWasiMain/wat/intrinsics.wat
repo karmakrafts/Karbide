@@ -45,10 +45,10 @@
     local.get $x
     i32.const 4
     i32.shr_u
-    i32.const 0x0f0f0f0f
+    i32.const 0x0F0F0F0F
     i32.and
     local.get $x
-    i32.const 0x0f0f0f0f
+    i32.const 0x0F0F0F0F
     i32.and
     i32.const 4
     i32.shl
@@ -58,10 +58,10 @@
     local.get $x
     i32.const 8
     i32.shr_u
-    i32.const 0x00ff00ff
+    i32.const 0x00FF00FF
     i32.and
     local.get $x
-    i32.const 0x00ff00ff
+    i32.const 0x00FF00FF
     i32.and
     i32.const 8
     i32.shl
@@ -107,10 +107,10 @@
     local.get $x
     i64.const 4
     i64.shr_u
-    i64.const 0x0f0f0f0f0f0f0f0f
+    i64.const 0x0F0F0F0F0F0F0F0F
     i64.and
     local.get $x
-    i64.const 0x0f0f0f0f0f0f0f0f
+    i64.const 0x0F0F0F0F0F0F0F0F
     i64.and
     i64.const 4
     i64.shl
@@ -120,10 +120,10 @@
     local.get $x
     i64.const 8
     i64.shr_u
-    i64.const 0x00ff00ff00ff00ff
+    i64.const 0x00FF00FF00FF00FF
     i64.and
     local.get $x
-    i64.const 0x00ff00ff00ff00ff
+    i64.const 0x00FF00FF00FF00FF
     i64.and
     i64.const 8
     i64.shl
@@ -133,10 +133,10 @@
     local.get $x
     i64.const 16
     i64.shr_u
-    i64.const 0x0000ffff0000ffff
+    i64.const 0x0000FFFF0000FFFF
     i64.and
     local.get $x
-    i64.const 0x0000ffff0000ffff
+    i64.const 0x0000FFFF0000FFFF
     i64.and
     i64.const 16
     i64.shl
@@ -173,23 +173,21 @@
 
   (func $reverseBitsByte (param $x i32) (param $count i32) (result i32)
     local.get $x
-    i32.const 0xff
+    i32.const 0xFF
     i32.and
     local.get $count
     call $reverseBits32
   )
   (export "reverseBitsByte" (func $reverseBitsByte))
-  (export "reverseBitsUByte" (func $reverseBitsByte))
 
   (func $reverseBitsShort (param $x i32) (param $count i32) (result i32)
     local.get $x
-    i32.const 0xffff
+    i32.const 0xFFFF
     i32.and
     local.get $count
     call $reverseBits32
   )
   (export "reverseBitsShort" (func $reverseBitsShort))
-  (export "reverseBitsUShort" (func $reverseBitsShort))
 
   (func $reverseBitsInt (param $x i32) (param $count i32) (result i32)
     local.get $x
@@ -197,7 +195,6 @@
     call $reverseBits32
   )
   (export "reverseBitsInt" (func $reverseBitsInt))
-  (export "reverseBitsUInt" (func $reverseBitsInt))
 
   (func $reverseBitsLong (param $x i64) (param $count i32) (result i64)
     local.get $x
@@ -205,5 +202,4 @@
     call $reverseBits64
   )
   (export "reverseBitsLong" (func $reverseBitsLong))
-  (export "reverseBitsULong" (func $reverseBitsLong))
 )
