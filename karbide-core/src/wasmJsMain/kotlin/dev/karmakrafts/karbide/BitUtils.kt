@@ -17,28 +17,16 @@
 package dev.karmakrafts.karbide
 
 @Suppress("NOTHING_TO_INLINE")
-actual fun Byte.reverseBits(count: Int): Byte {
-    return if (KarbideIntrinsics.areAvailable) KarbideIntrinsics.reverseBits(this, count)
-    else reverseBitsCommon(count)
-}
+actual inline fun Byte.reverseBits(count: Int): Byte = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual fun Short.reverseBits(count: Int): Short {
-    return if (KarbideIntrinsics.areAvailable) KarbideIntrinsics.reverseBits(this, count)
-    else reverseBitsCommon(count)
-}
+actual inline fun Short.reverseBits(count: Int): Short = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual fun Int.reverseBits(count: Int): Int {
-    return if (KarbideIntrinsics.areAvailable) KarbideIntrinsics.reverseBits(this, count)
-    else reverseBitsCommon(count)
-}
+actual inline fun Int.reverseBits(count: Int): Int = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual fun Long.reverseBits(count: Int): Long {
-    return if (KarbideIntrinsics.areAvailable) KarbideIntrinsics.reverseBits(this, count)
-    else reverseBitsCommon(count)
-}
+actual inline fun Long.reverseBits(count: Int): Long = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
 actual inline fun UByte.reverseBits(count: Int): UByte = reverseBitsCommon(count)

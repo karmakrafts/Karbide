@@ -1,11 +1,3 @@
-import dev.karmakrafts.conventions.kotlin.defaultCompilerOptions
-import dev.karmakrafts.conventions.kotlin.withBrowser
-import dev.karmakrafts.conventions.kotlin.withJvm
-import dev.karmakrafts.conventions.kotlin.withNative
-import dev.karmakrafts.conventions.kotlin.withNodeJs
-import dev.karmakrafts.conventions.kotlin.withWasmWasi
-import dev.karmakrafts.conventions.kotlin.withWeb
-
 /*
  * Copyright 2026 Karma Krafts
  *
@@ -21,6 +13,17 @@ import dev.karmakrafts.conventions.kotlin.withWeb
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import dev.karmakrafts.conventions.kotlin.defaultCompilerOptions
+import dev.karmakrafts.conventions.kotlin.withBrowser
+import dev.karmakrafts.conventions.kotlin.withJvm
+import dev.karmakrafts.conventions.kotlin.withNative
+import dev.karmakrafts.conventions.kotlin.withNodeJs
+import dev.karmakrafts.conventions.kotlin.withWasmWasi
+import dev.karmakrafts.conventions.kotlin.withWeb
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -49,6 +52,7 @@ kotlin {
             dependencies {
                 implementation(projects.karbideCore)
                 implementation(libs.kotlinx.benchmark.runtime)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
         jvmMain {

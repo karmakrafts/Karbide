@@ -16,9 +16,6 @@
 
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalUnsignedTypes::class)
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.dokka.configureDokka
 import dev.karmakrafts.conventions.kotlin.defaultCompilerOptions
@@ -30,9 +27,7 @@ import dev.karmakrafts.conventions.kotlin.withNodeJs
 import dev.karmakrafts.conventions.kotlin.withWasmWasi
 import dev.karmakrafts.conventions.kotlin.withWeb
 import dev.karmakrafts.conventions.setProjectInfo
-import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 
 plugins {
@@ -102,72 +97,12 @@ kotlin {
                 implementation(libs.kotlin.test)
             }
         }
-        wasmJsMain {
-            kotlin {
-                srcDir(project.layout.buildDirectory.file("generated/wasmJsIntrinsics"))
-            }
-            dependencies {
-                implementation(libs.kotlin.wrappers.browser)
-            }
-        }
     }
 }
 
 tasks {
     withType<KotlinJvmTest>().configureEach {
         jvmArgs("-Xms2G", "-Xmx2G")
-    }
-    val compileWasmJsIntrinsics = register<Exec>("compileWasmJsIntrinsics") {
-        group = "intrinsics"
-        description = "Compile WASM/JS intrinsics WAT to a WASM binary"
-        workingDir = project.file("src/wasmJsMain/wat")
-        val outputDir = project.layout.buildDirectory.dir("wat2wasm")
-        val outputFile = outputDir.get().file("karbide_intrinsics.wasm").asFile
-        inputs.file(project.file("src/wasmJsMain/wat/karbide_intrinsics.wat"))
-        outputs.file(outputFile)
-        doFirst {
-            outputs.files.singleFile.ensureParentDirsCreated()
-        }
-        commandLine("wat2wasm", "karbide_intrinsics.wat", "-o", outputFile.absolutePath)
-        onlyIf { // @formatter:off
-            val checker = if(Os.isFamily(Os.FAMILY_WINDOWS)) "where" else "which"
-            ProcessBuilder()
-                .command(checker, "wat2wasm")
-                .apply { environment.putAll(System.getenv()) }
-                .start()
-                .waitFor() == 0
-        } // @formatter:on
-    }
-    val generateWasmJsIntrinsicsBlob = register("generateWasmJsIntrinsicsBlob") {
-        dependsOn(compileWasmJsIntrinsics)
-        group = "intrinsics"
-        description = "Generate a Kotlin file with the embedded WASM/JS binary blob"
-        val inputDir = project.layout.buildDirectory.dir("wat2wasm")
-        val inputFile = inputDir.get().file("karbide_intrinsics.wasm").asFile
-        val outputDir = project.layout.buildDirectory.dir("generated/wasmJsIntrinsics")
-        inputs.file(inputFile)
-        doLast {
-            val data = inputs.files.singleFile.readBytes()
-            val formattedData = data.joinToString(", ") { byte -> "0x${byte.toHexString().uppercase()}U" }
-            // @formatter:off
-            val file = FileSpec.builder("dev.karmakrafts.karbide", "KarbideIntrinsicsBlob")
-                .addProperty(PropertySpec.builder("karbideIntrinsicsBlob", UByteArray::class, KModifier.INTERNAL)
-                    .initializer("ubyteArrayOf($formattedData)")
-                    .build())
-                .build()
-            // @formatter:on
-            val outputFile = outputDir.get().asFile
-            file.writeTo(outputFile)
-        }
-    }
-    named("prepareKotlinIdeaImport") {
-        dependsOn(generateWasmJsIntrinsicsBlob)
-    }
-    named("compileKotlinWasmJs") {
-        dependsOn(generateWasmJsIntrinsicsBlob)
-    }
-    named("compileKotlinWasmWasi") {
-        dependsOn(generateWasmJsIntrinsicsBlob)
     }
 }
 
