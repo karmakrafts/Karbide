@@ -94,5 +94,19 @@ benchmark {
             iterationTime = 1
             iterationTimeUnit = "s"
         }
+        create("readSingleBits") {
+            include("dev.karmakrafts.karbide.*ReadSingleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("readMultipleBits") {
+            include("dev.karmakrafts.karbide.*ReadMultipleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
     }
 }
