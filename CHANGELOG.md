@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.2]
+
 ### Changed
 
 - Performance improvements for any `Long` related intrinsics on Kotlin/JS
