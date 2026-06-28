@@ -59,12 +59,33 @@ private external fun reverseBitsImpl(x: Int, count: Int): Int
 
 actual fun Int.reverseBits(count: Int): Int = reverseBitsImpl(this, count)
 
-actual fun Long.reverseBits(count: Int): Long {
-    // TODO: Until BigInt support is stable in Kotlin/JS, we increase throughput by using two bitreverse32 calls
-    val lo = toInt().reverseBits(Int.SIZE_BITS)
-    val hi = (this ushr 32).toInt().reverseBits(Int.SIZE_BITS)
-    return ((lo.toLong() shl 32) or (hi.toLong() and 0xFFFFFFFF)) ushr (Long.SIZE_BITS - count)
+@JsFun(
+    """
+(x, count) => {
+    var lo = x.low_1 | 0;
+    var hi = x.high_1 | 0;
+    count = count | 0;
+    lo = ((lo >>> 1) & 0x55555555) | ((lo & 0x55555555) << 1);
+    lo = ((lo >>> 2) & 0x33333333) | ((lo & 0x33333333) << 2);
+    lo = ((lo >>> 4) & 0x0F0F0F0F) | ((lo & 0x0F0F0F0F) << 4);
+    lo = ((lo >>> 8) & 0x00FF00FF) | ((lo & 0x00FF00FF) << 8);
+    lo = (lo >>> 16) | (lo << 16);
+    hi = ((hi >>> 1) & 0x55555555) | ((hi & 0x55555555) << 1);
+    hi = ((hi >>> 2) & 0x33333333) | ((hi & 0x33333333) << 2);
+    hi = ((hi >>> 4) & 0x0F0F0F0F) | ((hi & 0x0F0F0F0F) << 4);
+    hi = ((hi >>> 8) & 0x00FF00FF) | ((hi & 0x00FF00FF) << 8);
+    hi = (hi >>> 16) | (hi << 16);
+    if (count <= 32) {
+        return new x.constructor(((lo >>> (32 - count)) & ((count | -count) >> 31)) | 0, 0);
+    }
+    count = (64 - count) | 0;
+    return new x.constructor(((hi >>> count) | ((lo << (32 - count)) & ((count | -count) >> 31))) | 0, (lo >>> count) | 0);
 }
+"""
+)
+private external fun reverseBitsImpl(x: Long, count: Int): Long
+
+actual fun Long.reverseBits(count: Int): Long = reverseBitsImpl(this, count)
 
 @Suppress("NOTHING_TO_INLINE")
 actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
