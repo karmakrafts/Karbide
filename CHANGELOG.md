@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Changed
+
+- Performance improvements for any `Long` related intrinsics on Kotlin/JS
+- Minor performance improvements for `BitSource`
+
 ## [1.10.1]
 
 ### Changed
