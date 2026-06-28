@@ -13,12 +13,12 @@ All benchmark results shown in this README have been run on the following hardwa
 ### `reverseBytes`
 
 <p>
-    <img src="../docs/reverseBytes_jvm.png" alt="Performance graph for reverseBytes function on JVM" width="45%"/>
-    <img src="../docs/reverseBytes_linuxX64.png" alt="Performance graph for reverseBytes function on Native" width="45%"/>
+    <img src="docs/reverseBytes_jvm.png" alt="Performance graph for reverseBytes function on JVM" width="45%"/>
+    <img src="docs/reverseBytes_linuxX64.png" alt="Performance graph for reverseBytes function on Native" width="45%"/>
 </p>
 <p>
-    <img src="../docs/reverseBytes_js.png" alt="Performance graph for reverseBytes function on JS" width="45%"/>
-    <img src="../docs/reverseBytes_wasmJs.png" alt="Performance graph for reverseBytes function on WASM/JS" width="45%"/>
+    <img src="docs/reverseBytes_js.png" alt="Performance graph for reverseBytes function on JS" width="45%"/>
+    <img src="docs/reverseBytes_wasmJs.png" alt="Performance graph for reverseBytes function on WASM/JS" width="45%"/>
 </p>
 
 ---
@@ -26,10 +26,10 @@ All benchmark results shown in this README have been run on the following hardwa
 ### `reverseBits`
 
 <p>
-    <img src="../docs/reverseBits_jvm.png" alt="Performance graph for reverseBytes function on JVM" width="45%"/>
-    <img src="../docs/reverseBits_linuxX64.png" alt="Performance graph for reverseBytes function on Native" width="45%"/>
+    <img src="docs/reverseBits_jvm.png" alt="Performance graph for reverseBytes function on JVM" width="45%"/>
+    <img src="docs/reverseBits_linuxX64.png" alt="Performance graph for reverseBytes function on Native" width="45%"/>
 </p>
 <p>
-    <img src="../docs/reverseBits_js.png" alt="Performance graph for reverseBytes function on JS" width="45%"/>
-    <img src="../docs/reverseBits_wasmJs.png" alt="Performance graph for reverseBytes function on WASM/JS" width="45%"/>
+    <img src="docs/reverseBits_js.png" alt="Performance graph for reverseBytes function on JS" width="45%"/>
+    <img src="docs/reverseBits_wasmJs.png" alt="Performance graph for reverseBytes function on WASM/JS" width="45%"/>
 </p>

@@ -20,9 +20,9 @@ import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
-import kotlinx.benchmark.TearDown
 import kotlinx.io.Buffer
 import kotlin.jvm.JvmName
+import kotlin.math.min
 import kotlin.random.Random
 import kotlin.time.Clock.System
 
@@ -35,18 +35,14 @@ open class KarbideReadMultipleBitsBenchmark {
         write(random.nextBytes(1024 * 1024)) // 1MiB
     }
 
-    private val source: BitSource = buffer.bitSource()
-
     @JvmName("run")
     @Benchmark
     fun run(blackHole: Blackhole) {
-        while (!source.exhausted) {
-            blackHole.consume(source.readBits(4))
+        buffer.peek().bitSource(false).use { source ->
+            while (!source.exhausted) {
+                val toRead = min(random.nextInt(Byte.SIZE_BITS), Byte.SIZE_BITS - source.bit)
+                blackHole.consume(source.readBits(toRead))
+            }
         }
-    }
-
-    @TearDown
-    fun tearDown() {
-        source.close()
     }
 }

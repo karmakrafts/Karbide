@@ -22,6 +22,7 @@ import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import kotlinx.io.Buffer
 import kotlin.jvm.JvmName
+import kotlin.math.min
 import kotlin.random.Random
 import kotlin.time.Clock.System
 
@@ -39,12 +40,16 @@ open class CommonReadMultipleBitsBenchmark {
     @JvmName("run")
     @Benchmark
     fun run(blackHole: Blackhole) {
-        while (!buffer.exhausted()) {
-            val byte = buffer.readByte()
-            bitIndex = 0
-            while (bitIndex < Byte.SIZE_BITS) {
-                blackHole.consume(((byte.toInt() shr bitIndex) and 0b1111).toByte())
-                bitIndex += 4
+        buffer.peek().use { source ->
+            while (!source.exhausted()) {
+                val byte = source.readByte()
+                bitIndex = 0
+                while (bitIndex < Byte.SIZE_BITS) {
+                    val toRead = min(random.nextInt(Byte.SIZE_BITS), Byte.SIZE_BITS - bitIndex)
+                    val mask = ((1U shl toRead) - 1U).toInt()
+                    blackHole.consume(((byte.toInt() shr bitIndex) and mask).toByte())
+                    bitIndex += toRead
+                }
             }
         }
     }

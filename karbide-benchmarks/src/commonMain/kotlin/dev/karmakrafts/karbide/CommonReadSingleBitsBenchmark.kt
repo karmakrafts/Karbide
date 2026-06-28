@@ -39,12 +39,14 @@ open class CommonReadSingleBitsBenchmark {
     @JvmName("run")
     @Benchmark
     fun run(blackHole: Blackhole) {
-        while (!buffer.exhausted()) {
-            val byte = buffer.readByte()
-            bitIndex = 0
-            while (bitIndex < Byte.SIZE_BITS) {
-                blackHole.consume(((byte.toInt() shr bitIndex) and 0b1).toByte())
-                bitIndex++
+        buffer.peek().use { source ->
+            while (!source.exhausted()) {
+                val byte = source.readByte()
+                bitIndex = 0
+                while (bitIndex < Byte.SIZE_BITS) {
+                    blackHole.consume(((byte.toInt() shr bitIndex) and 0b1).toByte())
+                    bitIndex++
+                }
             }
         }
     }

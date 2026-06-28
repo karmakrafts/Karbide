@@ -27,20 +27,35 @@ import kotlin.time.Clock
 
 @Suppress("UNUSED")
 @State(Scope.Benchmark)
-open class KarbideReadSingleBitsBenchmark {
+open class CommonWriteSingleBitsBenchmark {
     private val random: Random = Random(Clock.System.now().epochSeconds)
-
-    private val buffer: Buffer = Buffer().apply {
-        write(random.nextBytes(1024 * 1024)) // 1MiB
-    }
+    private val input: ByteArray = random.nextBytes(1024 * 1024) // 1MiB
+    private val buffer: Buffer = Buffer()
+    private var bitIndex: Int = 0
 
     @JvmName("run")
     @Benchmark
     fun run(blackHole: Blackhole) {
-        buffer.peek().bitSource(false).use { source ->
-            while (!source.exhausted) {
-                blackHole.consume(source.readBit())
+        buffer.clear()
+        var currentByte = 0
+        var currentBit = 0
+        for (byte in input) {
+            bitIndex = 0
+            while (bitIndex < Byte.SIZE_BITS) {
+                val bit = (byte.toInt() shr bitIndex) and 0b1
+                currentByte = currentByte or (bit shl currentBit)
+                currentBit++
+                if (currentBit == Byte.SIZE_BITS) {
+                    buffer.writeByte(currentByte.toByte())
+                    currentByte = 0
+                    currentBit = 0
+                }
+                bitIndex++
             }
         }
+        if (currentBit > 0) {
+            buffer.writeByte(currentByte.toByte())
+        }
+        blackHole.consume(buffer.size)
     }
 }

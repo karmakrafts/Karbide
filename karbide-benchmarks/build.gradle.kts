@@ -94,6 +94,7 @@ benchmark {
             iterationTime = 1
             iterationTimeUnit = "s"
         }
+
         create("readSingleBits") {
             include("dev.karmakrafts.karbide.*ReadSingleBits*")
             warmups = 10
@@ -103,6 +104,35 @@ benchmark {
         }
         create("readMultipleBits") {
             include("dev.karmakrafts.karbide.*ReadMultipleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("writeSingleBits") {
+            include("dev.karmakrafts.karbide.*WriteSingleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("writeMultipleBits") {
+            include("dev.karmakrafts.karbide.*WriteMultipleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+
+        create("multipleBits") {
+            include("dev.karmakrafts.karbide.*MultipleBits*")
+            warmups = 10
+            iterations = 10
+            iterationTime = 1
+            iterationTimeUnit = "s"
+        }
+        create("singleBits") {
+            include("dev.karmakrafts.karbide.*SingleBits*")
             warmups = 10
             iterations = 10
             iterationTime = 1
