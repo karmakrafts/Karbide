@@ -5,12 +5,9 @@ java = "17"
 androidGradle = "9.2.1" # https://developer.android.com/reference/tools/gradle-api
 karbide = "1.10.2"
 kotlin = "2.4.0" # https://github.com/JetBrains/kotlin/releases
-kotlinBrowser = "2026.6.3" # https://github.com/JetBrains/kotlin-wrappers/releases
-kotlinxCoroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines/releases
 kotlinxIo = "0.9.0" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.2.0" # https://github.com/Kotlin/dokka/releases
 karmaConventions = "1.18.1" # https://github.com/karmakrafts/karma-conventions/tags
-kotlinPoet = "2.3.0" # https://github.com/square/kotlinpoet/releases
 
 # karbide-benchmarks
 
@@ -20,12 +17,8 @@ jmh = "1.37" # https://github.com/openjdk/jmh/tags
 [libraries]
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version.ref = "kotlinBrowser" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinxIo" }
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIo" }
-kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
 
 # karbide-benchmarks
 

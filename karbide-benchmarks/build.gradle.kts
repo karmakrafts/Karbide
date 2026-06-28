@@ -52,7 +52,6 @@ kotlin {
             dependencies {
                 implementation(projects.karbideCore)
                 implementation(libs.kotlinx.benchmark.runtime)
-                implementation(libs.kotlinx.coroutines.core)
             }
         }
         jvmMain {

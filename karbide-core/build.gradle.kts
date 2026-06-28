@@ -38,12 +38,6 @@ plugins {
     `maven-publish`
 }
 
-buildscript {
-    dependencies {
-        classpath(libs.kotlinPoet)
-    }
-}
-
 configureJava(libs.versions.java)
 
 configureDokka {
