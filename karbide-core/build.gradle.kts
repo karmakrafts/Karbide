@@ -27,7 +27,9 @@ import dev.karmakrafts.conventions.kotlin.withNodeJs
 import dev.karmakrafts.conventions.kotlin.withWasmWasi
 import dev.karmakrafts.conventions.kotlin.withWeb
 import dev.karmakrafts.conventions.setProjectInfo
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 
 plugins {
@@ -101,6 +103,34 @@ kotlin {
 tasks {
     withType<KotlinJvmTest>().configureEach {
         jvmArgs("-Xms2G", "-Xmx2G")
+    }
+    val compileWasmIntrinsics = register<Exec>("compileWasmIntrinsics") {
+        group = "wasm"
+        description = "Compile WASM intrinsics WAT to a WASM binary"
+        workingDir = project.file("src/wasmJsAndWasiMain/wat")
+        val outputDir = project.layout.buildDirectory.dir("wat2wasm")
+        val outputFile = outputDir.get().file("intrinsics.wasm").asFile
+        outputFile.ensureParentDirsCreated()
+        commandLine("wat2wasm", "intrinsics.wat", "-o", outputFile.absolutePath)
+        onlyIf { // @formatter:off
+            val checker = if(Os.isFamily(Os.FAMILY_WINDOWS)) "where" else "which"
+            ProcessBuilder()
+                .command(checker, "wat2wasm")
+                .apply { environment.putAll(System.getenv()) }
+                .start()
+                .waitFor() == 0
+        } // @formatter:on
+    }
+    val generateWasmIntrinsicsBlob = register("generateWasmIntrinsicsBlob") {
+        dependsOn(compileWasmIntrinsics)
+        group = "wasm"
+        description = "Generate a Kotlin file with the embedded WASM binary blob"
+    }
+    named("compileKotlinWasmJs") {
+        dependsOn(compileWasmIntrinsics)
+    }
+    named("compileKotlinWasmWasi") {
+        dependsOn(compileWasmIntrinsics)
     }
 }
 
