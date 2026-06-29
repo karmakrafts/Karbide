@@ -78,8 +78,11 @@ actual fun Int.reverseBits(count: Int): Int = reverseBitsImpl(this, count)
 @JsFun(
     """
 (x, count) => {
-    var lo = x.low_1 | 0;
-    var hi = x.high_1 | 0;
+    const names = Object.keys(x);
+    const loName = names[0];
+    const hiName = names[1];
+    var lo = x[loName] | 0;
+    var hi = x[hiName] | 0;
     count = count | 0;
     lo = ((lo >>> 1) & 0x55555555) | ((lo & 0x55555555) << 1);
     lo = ((lo >>> 2) & 0x33333333) | ((lo & 0x33333333) << 2);
@@ -91,11 +94,16 @@ actual fun Int.reverseBits(count: Int): Int = reverseBitsImpl(this, count)
     hi = ((hi >>> 4) & 0x0F0F0F0F) | ((hi & 0x0F0F0F0F) << 4);
     hi = ((hi >>> 8) & 0x00FF00FF) | ((hi & 0x00FF00FF) << 8);
     hi = (hi >>> 16) | (hi << 16);
+    const result = Object.create(Object.getPrototypeOf(x));
     if (count <= 32) {
-        return new x.constructor(((lo >>> (32 - count)) & ((count | -count) >> 31)) | 0, 0);
+        result[loName] = ((lo >>> (32 - count)) & ((count | -count) >> 31)) | 0;
+        result[hiName] = 0;
+        return result;
     }
     count = (64 - count) | 0;
-    return new x.constructor(((hi >>> count) | ((lo << (32 - count)) & ((count | -count) >> 31))) | 0, (lo >>> count) | 0);
+    result[loName] = ((hi >>> count) | ((lo << (32 - count)) & ((count | -count) >> 31))) | 0;
+    result[hiName] = (lo >>> count) | 0;
+    return result;
 }
 """
 )

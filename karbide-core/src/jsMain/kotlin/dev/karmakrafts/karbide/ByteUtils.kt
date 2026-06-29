@@ -57,12 +57,15 @@ actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 @JsFun(
     """
 (x) => {
-    const lo = x.low_1 | 0;
-    const hi = x.high_1 | 0;
-    return new x.constructor(
-        ((hi & 0xFF) << 24) | ((hi & 0xFF00) << 8) | ((hi >>> 8) & 0xFF00) | ((hi >>> 24) & 0xFF),
-        ((lo & 0xFF) << 24) | ((lo & 0xFF00) << 8) | ((lo >>> 8) & 0xFF00) | ((lo >>> 24) & 0xFF)
-    );
+    const names = Object.keys(x);
+    const loName = names[0];
+    const hiName = names[1];
+    const lo = x[loName] | 0;
+    const hi = x[hiName] | 0;
+    const result = Object.create(Object.getPrototypeOf(x));
+    result[loName] = ((hi & 0xFF) << 24) | ((hi & 0xFF00) << 8) | ((hi >>> 8) & 0xFF00) | ((hi >>> 24) & 0xFF);
+    result[hiName] = ((lo & 0xFF) << 24) | ((lo & 0xFF00) << 8) | ((lo >>> 8) & 0xFF00) | ((lo >>> 24) & 0xFF);
+    return result;
 }
 """
 )

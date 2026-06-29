@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Fixed
+
+- Intrinsics on Kotlin/JS breaking with minification enabled in production builds
+
 ## [1.10.2]
 
 ### Changed
