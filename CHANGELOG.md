@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.3]
+
 ### Fixed
 
 - Intrinsics on Kotlin/JS breaking with minification enabled in production builds
