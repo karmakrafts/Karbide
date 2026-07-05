@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Fixed
+
+- Copy-paste error and actually updated to NMCP 1.6.1
+- Wrong units being shown in some benchmark graphs
+
 ## [1.10.4]
 
 ### Changed
