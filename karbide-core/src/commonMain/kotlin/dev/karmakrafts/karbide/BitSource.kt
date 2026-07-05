@@ -19,6 +19,7 @@ package dev.karmakrafts.karbide
 import kotlinx.io.EOFException
 import kotlinx.io.Source
 import kotlinx.io.readUByte
+import kotlinx.io.readULong
 
 /**
  * Interface for reading individual bits from a source.
@@ -124,8 +125,12 @@ private data class BitSourceImpl( // @formatter:off
     private fun lowerBits(value: ULong, count: Int): ULong = if (count == ULong.SIZE_BITS) value
     else value and ((1UL shl count) - 1UL)
 
-    private fun reverseChunk(value: ULong, count: Int): ULong = if (count == 1) value
-    else value.reverseBits(count)
+    private fun reverseChunk(value: ULong, count: Int): ULong = when {
+        count == 1 -> value
+        count <= UByte.SIZE_BITS -> value.toUByte().reverseBits(count).toULong()
+        count <= UInt.SIZE_BITS -> value.toUInt().reverseBits(count).toULong()
+        else -> value.reverseBits(count)
+    }
 
     private fun consumeBufferedBits(count: Int): ULong {
         if (count == 1) {
@@ -145,6 +150,11 @@ private data class BitSourceImpl( // @formatter:off
 
     private fun fillBuffer() {
         if (bitInBuffer > ULong.SIZE_BITS - Byte.SIZE_BITS) return
+        if (bitInBuffer == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
+            buffer = if (isMsbFirst) source.readULong().reverseBits() else source.readULong().reverseBytes()
+            bitInBuffer = ULong.SIZE_BITS
+            return
+        }
         var localBuffer = buffer
         var localBitInBuffer = bitInBuffer
         if (isMsbFirst) {

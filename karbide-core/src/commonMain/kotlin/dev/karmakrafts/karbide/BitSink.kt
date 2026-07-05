@@ -18,7 +18,6 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Sink
 import kotlinx.io.writeUByte
-import kotlin.math.min
 
 /**
  * Interface for writing individual bits to a sink.
@@ -108,11 +107,12 @@ private data class BitSinkImpl( // @formatter:off
     }
 
     override fun writeBits(count: Int, bits: ULong) {
+        if (count == 0) return
         var remaining = count
         var value = bits
         while (remaining > 0) {
             val space = ULong.SIZE_BITS - bitInBuffer
-            val take = min(remaining, space)
+            val take = if (remaining < space) remaining else space
             // Extract bits we want to move over
             val chunk = if (take == ULong.SIZE_BITS) value
             else {
