@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.5]
+
 ### Fixed
 
 - Copy-paste error and actually updated to NMCP 1.6.1
