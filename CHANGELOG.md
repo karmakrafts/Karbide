@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.6]
+
 ### Changed
 
 - Updated to Karma Conventions 1.18.3
