@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Karma Conventions 1.18.3
+- Updated CI configuration to use new bot identities
+
 ## [1.10.5]
 
 ### Fixed
