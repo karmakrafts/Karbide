@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.7]
+
 ### Fixed
 
 - ES modules being enabled in the wrong configuration scope
