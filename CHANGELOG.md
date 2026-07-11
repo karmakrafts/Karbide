@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Fixed
+
+- ES modules being enabled in the wrong configuration scope
+
+### Changed
+
+- Enabled ES2015 target for Kotlin/JS
+
 ## [1.10.6]
 
 ### Changed

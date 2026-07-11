@@ -63,9 +63,11 @@ kotlin {
     }
     withJvm()
     withWeb {
-        withBrowser {
-            useEsModules()
+        compilerOptions {
+            target = "es2015"
         }
+        useEsModules()
+        withBrowser()
         withNodeJs()
     }
     withWasmWasi {
@@ -103,7 +105,7 @@ tasks {
 publishing {
     setProjectInfo(
         name = "Karbide Core",
-        description = "Bit manipulation, readers and writers for kotlinx.io.",
+        description = "Bit manipulation, readers and writers for kotlinx.io",
         url = "https://git.karmakrafts.dev/kk/karbide"
     )
 }
