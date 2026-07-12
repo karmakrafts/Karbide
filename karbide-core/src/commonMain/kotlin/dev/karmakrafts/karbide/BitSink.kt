@@ -18,6 +18,8 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Sink
 import kotlinx.io.writeUByte
+import kotlinx.io.writeULong
+import kotlinx.io.writeULongLe
 
 /**
  * Interface for writing individual bits to a sink.
@@ -79,57 +81,66 @@ private data class BitSinkImpl( // @formatter:off
     private val isSinkOwned: Boolean,
     override val bitOrder: BitOrder
 ) : BitSink { // @formatter:on
+    private val isMsbFirst: Boolean = bitOrder == BitOrder.MSB_FIRST
+
     private var isClosed: Boolean = false
 
-    override var byte: Long = 0L
-        private set
-
+    override val byte: Long get() = (bitsEmitted + bitInBuffer) shr 3
     override val bit: Int get() = bitInBuffer and 7 // % 8
 
+    // The number of bits already pushed to the underlying sink. Together with the
+    // buffer fill level this yields the logical write position, so the hot write
+    // path only needs to update the buffer and its fill level.
+    private var bitsEmitted: Long = 0L
     private var bitInBuffer: Int = 0
     private var buffer: ULong = 0UL
 
-    private fun flushCurrentByte() {
-        val value = if (bitOrder == BitOrder.MSB_FIRST) buffer.toUByte().reverseBits() else buffer.toUByte()
-        sink.writeUByte(value)
+    // The buffer is top-aligned: the first bit written ends up at bit 63 and bits
+    // below the buffered range are always zero. Since writeBits emits the most
+    // significant of the [count] bits first, chunks enter the buffer with plain
+    // shifts and without any per-write bit reversal. A full buffer is written out
+    // as a single 64-bit word which is either already in MSB-first stream order or
+    // brought into LSB-first order with a single reverseBits intrinsic.
+    private fun emitWord(word: ULong) {
+        if (isMsbFirst) sink.writeULong(word) else sink.writeULongLe(word.reverseBits())
+        bitsEmitted += ULong.SIZE_BITS
     }
 
     /**
-     * Drains all available whole bytes to the underlying sink.
+     * Drains all buffered bits to the underlying sink, including a
+     * trailing zero-padded partial byte if present.
      */
     private fun drainBytes() {
-        while (bitInBuffer >= Byte.SIZE_BITS) {
-            flushCurrentByte()
-            buffer = buffer shr Byte.SIZE_BITS
-            bitInBuffer -= Byte.SIZE_BITS
-            byte++
+        var remaining = bitInBuffer
+        var localBuffer = buffer
+        while (remaining > 0) {
+            val value = (localBuffer shr (ULong.SIZE_BITS - Byte.SIZE_BITS)).toUByte()
+            sink.writeUByte(if (isMsbFirst) value else value.reverseBits())
+            localBuffer = localBuffer shl Byte.SIZE_BITS
+            bitsEmitted += Byte.SIZE_BITS
+            remaining -= Byte.SIZE_BITS
         }
+        buffer = 0UL
+        bitInBuffer = 0
     }
 
     override fun writeBits(count: Int, bits: ULong) {
         if (count == 0) return
-        var remaining = count
-        var value = bits
-        while (remaining > 0) {
-            val space = ULong.SIZE_BITS - bitInBuffer
-            val take = if (remaining < space) remaining else space
-            // Extract bits we want to move over
-            val chunk = if (take == ULong.SIZE_BITS) value
-            else {
-                val mask = (1UL shl take) - 1UL
-                value and mask
-            }
-            // Move the chunk into the buffer respecting the write order of this sink
-            val shiftedChunk = chunk.reverseBits(take) shl bitInBuffer
-            buffer = buffer or shiftedChunk
-
-            // Update state
-            bitInBuffer += take
-            value = value shr take
-            remaining -= take
-            // Drain any whole accumulated bytes from the buffer
-            drainBytes()
+        val offset = bitInBuffer
+        // Top-align the chunk; bits above [count] are shifted out implicitly
+        val chunk = bits shl (ULong.SIZE_BITS - count)
+        buffer = buffer or (chunk shr offset)
+        val total = offset + count
+        if (total < ULong.SIZE_BITS) {
+            bitInBuffer = total
+            return
         }
+        emitWord(buffer)
+        // Carry over the bits that did not fit; the double shift keeps this
+        // branch-free for the full 1..64 consumed-bit range
+        val consumed = ULong.SIZE_BITS - offset
+        buffer = (chunk shl (consumed - 1)) shl 1
+        bitInBuffer = total - ULong.SIZE_BITS
     }
 
     override fun padBits(count: Int, value: UByte) {
@@ -150,16 +161,17 @@ private data class BitSinkImpl( // @formatter:off
     }
 
     override fun flush() {
-        if (isClosed || bit == 0) return
-        flushCurrentByte()
-        reset()
+        if (isClosed) return
+        val isAligned = bit == 0
+        drainBytes()
+        if (!isAligned) reset()
     }
 
     override fun reset() {
         if (isClosed) return
         buffer = 0UL
         bitInBuffer = 0
-        byte = 0
+        bitsEmitted = 0L
     }
 
     override fun close() {

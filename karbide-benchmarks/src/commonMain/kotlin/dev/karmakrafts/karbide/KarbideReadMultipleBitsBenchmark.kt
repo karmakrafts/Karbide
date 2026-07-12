@@ -41,7 +41,8 @@ open class KarbideReadMultipleBitsBenchmark {
         buffer.peek().bitSource(false).use { source ->
             while (!source.exhausted) {
                 val toRead = min(random.nextInt(Byte.SIZE_BITS), Byte.SIZE_BITS - source.bit)
-                blackHole.consume(source.readBits(toRead))
+                // Consume as a primitive to avoid boxing the ULong in the blackhole
+                blackHole.consume(source.readBits(toRead).toLong())
             }
         }
     }

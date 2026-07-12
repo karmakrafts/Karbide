@@ -3,6 +3,7 @@
 ### Changed
 
 - Major performance improvements for `BitSource` on all platforms
+- Major performance improvements for `BitSink` on all platforms
 
 ## [1.10.7]
 

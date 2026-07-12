@@ -18,7 +18,6 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.EOFException
 import kotlinx.io.Source
-import kotlinx.io.readUByte
 import kotlinx.io.readULong
 import kotlinx.io.readULongLe
 
@@ -110,14 +109,20 @@ private data class BitSourceImpl( // @formatter:off
     private var isClosed: Boolean = false
 
     override val byte: Long get() = bitsRead shr 3
-    override val bit: Int get() = (bitsRead and 7).toInt()
+    override val bit: Int get() = (bitsRead and 7L).toInt()
 
     override val exhausted: Boolean
         get() = bitInBuffer == 0 && source.exhausted()
 
-    private var bitsRead: Long = 0L
+    // The number of bits consumed so far is derived from the number of bits fetched
+    // from the source, so the hot read paths only need to update the buffer and its
+    // fill level instead of maintaining a separate read counter.
+    private val bitsRead: Long get() = bitsFetched - bitInBuffer
+
+    private var bitsFetched: Long = 0L
     private var bitInBuffer: Int = 0
     private var buffer: ULong = 0UL
+    private val scratch: ByteArray = ByteArray(ULong.SIZE_BYTES)
 
     @Suppress("NOTHING_TO_INLINE")
     private inline fun checkReadCount(count: Int) {
@@ -126,40 +131,42 @@ private data class BitSourceImpl( // @formatter:off
 
     // The buffer is top-aligned: the next bit to be consumed is at bit 63 and all
     // bits below the buffered range are always zero. This allows extracting chunks
-    // with a single shift and without any per-read bit reversal.
+    // with a single shift and without any per-read bit reversal. The double shift
+    // keeps this branch-free for the full 1..64 count range.
     private fun consumeBufferedBits(count: Int): ULong {
         val result = buffer shr (ULong.SIZE_BITS - count)
-        buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
+        buffer = (buffer shl (count - 1)) shl 1
         bitInBuffer -= count
-        bitsRead += count
         return result
     }
 
     private fun fillBuffer() {
-        var localBitInBuffer = bitInBuffer
-        if (localBitInBuffer > ULong.SIZE_BITS - Byte.SIZE_BITS) return
-        if (localBitInBuffer == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
+        var bits = bitInBuffer
+        var freeBytes = (ULong.SIZE_BITS - bits) shr 3
+        if (freeBytes == 0) return
+        if (bits == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
             buffer = if (isMsbFirst) source.readULong() else source.readULongLe().reverseBits()
             bitInBuffer = ULong.SIZE_BITS
+            bitsFetched += ULong.SIZE_BITS
             return
         }
-        var localBuffer = buffer
-        if (isMsbFirst) {
-            while (localBitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
-                val byteValue = source.readUByte().toULong()
-                localBuffer = localBuffer or (byteValue shl (ULong.SIZE_BITS - Byte.SIZE_BITS - localBitInBuffer))
-                localBitInBuffer += Byte.SIZE_BITS
+        // Bulk-read up to freeBytes bytes in a single call and assemble them into a
+        // little-endian word, which is then brought into stream order with a single
+        // reverseBytes (MSB first) or reverseBits (LSB first) intrinsic.
+        while (freeBytes > 0) {
+            val read = source.readAtMostTo(scratch, 0, freeBytes)
+            if (read <= 0) break
+            var word = 0UL
+            for (index in 0 until read) {
+                word = word or ((scratch[index].toULong() and 0xFFUL) shl (index shl 3))
             }
+            word = if (isMsbFirst) word.reverseBytes() else word.reverseBits()
+            buffer = buffer or (word shr bits)
+            bits += read shl 3
+            freeBytes -= read
         }
-        else {
-            while (localBitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
-                val byteValue = source.readUByte().reverseBits().toULong()
-                localBuffer = localBuffer or (byteValue shl (ULong.SIZE_BITS - Byte.SIZE_BITS - localBitInBuffer))
-                localBitInBuffer += Byte.SIZE_BITS
-            }
-        }
-        buffer = localBuffer
-        bitInBuffer = localBitInBuffer
+        bitsFetched += bits - bitInBuffer
+        bitInBuffer = bits
     }
 
     private fun readBufferedBits(count: Int): ULong {
@@ -170,10 +177,9 @@ private data class BitSourceImpl( // @formatter:off
             val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
             val chunk = buffer shr (ULong.SIZE_BITS - take)
             result = result or (chunk shl (remaining - take))
-            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shl take
+            buffer = (buffer shl (take - 1)) shl 1
             bitInBuffer -= take
             remaining -= take
-            bitsRead += take
         }
         return result
     }
@@ -195,9 +201,11 @@ private data class BitSourceImpl( // @formatter:off
         checkReadCount(count)
         if (count == 0) return 0UL
         if (count > bitInBuffer) {
-            requireBits(count)
             fillBuffer()
-            check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
+            if (count > bitInBuffer) {
+                requireBits(count)
+                check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
+            }
         }
         return buffer shr (ULong.SIZE_BITS - count)
     }
@@ -206,36 +214,34 @@ private data class BitSourceImpl( // @formatter:off
         if (count in 1..bitInBuffer) return consumeBufferedBits(count)
         checkReadCount(count)
         if (count == 0) return 0UL
-        requireBits(count)
         fillBuffer()
         if (count <= bitInBuffer) return consumeBufferedBits(count)
+        requireBits(count)
         return readBufferedBits(count)
     }
 
     override fun skipBits(count: Int) {
         require(count >= 0) { "Bit count must not be negative" }
+        if (count == 0) return
         if (count <= bitInBuffer) {
-            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
+            buffer = (buffer shl (count - 1)) shl 1
             bitInBuffer -= count
-            bitsRead += count
+            return
+        }
+        fillBuffer()
+        if (count <= bitInBuffer) {
+            buffer = (buffer shl (count - 1)) shl 1
+            bitInBuffer -= count
             return
         }
         requireBits(count)
-        fillBuffer()
-        if (count <= bitInBuffer) {
-            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
-            bitInBuffer -= count
-            bitsRead += count
-            return
-        }
         var remaining = count
         while (remaining > 0) {
             fillBuffer()
             val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shl take
+            buffer = (buffer shl (take - 1)) shl 1
             bitInBuffer -= take
             remaining -= take
-            bitsRead += take
         }
     }
 
@@ -248,7 +254,7 @@ private data class BitSourceImpl( // @formatter:off
         if (isClosed) return
         buffer = 0UL
         bitInBuffer = 0
-        bitsRead = 0L
+        bitsFetched = 0L
     }
 
     override fun close() {
