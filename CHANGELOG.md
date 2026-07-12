@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.10.8]
+
 ### Changed
 
 - Major performance improvements for `BitSource` on all platforms
