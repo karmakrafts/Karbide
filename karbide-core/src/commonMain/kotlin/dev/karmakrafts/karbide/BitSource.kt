@@ -20,6 +20,7 @@ import kotlinx.io.EOFException
 import kotlinx.io.Source
 import kotlinx.io.readUByte
 import kotlinx.io.readULong
+import kotlinx.io.readULongLe
 
 /**
  * Interface for reading individual bits from a source.
@@ -122,51 +123,37 @@ private data class BitSourceImpl( // @formatter:off
         require(count in 0..ULong.SIZE_BITS) { "count must be between 0 and ${ULong.SIZE_BITS}" }
     }
 
-    private fun lowerBits(value: ULong, count: Int): ULong = if (count == ULong.SIZE_BITS) value
-    else value and ((1UL shl count) - 1UL)
-
-    private fun reverseChunk(value: ULong, count: Int): ULong = when {
-        count == 1 -> value
-        count <= UByte.SIZE_BITS -> value.toUByte().reverseBits(count).toULong()
-        count <= UInt.SIZE_BITS -> value.toUInt().reverseBits(count).toULong()
-        else -> value.reverseBits(count)
-    }
-
+    // The buffer is top-aligned: the next bit to be consumed is at bit 63 and all
+    // bits below the buffered range are always zero. This allows extracting chunks
+    // with a single shift and without any per-read bit reversal.
     private fun consumeBufferedBits(count: Int): ULong {
-        if (count == 1) {
-            val result = buffer and 1UL
-            buffer = buffer shr 1
-            bitInBuffer -= 1
-            bitsRead += 1
-            return result
-        }
-        val chunk = lowerBits(buffer, count)
-        val result = reverseChunk(chunk, count)
-        buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shr count
+        val result = buffer shr (ULong.SIZE_BITS - count)
+        buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
         bitInBuffer -= count
         bitsRead += count
         return result
     }
 
     private fun fillBuffer() {
-        if (bitInBuffer > ULong.SIZE_BITS - Byte.SIZE_BITS) return
-        if (bitInBuffer == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
-            buffer = if (isMsbFirst) source.readULong().reverseBits() else source.readULong().reverseBytes()
+        var localBitInBuffer = bitInBuffer
+        if (localBitInBuffer > ULong.SIZE_BITS - Byte.SIZE_BITS) return
+        if (localBitInBuffer == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
+            buffer = if (isMsbFirst) source.readULong() else source.readULongLe().reverseBits()
             bitInBuffer = ULong.SIZE_BITS
             return
         }
         var localBuffer = buffer
-        var localBitInBuffer = bitInBuffer
         if (isMsbFirst) {
             while (localBitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
-                val byteValue = source.readUByte().reverseBits()
-                localBuffer = localBuffer or (byteValue.toULong() shl localBitInBuffer)
+                val byteValue = source.readUByte().toULong()
+                localBuffer = localBuffer or (byteValue shl (ULong.SIZE_BITS - Byte.SIZE_BITS - localBitInBuffer))
                 localBitInBuffer += Byte.SIZE_BITS
             }
         }
         else {
             while (localBitInBuffer <= ULong.SIZE_BITS - Byte.SIZE_BITS && !source.exhausted()) {
-                localBuffer = localBuffer or (source.readUByte().toULong() shl localBitInBuffer)
+                val byteValue = source.readUByte().reverseBits().toULong()
+                localBuffer = localBuffer or (byteValue shl (ULong.SIZE_BITS - Byte.SIZE_BITS - localBitInBuffer))
                 localBitInBuffer += Byte.SIZE_BITS
             }
         }
@@ -180,10 +167,9 @@ private data class BitSourceImpl( // @formatter:off
         while (remaining > 0) {
             fillBuffer()
             val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            val chunk = lowerBits(buffer, take)
-            val reversedChunk = reverseChunk(chunk, take)
-            result = result or (reversedChunk shl (remaining - take))
-            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shr take
+            val chunk = buffer shr (ULong.SIZE_BITS - take)
+            result = result or (chunk shl (remaining - take))
+            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shl take
             bitInBuffer -= take
             remaining -= take
             bitsRead += take
@@ -207,32 +193,18 @@ private data class BitSourceImpl( // @formatter:off
     override fun peekBits(count: Int): ULong {
         checkReadCount(count)
         if (count == 0) return 0UL
-        if (count <= bitInBuffer) {
-            val chunk = lowerBits(buffer, count)
-            return reverseChunk(chunk, count)
+        if (count > bitInBuffer) {
+            requireBits(count)
+            fillBuffer()
+            check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
         }
-        requireBits(count)
-        fillBuffer()
-        check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
-        val chunk = lowerBits(buffer, count)
-        return reverseChunk(chunk, count)
+        return buffer shr (ULong.SIZE_BITS - count)
     }
 
     override fun readBits(count: Int): ULong {
-        if (count == 1) {
-            if (bitInBuffer == 0) {
-                requireBits(1)
-                fillBuffer()
-            }
-            val result = buffer and 1UL
-            buffer = buffer shr 1
-            bitInBuffer -= 1
-            bitsRead += 1
-            return result
-        }
+        if (count in 1..bitInBuffer) return consumeBufferedBits(count)
         checkReadCount(count)
         if (count == 0) return 0UL
-        if (count <= bitInBuffer) return consumeBufferedBits(count)
         requireBits(count)
         fillBuffer()
         if (count <= bitInBuffer) return consumeBufferedBits(count)
@@ -242,7 +214,7 @@ private data class BitSourceImpl( // @formatter:off
     override fun skipBits(count: Int) {
         require(count >= 0) { "Bit count must not be negative" }
         if (count <= bitInBuffer) {
-            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shr count
+            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
             bitInBuffer -= count
             bitsRead += count
             return
@@ -250,7 +222,7 @@ private data class BitSourceImpl( // @formatter:off
         requireBits(count)
         fillBuffer()
         if (count <= bitInBuffer) {
-            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shr count
+            buffer = if (count == ULong.SIZE_BITS) 0UL else buffer shl count
             bitInBuffer -= count
             bitsRead += count
             return
@@ -259,7 +231,7 @@ private data class BitSourceImpl( // @formatter:off
         while (remaining > 0) {
             fillBuffer()
             val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shr take
+            buffer = if (take == ULong.SIZE_BITS) 0UL else buffer shl take
             bitInBuffer -= take
             remaining -= take
             bitsRead += take
