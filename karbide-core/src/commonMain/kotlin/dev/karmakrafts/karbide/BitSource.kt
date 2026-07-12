@@ -119,7 +119,8 @@ private data class BitSourceImpl( // @formatter:off
     private var bitInBuffer: Int = 0
     private var buffer: ULong = 0UL
 
-    private fun checkReadCount(count: Int) {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun checkReadCount(count: Int) {
         require(count in 0..ULong.SIZE_BITS) { "count must be between 0 and ${ULong.SIZE_BITS}" }
     }
 
