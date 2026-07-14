@@ -22,4 +22,4 @@ actual fun BitSink( // @formatter:off
     sink: Sink,
     isSinkOwned: Boolean,
     bitOrder: BitOrder
-): BitSink = DefaultBitSink(sink, isSinkOwned, bitOrder) // @formatter:on
+): BitSink = BitSink64(sink, isSinkOwned, bitOrder) // @formatter:on

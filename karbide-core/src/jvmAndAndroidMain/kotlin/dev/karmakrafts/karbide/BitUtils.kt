@@ -21,10 +21,16 @@ package dev.karmakrafts.karbide
 import java.lang.Integer as JInt
 import java.lang.Long as JLong
 
-actual fun Byte.reverseBits(count: Int): Byte = (JInt.reverse(toInt()) ushr (Int.SIZE_BITS - count)).toByte()
-actual fun Short.reverseBits(count: Int): Short = (JInt.reverse(toInt()) ushr (Int.SIZE_BITS - count)).toShort()
-actual fun Int.reverseBits(count: Int): Int = JInt.reverse(this) ushr (Int.SIZE_BITS - count)
-actual fun Long.reverseBits(count: Int): Long = JLong.reverse(this) ushr (Long.SIZE_BITS - count)
+actual fun Byte.reverseBits(count: Int): Byte =
+    if (count == 0) 0.toByte() else (JInt.reverse(toInt()) ushr (Int.SIZE_BITS - count)).toByte()
+
+actual fun Short.reverseBits(count: Int): Short =
+    if (count == 0) 0.toShort() else (JInt.reverse(toInt()) ushr (Int.SIZE_BITS - count)).toShort()
+
+actual fun Int.reverseBits(count: Int): Int = if (count == 0) 0 else JInt.reverse(this) ushr (Int.SIZE_BITS - count)
+
+actual fun Long.reverseBits(count: Int): Long =
+    if (count == 0) 0L else JLong.reverse(this) ushr (Long.SIZE_BITS - count)
 
 @Suppress("NOTHING_TO_INLINE")
 actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()

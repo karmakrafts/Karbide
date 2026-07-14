@@ -27,6 +27,7 @@ class BitUtilsTest {
         assertEquals(0x0F.toByte(), 0xF0.toByte().reverseBits())
         assertEquals(0x55.toByte(), 0xAA.toByte().reverseBits())
         assertEquals(0x08.toByte(), 0x01.toByte().reverseBits(4))
+        assertEquals(0.toByte(), 0xFF.toByte().reverseBits(0))
     }
 
     @Test
@@ -36,6 +37,7 @@ class BitUtilsTest {
         assertEquals(0x0FFF.toShort(), 0xFFF0.toShort().reverseBits())
         assertEquals(0x5555.toShort(), 0xAAAA.toShort().reverseBits())
         assertEquals(0x0080.toShort(), 0x0001.toShort().reverseBits(8))
+        assertEquals(0.toShort(), 0xFFFF.toShort().reverseBits(0))
     }
 
     @Test
@@ -45,6 +47,7 @@ class BitUtilsTest {
         assertEquals(0x0FFFFFFF, 0xFFFFFFF0.toInt().reverseBits())
         assertEquals(0x55555555, 0xAAAAAAAA.toInt().reverseBits())
         assertEquals(0x00008000, 0x00000001.reverseBits(16))
+        assertEquals(0, (-1).reverseBits(0))
     }
 
     @Test
@@ -66,6 +69,7 @@ class BitUtilsTest {
         assertEquals(0x0FU.toUByte(), 0xF0U.toUByte().reverseBits())
         assertEquals(0x55U.toUByte(), 0xAAU.toUByte().reverseBits())
         assertEquals(0x08U.toUByte(), 0x01U.toUByte().reverseBits(4))
+        assertEquals(0U.toUByte(), 0xFFU.toUByte().reverseBits(0))
     }
 
     @Test
@@ -75,6 +79,7 @@ class BitUtilsTest {
         assertEquals(0x0FFFU.toUShort(), 0xFFF0U.toUShort().reverseBits())
         assertEquals(0x5555U.toUShort(), 0xAAAAU.toUShort().reverseBits())
         assertEquals(0x0080U.toUShort(), 0x0001U.toUShort().reverseBits(8))
+        assertEquals(0U.toUShort(), 0xFFFFU.toUShort().reverseBits(0))
     }
 
     @Test
@@ -84,6 +89,7 @@ class BitUtilsTest {
         assertEquals(0x0FFFFFFFU, 0xFFFFFFF0U.reverseBits())
         assertEquals(0x55555555U, 0xAAAAAAAAU.reverseBits())
         assertEquals(0x00008000U, 0x00000001U.reverseBits(16))
+        assertEquals(0U, 0xFFFFFFFFU.reverseBits(0))
     }
 
     @Test

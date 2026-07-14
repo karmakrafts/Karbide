@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:JvmName("BitSource$")
+
 package dev.karmakrafts.karbide
 
 import kotlinx.io.Source
@@ -22,4 +24,4 @@ actual fun BitSource( // @formatter:off
     source: Source,
     isSourceOwned: Boolean,
     bitOrder: BitOrder
-): BitSource = DefaultBitSource(source, isSourceOwned, bitOrder) // @formatter:on
+): BitSource = BitSource64(source, isSourceOwned, bitOrder) // @formatter:on

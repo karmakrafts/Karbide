@@ -37,7 +37,8 @@ package dev.karmakrafts.karbide
 )
 private external fun reverseBitsImpl(x: Byte, count: Int): Byte
 
-actual fun Byte.reverseBits(count: Int): Byte = reverseBitsImpl(this, count)
+actual fun Byte.reverseBits(count: Int): Byte =
+    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
     """
@@ -55,7 +56,8 @@ actual fun Byte.reverseBits(count: Int): Byte = reverseBitsImpl(this, count)
 )
 private external fun reverseBitsImpl(x: Short, count: Int): Short
 
-actual fun Short.reverseBits(count: Int): Short = reverseBitsImpl(this, count)
+actual fun Short.reverseBits(count: Int): Short =
+    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
     """
@@ -73,7 +75,8 @@ actual fun Short.reverseBits(count: Int): Short = reverseBitsImpl(this, count)
 )
 private external fun reverseBitsImpl(x: Int, count: Int): Int
 
-actual fun Int.reverseBits(count: Int): Int = reverseBitsImpl(this, count)
+actual fun Int.reverseBits(count: Int): Int =
+    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
     """
@@ -109,7 +112,8 @@ actual fun Int.reverseBits(count: Int): Int = reverseBitsImpl(this, count)
 )
 private external fun reverseBitsImpl(x: Long, count: Int): Long
 
-actual fun Long.reverseBits(count: Int): Long = reverseBitsImpl(this, count)
+actual fun Long.reverseBits(count: Int): Long =
+    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @Suppress("NOTHING_TO_INLINE")
 actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
