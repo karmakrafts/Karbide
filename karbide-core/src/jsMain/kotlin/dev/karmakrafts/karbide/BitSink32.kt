@@ -87,10 +87,15 @@ internal data class BitSink32( // @formatter:off
         bitInBuffer = total - UInt.SIZE_BITS
     }
 
-    override fun writeBits(count: Int, bits: ULong) {
+    internal fun writeBits32(count: Int, bits: UInt) {
+        require(count in 0..UInt.SIZE_BITS) { "count must be between 0 and ${UInt.SIZE_BITS}" }
         if (count == 0) return
+        writeChunk(count, bits)
+    }
+
+    override fun writeBits(count: Int, bits: ULong) {
         if (count <= UInt.SIZE_BITS) {
-            writeChunk(count, bits.toUInt())
+            writeBits32(count, bits.toUInt())
             return
         }
         val remaining = count - UInt.SIZE_BITS

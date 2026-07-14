@@ -106,6 +106,16 @@ internal data class BitSource32( // @formatter:off
         return result
     }
 
+    internal fun readBits32(count: Int): UInt {
+        if (count in 1..bitInBuffer) return consumeBufferedBits(count)
+        require(count in 0..UInt.SIZE_BITS) { "count must be between 0 and ${UInt.SIZE_BITS}" }
+        if (count == 0) return 0U
+        fillBuffer()
+        if (count <= bitInBuffer) return consumeBufferedBits(count)
+        requireBits(count)
+        return readBufferedBits(count)
+    }
+
     override fun requestBits(count: Int): Boolean {
         require(count >= 0) { "count must not be negative" }
         if (count <= bitInBuffer) return true
@@ -137,13 +147,10 @@ internal data class BitSource32( // @formatter:off
     }
 
     override fun readBits(count: Int): ULong {
-        if (count in 1..bitInBuffer) return consumeBufferedBits(count).toULong()
+        if (count <= UInt.SIZE_BITS) return readBits32(count).toULong()
         checkReadCount(count)
-        if (count == 0) return 0UL
         fillBuffer()
-        if (count <= bitInBuffer) return consumeBufferedBits(count).toULong()
         requireBits(count)
-        if (count <= UInt.SIZE_BITS) return readBufferedBits(count).toULong()
         val highBits = readBufferedBits(count - UInt.SIZE_BITS)
         val lowBits = readBufferedBits(UInt.SIZE_BITS)
         return (highBits.toULong() shl UInt.SIZE_BITS) or lowBits.toULong()

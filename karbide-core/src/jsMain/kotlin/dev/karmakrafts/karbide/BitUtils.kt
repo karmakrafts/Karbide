@@ -75,8 +75,7 @@ actual fun Short.reverseBits(count: Int): Short =
 )
 private external fun reverseBitsImpl(x: Int, count: Int): Int
 
-actual fun Int.reverseBits(count: Int): Int =
-    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
+actual fun Int.reverseBits(count: Int): Int = if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
     """
