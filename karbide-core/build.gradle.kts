@@ -81,9 +81,10 @@ kotlin {
                 withJvm()
                 withAndroidLibrary()
             }
-            group("nonWeb") {
+            group("nonJs") {
                 group("jvmAndAndroid")
                 group("native")
+                withWasmJs()
                 withWasmWasi()
             }
         }

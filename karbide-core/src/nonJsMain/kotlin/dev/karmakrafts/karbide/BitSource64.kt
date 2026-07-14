@@ -21,7 +21,7 @@ import kotlinx.io.Source
 import kotlinx.io.readULong
 import kotlinx.io.readULongLe
 
-internal data class DefaultBitSource( // @formatter:off
+internal data class BitSource64( // @formatter:off
     private val source: Source,
     private val isSourceOwned: Boolean,
     override val bitOrder: BitOrder

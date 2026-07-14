@@ -21,7 +21,7 @@ import kotlinx.io.writeUByte
 import kotlinx.io.writeULong
 import kotlinx.io.writeULongLe
 
-internal data class DefaultBitSink( // @formatter:off
+internal data class BitSink64( // @formatter:off
     private val sink: Sink,
     private val isSinkOwned: Boolean,
     override val bitOrder: BitOrder
