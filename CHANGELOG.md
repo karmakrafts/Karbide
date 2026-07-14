@@ -12,7 +12,7 @@
 
 - Updated to Kotlin 2.4.10
 - Updated to Karma Conventions 1.19.0
-- Major performance improvements on JS due to specialized `UInt53` implementations of `BitSink` and `BitSource`
+- Major performance improvements on JS due to specialized 32-bit implementations of `BitSink` and `BitSource`
 
 ## [1.10.8]
 
