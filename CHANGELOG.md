@@ -1,11 +1,15 @@
 ## [Unreleased]
 
+### Fixed
+
+- Inconsistent behavior when passing 0 to `reverseBits` intrinsic on JVM and native
+
 ### Added
 
 - Public `BitSink` pseudo-constructor
 - Public `BitSource` pseudo-constructor
-- `BitSink.writeBits53` extension for Kotlin/JS
-- `BitSource.readBits53` extension for Kotlin/JS
+- `BitSink.writeBits32` extension for Kotlin/JS
+- `BitSource.readBits32` extension for Kotlin/JS
 - `org.jetbrains.kotlin-wrappers:kotlin-js` dependency for Kotlin/JS
 
 ### Changed
