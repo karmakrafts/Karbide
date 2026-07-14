@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Kotlin 2.4.10
+- Updated to Karma Conventions 1.19.0
+- Major performance improvements on JS targets due to [native BigInt support](https://kotlinlang.org/docs/js-to-kotlin-interop.html#use-bigint-type-to-represent-kotlin-s-long-type)
+
 ## [1.10.8]
 
 ### Changed
