@@ -5,7 +5,7 @@
 )](https://git.karmakrafts.dev/kk/karbide/-/packages)
 [![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdev%2Fkarmakrafts%2Fkarbide%2Fkarbide-core%2Fmaven-metadata.xml
 )](https://git.karmakrafts.dev/kk/karbide/-/packages)
-[![](https://img.shields.io/badge/2.4.0-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/)
+[![](https://img.shields.io/badge/2.4.10-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/)
 [![](https://img.shields.io/badge/documentation-black?logo=kotlin)](https://docs.karmakrafts.dev/karbide-core)
 
 ![](https://img.shields.io/badge/-JVM-blue?logo=kotlin&labelColor=black)
@@ -54,4 +54,5 @@ Or, if you are only using Kotlin/JVM, add it to your top-level dependencies bloc
 
 ### Performance
 
-For all benchmark results, check out [the README](karbide-benchmarks/README.md) in the `karbide-benchmarks` directory in this repository.
+For all benchmark results, check out [the README](karbide-benchmarks/README.md) in the `karbide-benchmarks` directory in
+this repository.

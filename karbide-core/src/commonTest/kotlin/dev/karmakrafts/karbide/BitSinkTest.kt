@@ -113,6 +113,27 @@ class BitSinkTest {
     }
 
     @Test
+    fun `Write ULong beyond word boundary`() {
+        val expected = byteArrayOf(
+            0xA1.toByte(), 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x05
+        )
+        for (bitOrder in BitOrder.entries) {
+            val buffer = Buffer()
+            buffer.bitSink(bitOrder = bitOrder).use { sink ->
+                sink.writeNibble(0xAU)
+                sink.writeULong(0x123456789ABCDEF0UL)
+                sink.writeNibble(0x5U)
+            }
+
+            val actual = buffer.readByteArray(expected.size)
+            for (i in expected.indices) {
+                val expectedByte = if (bitOrder == BitOrder.MSB_FIRST) expected[i] else expected[i].reverseBits()
+                assertEquals(expectedByte, actual[i])
+            }
+        }
+    }
+
+    @Test
     fun `Write byte array`() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x05)
@@ -142,6 +163,22 @@ class BitSinkTest {
         assertEquals(0xFC.toUByte(), buffer.readUByte())
         assertEquals(0x00.toUByte(), buffer.readUByte())
         assertEquals(0x00.toUByte(), buffer.readUByte())
+    }
+
+    @Test
+    fun `Write padding beyond word boundary`() {
+        val buffer = Buffer()
+        buffer.bitSink().use { sink ->
+            sink.writeNibble(0U)
+            sink.padBits(64, 1U)
+            sink.writeNibble(0U)
+        }
+
+        assertEquals(0x0FU, buffer.readUByte().toUInt())
+        repeat(7) {
+            assertEquals(0xFFU, buffer.readUByte().toUInt())
+        }
+        assertEquals(0xF0U, buffer.readUByte().toUInt())
     }
 
     @Test

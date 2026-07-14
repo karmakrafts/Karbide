@@ -18,6 +18,8 @@
 
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.dokka.configureDokka
+import dev.karmakrafts.conventions.dokka.withKotlin
+import dev.karmakrafts.conventions.dokka.withKotlinxIo
 import dev.karmakrafts.conventions.kotlin.defaultCompilerOptions
 import dev.karmakrafts.conventions.kotlin.withAndroidLibrary
 import dev.karmakrafts.conventions.kotlin.withBrowser
@@ -79,6 +81,11 @@ kotlin {
                 withJvm()
                 withAndroidLibrary()
             }
+            group("nonWeb") {
+                group("jvmAndAndroid")
+                group("native")
+                withWasmWasi()
+            }
         }
     }
     sourceSets {
@@ -86,6 +93,11 @@ kotlin {
             dependencies {
                 api(libs.kotlinx.io.bytestring)
                 api(libs.kotlinx.io.core)
+            }
+        }
+        jsMain {
+            dependencies {
+                api(libs.kotlin.wrappers.js)
             }
         }
         commonTest {

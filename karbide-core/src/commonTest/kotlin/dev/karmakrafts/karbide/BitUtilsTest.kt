@@ -53,7 +53,10 @@ class BitUtilsTest {
         assertEquals(0x0000000000000001L, 0x8000000000000000UL.toLong().reverseBits())
         assertEquals(0x0FFFFFFFFFFFFFFFUL.toLong(), 0xFFFFFFFFFFFFFFF0UL.toLong().reverseBits())
         assertEquals(0x5555555555555555L, 0xAAAAAAAAAAAAAAAAUL.toLong().reverseBits())
+        assertEquals(0x0000000100000000L, 0x0000000000000001L.reverseBits(33))
+        assertEquals(0x4000000000000000L, 0x0000000000000001L.reverseBits(63))
         assertEquals(0x0000000080000000L, 0x0000000000000001L.reverseBits(32))
+        assertEquals(0L, 0xFFFFFFFFFFFFFFFFUL.toLong().reverseBits(0))
     }
 
     @Test
@@ -89,6 +92,9 @@ class BitUtilsTest {
         assertEquals(0x0000000000000001UL, 0x8000000000000000UL.reverseBits())
         assertEquals(0x0FFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFF0UL.reverseBits())
         assertEquals(0x5555555555555555UL, 0xAAAAAAAAAAAAAAAAUL.reverseBits())
+        assertEquals(0x0000000100000000UL, 0x0000000000000001UL.reverseBits(33))
+        assertEquals(0x4000000000000000UL, 0x0000000000000001UL.reverseBits(63))
         assertEquals(0x0000000080000000UL, 0x0000000000000001UL.reverseBits(32))
+        assertEquals(0UL, 0xFFFFFFFFFFFFFFFFUL.reverseBits(0))
     }
 }

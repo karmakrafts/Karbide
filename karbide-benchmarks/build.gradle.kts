@@ -38,9 +38,11 @@ kotlin {
     withJvm()
     withNative()
     withWeb {
-        withBrowser {
-            useEsModules()
+        compilerOptions {
+            target = "es2015"
         }
+        useEsModules()
+        withBrowser()
         withNodeJs()
     }
     withWasmWasi {

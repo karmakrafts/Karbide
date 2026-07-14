@@ -279,6 +279,19 @@ class BitSourceTest {
     }
 
     @Test
+    fun `Read 64 bits across buffer boundaries`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xD2U)
+        buffer.writeULong(0x3456789ABCDEF080UL)
+        buffer.bitSource().use { source ->
+            assertEquals(1UL, source.readBits(1))
+            assertEquals(0xA468ACF13579BDE1UL, source.readBits(64))
+            assertEquals(1, source.bit)
+            assertEquals(8L, source.byte)
+        }
+    }
+
+    @Test
     fun `Read bits throws before consuming partial data`() {
         val buffer = Buffer()
         buffer.writeUByte(0xACU)
@@ -319,6 +332,18 @@ class BitSourceTest {
             assertEquals(3, source.bit)
             assertEquals(0b01010UL, source.readBits(5))
             assertEquals(0b0110UL, source.readBits(4))
+        }
+    }
+
+    @Test
+    fun `Peek 64 bits does not consume data`() {
+        val buffer = Buffer()
+        buffer.writeULong(0x1234567890ABCDEFUL)
+        buffer.bitSource().use { source ->
+            assertEquals(0x1234567890ABCDEFUL, source.peekBits(64))
+            assertEquals(0L, source.byte)
+            assertEquals(0, source.bit)
+            assertEquals(0x1234567890ABCDEFUL, source.readBits(64))
         }
     }
 }

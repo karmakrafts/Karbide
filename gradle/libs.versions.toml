@@ -6,6 +6,7 @@ androidGradle = "9.3.0" # https://developer.android.com/reference/tools/gradle-a
 karbide = "1.11.0"
 kotlin = "2.4.10" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.9.1" # https://github.com/Kotlin/kotlinx-io/releases
+kotlinWrappers = "2026.7.2" # https://github.com/JetBrains/kotlin-wrappers/releases
 dokka = "2.2.0" # https://github.com/Kotlin/dokka/releases
 karmaConventions = "1.19.0" # https://github.com/karmakrafts/karma-conventions/tags
 
@@ -19,6 +20,7 @@ jmh = "1.37" # https://github.com/openjdk/jmh/tags
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-io-bytestring = { module = "org.jetbrains.kotlinx:kotlinx-io-bytestring", version.ref = "kotlinxIo" }
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinxIo" }
+kotlin-wrappers-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-js", version.ref = "kotlinWrappers" }
 
 # karbide-benchmarks
 

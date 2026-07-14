@@ -1,10 +1,18 @@
 ## [Unreleased]
 
+### Added
+
+- Public `BitSink` pseudo-constructor
+- Public `BitSource` pseudo-constructor
+- `BitSink.writeBits53` extension for Kotlin/JS
+- `BitSource.readBits53` extension for Kotlin/JS
+- `org.jetbrains.kotlin-wrappers:kotlin-js` dependency for Kotlin/JS
+
 ### Changed
 
 - Updated to Kotlin 2.4.10
 - Updated to Karma Conventions 1.19.0
-- Major performance improvements on JS targets due to [native BigInt support](https://kotlinlang.org/docs/js-to-kotlin-interop.html#use-bigint-type-to-represent-kotlin-s-long-type)
+- Major performance improvements on JS due to specialized `UInt53` implementations of `BitSink` and `BitSource`
 
 ## [1.10.8]
 
