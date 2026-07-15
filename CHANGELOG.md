@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.11.0]
+
 ### Fixed
 
 - Inconsistent behavior when passing 0 to `reverseBits` intrinsic on JVM and native
