@@ -18,13 +18,11 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.Buffer
 import kotlinx.io.EOFException
-import kotlinx.io.readByteArray
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class Bit32ExtensionsTest {
+class BitSource32ExtensionsTest {
     @Test
     fun `Read zero to 32 bits across word boundaries`() {
         val buffer = Buffer()
@@ -62,39 +60,42 @@ class Bit32ExtensionsTest {
     }
 
     @Test
-    fun `Write zero to 32 bits across word boundaries`() {
+    fun `Peek zero to 32 bits without consuming across word boundaries`() {
         val buffer = Buffer()
-        buffer.bitSink().use { sink ->
-            sink.writeBits32(0, UInt.MAX_VALUE)
-            sink.writeBits32(4, 0xFAU)
-            sink.writeBits32(32, 0xBCDEF012U)
-            sink.writeBits32(4, 0x3U)
-        }
+        buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23))
 
-        assertContentEquals(
-            byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23), buffer.readByteArray()
-        )
+        buffer.bitSource().use { source ->
+            assertEquals(0U, source.peekBits32(0))
+            assertEquals(0xAU, source.peekBits32(4))
+            assertEquals(0xAU, source.readBits32(4))
+            assertEquals(0xBCDEF012U, source.peekBits32(32))
+            assertEquals(0xBCDEF012U, source.peekBits32(32))
+            assertEquals(0xBCDEF012U, source.readBits32(32))
+            assertEquals(0x3U, source.peekBits32(4))
+        }
     }
 
     @Test
-    fun `Write 32 bits in LSB first order`() {
+    fun `Peek 32 bits in LSB first order without consuming`() {
         val buffer = Buffer()
-        buffer.bitSink(bitOrder = BitOrder.LSB_FIRST).use { sink ->
-            sink.writeBits32(32, 0x80402010U)
-        }
+        buffer.write(byteArrayOf(0x01, 0x02, 0x04, 0x08))
 
-        assertContentEquals(byteArrayOf(0x01, 0x02, 0x04, 0x08), buffer.readByteArray())
+        buffer.bitSource(bitOrder = BitOrder.LSB_FIRST).use { source ->
+            assertEquals(0x80402010U, source.peekBits32(32))
+            assertEquals(0x80402010U, source.readBits32(32))
+        }
     }
 
     @Test
-    fun `Write bits validates count without changing output`() {
+    fun `Peek bits validates count and preserves partial input on EOF`() {
         val buffer = Buffer()
-        buffer.bitSink().use { sink ->
-            assertFailsWith<IllegalArgumentException> { sink.writeBits32(-1, UInt.MAX_VALUE) }
-            assertFailsWith<IllegalArgumentException> { sink.writeBits32(33, UInt.MAX_VALUE) }
-            sink.writeBits32(8, 0xA5U)
-        }
+        buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte()))
 
-        assertContentEquals(byteArrayOf(0xA5.toByte()), buffer.readByteArray())
+        buffer.bitSource().use { source ->
+            assertFailsWith<IllegalArgumentException> { source.peekBits32(-1) }
+            assertFailsWith<IllegalArgumentException> { source.peekBits32(33) }
+            assertFailsWith<EOFException> { source.peekBits32(32) }
+            assertEquals(0xABCDEFU, source.readBits32(24))
+        }
     }
 }

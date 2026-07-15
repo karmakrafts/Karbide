@@ -10,6 +10,7 @@
 - Public `BitSource` pseudo-constructor
 - `BitSink.writeBits32` extension for Kotlin/JS
 - `BitSource.readBits32` extension for Kotlin/JS
+- `BitSource.peekBits32` extension for Kotlin/JS
 - `org.jetbrains.kotlin-wrappers:kotlin-js` dependency for Kotlin/JS
 
 ### Changed

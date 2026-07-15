@@ -116,6 +116,23 @@ internal data class BitSource32( // @formatter:off
         return readBufferedBits(count)
     }
 
+    internal fun peekBits32(count: Int): UInt {
+        require(count in 0..UInt.SIZE_BITS) { "count must be between 0 and ${UInt.SIZE_BITS}" }
+        if (count == 0) return 0U
+        if (count <= bitInBuffer) return buffer shr (UInt.SIZE_BITS - count)
+        fillBuffer()
+        if (count <= bitInBuffer) return buffer shr (UInt.SIZE_BITS - count)
+        requireBits(count)
+        val bufferedCount = bitInBuffer
+        val bufferedBits = buffer shr (UInt.SIZE_BITS - bufferedCount)
+        val missing = count - bufferedCount
+        val remainingBits = BitSource32(source.peek(), true, bitOrder).use { it.readBits32(missing) }
+        if (bufferedCount == 0) {
+            return remainingBits
+        }
+        return (bufferedBits shl missing) or remainingBits
+    }
+
     override fun requestBits(count: Int): Boolean {
         require(count >= 0) { "count must not be negative" }
         if (count <= bitInBuffer) return true

@@ -16,6 +16,12 @@
 
 package dev.karmakrafts.karbide
 
+/**
+ * Write the specified number of bits to the sink.
+ *
+ * @param count The number of bits to write.
+ * @param bits The bits to write as a [UInt].
+ */
 fun BitSink.writeBits32(count: Int, bits: UInt) {
     require(this is BitSink32)
     writeBits32(count, bits)
