@@ -96,11 +96,6 @@ kotlin {
                 api(libs.kotlinx.io.core)
             }
         }
-        jsMain {
-            dependencies {
-                api(libs.kotlin.wrappers.js)
-            }
-        }
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
