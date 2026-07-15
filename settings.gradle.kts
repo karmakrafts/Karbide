@@ -46,6 +46,7 @@ plugins {
 nmcpSettings {
     providers.environmentVariable("OSSRH_USERNAME").orNull?.let { username ->
         centralPortal {
+            uploadSnapshotsParallelism = Runtime.getRuntime().availableProcessors() * 4
             this.username = username
             password = providers.environmentVariable("OSSRH_PASSWORD").get()
             validationTimeout = Duration.ofMinutes(30)
