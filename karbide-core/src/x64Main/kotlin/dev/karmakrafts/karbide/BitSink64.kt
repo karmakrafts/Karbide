@@ -38,7 +38,7 @@ internal data class BitSink64( // @formatter:off
     // path only needs to update the buffer and its fill level.
     private var bitsEmitted: Long = 0L
     private var bitInBuffer: Int = 0
-    private var buffer: ULong = 0UL
+    private var buffer: Long = 0L
 
     // The buffer is top-aligned: the first bit written ends up at bit 63 and bits
     // below the buffered range are always zero. Since writeBits emits the most
@@ -46,9 +46,9 @@ internal data class BitSink64( // @formatter:off
     // shifts and without any per-write bit reversal. A full buffer is written out
     // as a single 64-bit word which is either already in MSB-first stream order or
     // brought into LSB-first order with a single reverseBits intrinsic.
-    private fun emitWord(word: ULong) {
-        if (isMsbFirst) sink.writeULong(word) else sink.writeULongLe(word.reverseBits())
-        bitsEmitted += ULong.SIZE_BITS
+    private fun emitWord(word: Long) {
+        if (isMsbFirst) sink.writeULong(word.toULong()) else sink.writeULongLe(word.reverseBits().toULong())
+        bitsEmitted += Long.SIZE_BITS
     }
 
     /**
@@ -59,13 +59,13 @@ internal data class BitSink64( // @formatter:off
         var remaining = bitInBuffer
         var localBuffer = buffer
         while (remaining > 0) {
-            val value = (localBuffer shr (ULong.SIZE_BITS - Byte.SIZE_BITS)).toUByte()
+            val value = (localBuffer ushr (Long.SIZE_BITS - Byte.SIZE_BITS)).toUByte()
             sink.writeUByte(if (isMsbFirst) value else value.reverseBits())
             localBuffer = localBuffer shl Byte.SIZE_BITS
             bitsEmitted += Byte.SIZE_BITS
             remaining -= Byte.SIZE_BITS
         }
-        buffer = 0UL
+        buffer = 0L
         bitInBuffer = 0
     }
 
@@ -73,30 +73,23 @@ internal data class BitSink64( // @formatter:off
         if (count == 0) return
         val offset = bitInBuffer
         // Top-align the chunk; bits above [count] are shifted out implicitly
-        val chunk = bits shl (ULong.SIZE_BITS - count)
-        buffer = buffer or (chunk shr offset)
+        val chunk = bits.toLong() shl (Long.SIZE_BITS - count)
+        val word = buffer or (chunk ushr offset)
         val total = offset + count
-        if (total < ULong.SIZE_BITS) {
+        if (total < Long.SIZE_BITS) {
+            buffer = word
             bitInBuffer = total
             return
         }
-        emitWord(buffer)
-        // Carry over the bits that did not fit; the double shift keeps this
-        // branch-free for the full 1..64 consumed-bit range
-        val consumed = ULong.SIZE_BITS - offset
-        buffer = (chunk shl (consumed - 1)) shl 1
-        bitInBuffer = total - ULong.SIZE_BITS
+        emitWord(word)
+        // A shift by 64 is masked to zero on the JVM, so handle the aligned
+        // full-word case explicitly and otherwise carry the remaining bits.
+        buffer = if (offset == 0) 0L else chunk shl (Long.SIZE_BITS - offset)
+        bitInBuffer = total - Long.SIZE_BITS
     }
 
     override fun padBits(count: Int, value: UByte) {
-        val bitValue = value.toULong() and 0b1UL
-        val bits = when (bitValue) { // @formatter:off
-            1UL -> when (count) {
-                ULong.SIZE_BITS -> ULong.MAX_VALUE
-                else -> (1UL shl count) - 1UL
-            }
-            else -> 0UL
-        } // @formatter:on
+        val bits = if (value.toInt() and 0b1 == 0) 0UL else ULong.MAX_VALUE
         writeBits(count, bits)
     }
 
@@ -114,7 +107,7 @@ internal data class BitSink64( // @formatter:off
 
     override fun reset() {
         if (isClosed) return
-        buffer = 0UL
+        buffer = 0L
         bitInBuffer = 0
         bitsEmitted = 0L
     }

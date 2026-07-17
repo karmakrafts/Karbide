@@ -134,6 +134,34 @@ class BitSinkTest {
     }
 
     @Test
+    fun `Write repeated word boundaries`() {
+        val expected = byteArrayOf(
+            0x01, 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(),
+            0xF1.toByte(), 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(),
+            0x0F, 0xED.toByte(), 0xCB.toByte(), 0xA9.toByte(), 0x87.toByte(), 0x65, 0x43, 0x21, 0xA0.toByte()
+        )
+        for (bitOrder in BitOrder.entries) {
+            val buffer = Buffer()
+            buffer.bitSink(bitOrder = bitOrder).use { sink ->
+                sink.writeBits(0, ULong.MAX_VALUE)
+                sink.writeBits(64, 0x0123456789ABCDEFUL)
+                sink.writeBits(4, ULong.MAX_VALUE)
+                sink.writeBits(64, 0x123456789ABCDEF0UL)
+                sink.writeBits(60, 0xAFEDCBA987654321UL)
+                sink.writeBits(3, 0b101UL)
+                assertEquals(24L, sink.byte)
+                assertEquals(3, sink.bit)
+            }
+
+            val actual = buffer.readByteArray(expected.size)
+            for (i in expected.indices) {
+                val expectedByte = if (bitOrder == BitOrder.MSB_FIRST) expected[i] else expected[i].reverseBits()
+                assertEquals(expectedByte, actual[i])
+            }
+        }
+    }
+
+    @Test
     fun `Write byte array`() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x05)

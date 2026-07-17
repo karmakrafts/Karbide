@@ -18,8 +18,6 @@ package dev.karmakrafts.karbide
 
 import kotlinx.io.EOFException
 import kotlinx.io.Source
-import kotlinx.io.readULong
-import kotlinx.io.readULongLe
 
 internal data class BitSource64( // @formatter:off
     private val source: Source,
@@ -43,8 +41,8 @@ internal data class BitSource64( // @formatter:off
 
     private var bitsFetched: Long = 0L
     private var bitInBuffer: Int = 0
-    private var buffer: ULong = 0UL
-    private val scratch: ByteArray = ByteArray(ULong.SIZE_BYTES)
+    private var buffer: Long = 0L
+    private val scratch: ByteArray = ByteArray(Long.SIZE_BYTES)
 
     @Suppress("NOTHING_TO_INLINE")
     private inline fun checkReadCount(count: Int) {
@@ -53,11 +51,12 @@ internal data class BitSource64( // @formatter:off
 
     // The buffer is top-aligned: the next bit to be consumed is at bit 63 and all
     // bits below the buffered range are always zero. This allows extracting chunks
-    // with a single shift and without any per-read bit reversal. The double shift
-    // keeps this branch-free for the full 1..64 count range.
-    private fun consumeBufferedBits(count: Int): ULong {
-        val result = buffer shr (ULong.SIZE_BITS - count)
-        buffer = (buffer shl (count - 1)) shl 1
+    // with a single shift and without any per-read bit reversal. A full-word read
+    // is handled explicitly because JVM shifts mask the distance to six bits.
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun consumeBufferedBits(count: Int): Long {
+        val result = buffer ushr (Long.SIZE_BITS - count)
+        buffer = if (count == Long.SIZE_BITS) 0L else buffer shl count
         bitInBuffer -= count
         return result
     }
@@ -67,7 +66,7 @@ internal data class BitSource64( // @formatter:off
         var freeBytes = (ULong.SIZE_BITS - bits) shr 3
         if (freeBytes == 0) return
         if (bits == 0 && source.request(ULong.SIZE_BYTES.toLong())) {
-            buffer = if (isMsbFirst) source.readULong() else source.readULongLe().reverseBits()
+            buffer = if (isMsbFirst) source.readLong() else source.readLongLeFast().reverseBits()
             bitInBuffer = ULong.SIZE_BITS
             bitsFetched += ULong.SIZE_BITS
             return
@@ -78,12 +77,12 @@ internal data class BitSource64( // @formatter:off
         while (freeBytes > 0) {
             val read = source.readAtMostTo(scratch, 0, freeBytes)
             if (read <= 0) break
-            var word = 0UL
+            var word = 0L
             for (index in 0 until read) {
-                word = word or ((scratch[index].toULong() and 0xFFUL) shl (index shl 3))
+                word = word or ((scratch[index].toLong() and 0xFFL) shl (index shl 3))
             }
             word = if (isMsbFirst) word.reverseBytes() else word.reverseBits()
-            buffer = buffer or (word shr bits)
+            buffer = buffer or (word ushr bits)
             bits += read shl 3
             freeBytes -= read
         }
@@ -91,19 +90,12 @@ internal data class BitSource64( // @formatter:off
         bitInBuffer = bits
     }
 
-    private fun readBufferedBits(count: Int): ULong {
-        var remaining = count
-        var result = 0UL
-        while (remaining > 0) {
-            fillBuffer()
-            val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            val chunk = buffer shr (ULong.SIZE_BITS - take)
-            result = result or (chunk shl (remaining - take))
-            buffer = (buffer shl (take - 1)) shl 1
-            bitInBuffer -= take
-            remaining -= take
-        }
-        return result
+    private fun readAcrossBuffer(count: Int): Long {
+        val bufferedCount = bitInBuffer
+        val missingCount = count - bufferedCount
+        val result = consumeBufferedBits(bufferedCount) shl missingCount
+        fillBuffer()
+        return result or consumeBufferedBits(missingCount)
     }
 
     override fun requestBits(count: Int): Boolean {
@@ -122,37 +114,39 @@ internal data class BitSource64( // @formatter:off
     override fun peekBits(count: Int): ULong {
         checkReadCount(count)
         if (count == 0) return 0UL
-        if (count > bitInBuffer) {
-            fillBuffer()
-            if (count > bitInBuffer) {
-                requireBits(count)
-                check(count <= bitInBuffer) { "Cannot peek $count bits with the current bit alignment" }
-            }
-        }
-        return buffer shr (ULong.SIZE_BITS - count)
+        if (count <= bitInBuffer) return (buffer ushr (Long.SIZE_BITS - count)).toULong()
+        fillBuffer()
+        if (count <= bitInBuffer) return (buffer ushr (Long.SIZE_BITS - count)).toULong()
+        requireBits(count)
+        val bufferedCount = bitInBuffer
+        val missingCount = count - bufferedCount
+        val remainingBits = BitSource64(source.peek(), true, bitOrder).use { it.readBits(missingCount).toLong() }
+        if (bufferedCount == 0) return remainingBits.toULong()
+        val bufferedBits = buffer ushr (Long.SIZE_BITS - bufferedCount)
+        return ((bufferedBits shl missingCount) or remainingBits).toULong()
     }
 
     override fun readBits(count: Int): ULong {
-        if (count in 1..bitInBuffer) return consumeBufferedBits(count)
+        if (count in 1..bitInBuffer) return consumeBufferedBits(count).toULong()
         checkReadCount(count)
         if (count == 0) return 0UL
         fillBuffer()
-        if (count <= bitInBuffer) return consumeBufferedBits(count)
+        if (count <= bitInBuffer) return consumeBufferedBits(count).toULong()
         requireBits(count)
-        return readBufferedBits(count)
+        return readAcrossBuffer(count).toULong()
     }
 
     override fun skipBits(count: Int) {
         require(count >= 0) { "Bit count must not be negative" }
         if (count == 0) return
         if (count <= bitInBuffer) {
-            buffer = (buffer shl (count - 1)) shl 1
+            buffer = if (count == Long.SIZE_BITS) 0L else buffer shl count
             bitInBuffer -= count
             return
         }
         fillBuffer()
         if (count <= bitInBuffer) {
-            buffer = (buffer shl (count - 1)) shl 1
+            buffer = if (count == Long.SIZE_BITS) 0L else buffer shl count
             bitInBuffer -= count
             return
         }
@@ -161,7 +155,7 @@ internal data class BitSource64( // @formatter:off
         while (remaining > 0) {
             fillBuffer()
             val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            buffer = (buffer shl (take - 1)) shl 1
+            buffer = if (take == Long.SIZE_BITS) 0L else buffer shl take
             bitInBuffer -= take
             remaining -= take
         }
@@ -174,7 +168,7 @@ internal data class BitSource64( // @formatter:off
 
     override fun reset() {
         if (isClosed) return
-        buffer = 0UL
+        buffer = 0L
         bitInBuffer = 0
         bitsFetched = 0L
     }

@@ -346,4 +346,18 @@ class BitSourceTest {
             assertEquals(0x1234567890ABCDEFUL, source.readBits(64))
         }
     }
+
+    @Test
+    fun `Peek 64 bits across buffer boundaries`() {
+        val buffer = Buffer()
+        buffer.writeUByte(0xD2U)
+        buffer.writeULong(0x3456789ABCDEF080UL)
+        buffer.bitSource().use { source ->
+            assertEquals(1UL, source.readBits(1))
+            assertEquals(0xA468ACF13579BDE1UL, source.peekBits(64))
+            assertEquals(0L, source.byte)
+            assertEquals(1, source.bit)
+            assertEquals(0xA468ACF13579BDE1UL, source.readBits(64))
+        }
+    }
 }
