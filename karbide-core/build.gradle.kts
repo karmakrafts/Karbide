@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalUnsignedTypes::class)
-
 import dev.karmakrafts.conventions.configureJava
 import dev.karmakrafts.conventions.dokka.configureDokka
 import dev.karmakrafts.conventions.dokka.withKotlin
@@ -75,6 +73,7 @@ kotlin {
     withWasmWasi {
         withNodeJs()
     }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class) //
     applyDefaultHierarchyTemplate {
         common {
             group("jvmAndAndroid") {
