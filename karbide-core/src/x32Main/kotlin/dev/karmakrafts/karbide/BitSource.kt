@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:JvmName("BitSource$")
+
 package dev.karmakrafts.karbide
 
-import kotlinx.io.Sink
+import kotlinx.io.Source
+import kotlin.jvm.JvmName
 
-actual fun BitSink( // @formatter:off
-    sink: Sink,
-    isSinkOwned: Boolean,
+actual fun BitSource( // @formatter:off
+    source: Source,
+    isSourceOwned: Boolean,
     bitOrder: BitOrder
-): BitSink = BitSink64(sink, isSinkOwned, bitOrder) // @formatter:on
+): BitSource = BitSource32(source, isSourceOwned, bitOrder) // @formatter:on

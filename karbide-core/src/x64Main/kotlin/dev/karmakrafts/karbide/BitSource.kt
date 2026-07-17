@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+@file:JvmName("BitSource$")
+
 package dev.karmakrafts.karbide
 
 import kotlinx.io.Source
+import kotlin.jvm.JvmName
 
 actual fun BitSource( // @formatter:off
     source: Source,

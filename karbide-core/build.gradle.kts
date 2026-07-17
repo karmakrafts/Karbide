@@ -80,9 +80,22 @@ kotlin {
                 withJvm()
                 withAndroidLibrary()
             }
-            group("nonJs") {
+            group("x32") {
+                withAndroidNativeArm32()
+                withAndroidNativeX86()
+                withWatchosArm32()
+                withJs()
+            }
+            group("x64") {
                 group("jvmAndAndroid")
-                group("native")
+                withAndroidNativeArm64()
+                withAndroidNativeX64()
+                group("mingw")
+                group("linux")
+                group("macos")
+                group("ios")
+                group("tvos")
+                group("watchos")
                 withWasmJs()
                 withWasmWasi()
             }
