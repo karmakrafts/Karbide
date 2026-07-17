@@ -21,6 +21,7 @@ import dev.karmakrafts.conventions.kotlin.withNative
 import dev.karmakrafts.conventions.kotlin.withNodeJs
 import dev.karmakrafts.conventions.kotlin.withWasmWasi
 import dev.karmakrafts.conventions.kotlin.withWeb
+import kotlinx.benchmark.gradle.BenchmarkConfiguration
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -72,69 +73,46 @@ benchmark {
         register("wasmWasi")
     }
     configurations {
-        named("main") {
+        fun BenchmarkConfiguration.defaultConfig() {
             warmups = 10
             iterations = 10
             iterationTime = 1
             iterationTimeUnit = "s"
+        }
+        named("main") {
+            defaultConfig()
         }
         create("reverseBytes") {
             include("dev.karmakrafts.karbide.bytes.*ReverseBytes*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
         create("reverseBits") {
             include("dev.karmakrafts.karbide.bits.*ReverseBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
-
         create("readSingleBits") {
             include("dev.karmakrafts.karbide.*ReadSingleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
         create("readMultipleBits") {
             include("dev.karmakrafts.karbide.*ReadMultipleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
         create("writeSingleBits") {
             include("dev.karmakrafts.karbide.*WriteSingleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
         create("writeMultipleBits") {
             include("dev.karmakrafts.karbide.*WriteMultipleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
-
         create("multipleBits") {
             include("dev.karmakrafts.karbide.*MultipleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
         create("singleBits") {
             include("dev.karmakrafts.karbide.*SingleBits*")
-            warmups = 10
-            iterations = 10
-            iterationTime = 1
-            iterationTimeUnit = "s"
+            defaultConfig()
         }
     }
 }
