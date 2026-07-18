@@ -3,6 +3,7 @@
 ### Changed
 
 - Use `BitSink32` and `BitSource32` for all 32-bit platforms
+- Performance improvements on all platforms
 
 ## [1.11.0]
 
