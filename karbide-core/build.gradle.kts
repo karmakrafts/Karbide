@@ -76,6 +76,10 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class) //
     applyDefaultHierarchyTemplate {
         common {
+            group("macos") { withMacos() }
+            group("ios") { withIos() }
+            group("watchos") { withWatchos() }
+            group("tvos") { withTvos() }
             group("jvmAndAndroid") {
                 withJvm()
                 withAndroidLibrary()
