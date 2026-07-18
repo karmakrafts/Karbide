@@ -30,15 +30,24 @@ internal data class BitSink32( // @formatter:off
 
     private var isClosed: Boolean = false
 
-    override val byte: Long get() = (bitsEmitted + bitInBuffer) shr 3
+    override val byte: Long
+        get() = ((emittedByteHigh.toUInt().toLong() shl Int.SIZE_BITS) or emittedByteLow.toUInt().toLong()) +
+                (bitInBuffer shr 3)
     override val bit: Int get() = bitInBuffer and 7 // % 8
 
-    // The number of bits already pushed to the underlying sink. Together with the
-    // buffer fill level this yields the logical write position, so the hot write
-    // path only needs to update the buffer and its fill level.
-    private var bitsEmitted: Long = 0L
+    // Keep the emitted-byte position split into two words so buffer writes do not
+    // require Long arithmetic on 32-bit targets. It is joined only when the public
+    // Long byte position is queried.
+    private var emittedByteLow: Int = 0
+    private var emittedByteHigh: Int = 0
     private var bitInBuffer: Int = 0
-    private var buffer: UInt = 0U
+    private var buffer: Int = 0
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun addEmittedBytes(count: Int) {
+        emittedByteLow += count
+        if (emittedByteLow in 0 until count) emittedByteHigh++
+    }
 
     // The buffer is top-aligned: the first bit written ends up at bit 31 and bits
     // below the buffered range are always zero. Since writeBits emits the most
@@ -46,9 +55,11 @@ internal data class BitSink32( // @formatter:off
     // shifts and without any per-write bit reversal. A full buffer is written out
     // as a single 32-bit word which is either already in MSB-first stream order or
     // brought into LSB-first order with a single reverseBits intrinsic.
-    private fun emitWord(word: UInt) {
-        if (isMsbFirst) sink.writeUInt(word) else sink.writeUIntLe(word.reverseBits())
-        bitsEmitted += UInt.SIZE_BITS
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun emitWord(word: Int) {
+        if (isMsbFirst) sink.writeUInt(word.toUInt()) else sink.writeUIntLe(word.reverseBits().toUInt())
+        emittedByteLow += Int.SIZE_BYTES
+        if (emittedByteLow == 0) emittedByteHigh++
     }
 
     /**
@@ -58,57 +69,65 @@ internal data class BitSink32( // @formatter:off
     private fun drainBytes() {
         var remaining = bitInBuffer
         var localBuffer = buffer
+        val byteCount = (remaining + 7) shr 3
         while (remaining > 0) {
-            val value = (localBuffer shr (UInt.SIZE_BITS - Byte.SIZE_BITS)).toUByte()
-            sink.writeUByte(if (isMsbFirst) value else value.reverseBits())
+            val value = (localBuffer ushr (Int.SIZE_BITS - Byte.SIZE_BITS)).toByte()
+            sink.writeUByte(if (isMsbFirst) value.toUByte() else value.reverseBits().toUByte())
             localBuffer = localBuffer shl Byte.SIZE_BITS
-            bitsEmitted += Byte.SIZE_BITS
             remaining -= Byte.SIZE_BITS
         }
-        buffer = 0U
+        addEmittedBytes(byteCount)
+        buffer = 0
         bitInBuffer = 0
     }
 
-    private fun writeChunk(count: Int, bits: UInt) {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun writeChunk(count: Int, bits: Int) {
         val offset = bitInBuffer
         // Top-align the chunk; bits above [count] are shifted out implicitly
-        val chunk = bits shl (UInt.SIZE_BITS - count)
-        buffer = buffer or (chunk shr offset)
+        val chunk = bits shl (Int.SIZE_BITS - count)
+        val word = buffer or (chunk ushr offset)
         val total = offset + count
-        if (total < UInt.SIZE_BITS) {
+        if (total < Int.SIZE_BITS) {
+            buffer = word
             bitInBuffer = total
             return
         }
-        emitWord(buffer)
-        // Carry over the bits that did not fit; the double shift handles a
-        // consumed-bit count of 32 despite Kotlin masking shift distances.
-        val consumed = UInt.SIZE_BITS - offset
-        buffer = (chunk shl (consumed - 1)) shl 1
-        bitInBuffer = total - UInt.SIZE_BITS
+        emitWord(word)
+        buffer = if (offset == 0) 0 else chunk shl (Int.SIZE_BITS - offset)
+        bitInBuffer = total - Int.SIZE_BITS
     }
 
     internal fun writeBits32(count: Int, bits: UInt) {
         require(count in 0..UInt.SIZE_BITS) { "count must be between 0 and ${UInt.SIZE_BITS}" }
         if (count == 0) return
-        writeChunk(count, bits)
+        writeChunk(count, bits.toInt())
+    }
+
+    private fun writeWideBits(count: Int, bits: ULong) {
+        val remaining = count - Int.SIZE_BITS
+        writeChunk(Int.SIZE_BITS, (bits shr remaining).toInt())
+        writeChunk(remaining, bits.toInt())
     }
 
     override fun writeBits(count: Int, bits: ULong) {
-        if (count <= UInt.SIZE_BITS) {
-            writeBits32(count, bits.toUInt())
+        if (count <= 0) {
+            require(count == 0) { "count must not be negative" }
             return
         }
-        val remaining = count - UInt.SIZE_BITS
-        writeChunk(UInt.SIZE_BITS, (bits shr remaining).toUInt())
-        writeChunk(remaining, bits.toUInt())
+        if (count > Int.SIZE_BITS) {
+            writeWideBits(count, bits)
+            return
+        }
+        writeChunk(count, bits.toInt())
     }
 
     override fun padBits(count: Int, value: UByte) {
-        val bits = if (value.toUInt() and 0b1U == 1U) UInt.MAX_VALUE else 0U
+        val bits = if (value.toInt() and 0b1 == 1) -1 else 0
         var remaining = count
-        while (remaining > UInt.SIZE_BITS) {
-            writeChunk(UInt.SIZE_BITS, bits)
-            remaining -= UInt.SIZE_BITS
+        while (remaining > Int.SIZE_BITS) {
+            writeChunk(Int.SIZE_BITS, bits)
+            remaining -= Int.SIZE_BITS
         }
         if (remaining > 0) writeChunk(remaining, bits)
     }
@@ -127,9 +146,10 @@ internal data class BitSink32( // @formatter:off
 
     override fun reset() {
         if (isClosed) return
-        buffer = 0U
+        buffer = 0
         bitInBuffer = 0
-        bitsEmitted = 0L
+        emittedByteLow = 0
+        emittedByteHigh = 0
     }
 
     override fun close() {

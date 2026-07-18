@@ -20,6 +20,7 @@ import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class BitSink32ExtensionsTest {
@@ -58,5 +59,36 @@ class BitSink32ExtensionsTest {
         }
 
         assertContentEquals(byteArrayOf(0xA5.toByte()), buffer.readByteArray())
+    }
+
+    @Test
+    fun `Track position across buffered and emitted words`() {
+        for (bitOrder in BitOrder.entries) {
+            val buffer = Buffer()
+            buffer.bitSink(bitOrder = bitOrder).use { sink ->
+                assertEquals(0L, sink.byte)
+                assertEquals(0, sink.bit)
+
+                sink.writeBits32(31, UInt.MAX_VALUE)
+                assertEquals(3L, sink.byte)
+                assertEquals(7, sink.bit)
+
+                sink.writeBits32(2, UInt.MAX_VALUE)
+                assertEquals(4L, sink.byte)
+                assertEquals(1, sink.bit)
+
+                sink.writeBits32(31, UInt.MAX_VALUE)
+                assertEquals(8L, sink.byte)
+                assertEquals(0, sink.bit)
+
+                sink.flush()
+                assertEquals(8L, sink.byte)
+                assertEquals(0, sink.bit)
+
+                sink.reset()
+                assertEquals(0L, sink.byte)
+                assertEquals(0, sink.bit)
+            }
+        }
     }
 }

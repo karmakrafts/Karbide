@@ -30,18 +30,19 @@ internal data class BitSource32( // @formatter:off
 
     private var isClosed: Boolean = false
 
-    override val byte: Long get() = bitsRead shr 3
-    override val bit: Int get() = (bitsRead and 7L).toInt()
+    override val byte: Long
+        get() = ((fetchedByteHigh.toLong() shl Int.SIZE_BITS) or fetchedByteLow.toLong()) -
+                ((bitInBuffer + 7) shr 3)
+    override val bit: Int get() = (-bitInBuffer) and 7
 
     override val exhausted: Boolean
         get() = bitInBuffer == 0 && source.exhausted()
 
-    // The number of bits consumed so far is derived from the number of bits fetched
-    // from the source, so the hot read paths only need to update the buffer and its
-    // fill level instead of maintaining a separate read counter.
-    private val bitsRead: Long get() = bitsFetched - bitInBuffer
-
-    private var bitsFetched: Long = 0L
+    // Keep the fetched-byte position split into two words so buffer refills do not
+    // require Long arithmetic on 32-bit targets. It is joined only when the public
+    // Long byte position is queried.
+    private var fetchedByteLow: UInt = 0U
+    private var fetchedByteHigh: UInt = 0U
     private var bitInBuffer: Int = 0
     private var buffer: UInt = 0U
     private val scratch: ByteArray = ByteArray(UInt.SIZE_BYTES)
@@ -55,11 +56,25 @@ internal data class BitSource32( // @formatter:off
     // bits below the buffered range are always zero. This allows extracting chunks
     // with a single shift and without any per-read bit reversal. The double shift
     // keeps this branch-free for the full 1..32 count range.
-    private fun consumeBufferedBits(count: Int): UInt {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun consumeBufferedBits(count: Int): UInt {
         val result = buffer shr (UInt.SIZE_BITS - count)
         buffer = (buffer shl (count - 1)) shl 1
         bitInBuffer -= count
         return result
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun discardBufferedBits(count: Int) {
+        buffer = (buffer shl (count - 1)) shl 1
+        bitInBuffer -= count
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun addFetchedBytes(count: Int) {
+        val previous = fetchedByteLow
+        fetchedByteLow += count.toUInt()
+        if (fetchedByteLow < previous) fetchedByteHigh++
     }
 
     private fun fillBuffer() {
@@ -69,7 +84,7 @@ internal data class BitSource32( // @formatter:off
         if (bits == 0 && source.request(UInt.SIZE_BYTES.toLong())) {
             buffer = if (isMsbFirst) source.readUInt() else source.readUIntLe().reverseBits()
             bitInBuffer = UInt.SIZE_BITS
-            bitsFetched += UInt.SIZE_BITS
+            addFetchedBytes(UInt.SIZE_BYTES)
             return
         }
         // Bulk-read up to freeBytes bytes in a single call and assemble them into a
@@ -86,24 +101,24 @@ internal data class BitSource32( // @formatter:off
             buffer = buffer or (word shr bits)
             bits += read shl 3
             freeBytes -= read
+            addFetchedBytes(read)
         }
-        bitsFetched += bits - bitInBuffer
         bitInBuffer = bits
     }
 
-    private fun readBufferedBits(count: Int): UInt {
-        var remaining = count
-        var result = 0U
-        while (remaining > 0) {
-            fillBuffer()
-            val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            val chunk = buffer shr (UInt.SIZE_BITS - take)
-            result = result or (chunk shl (remaining - take))
-            buffer = (buffer shl (take - 1)) shl 1
-            bitInBuffer -= take
-            remaining -= take
-        }
-        return result
+    private fun readAcrossBuffer(count: Int): UInt {
+        val bufferedCount = bitInBuffer
+        val missingCount = count - bufferedCount
+        val result = consumeBufferedBits(bufferedCount) shl missingCount
+        fillBuffer()
+        return result or consumeBufferedBits(missingCount)
+    }
+
+    private fun readAvailableBits32(count: Int): UInt {
+        if (count <= bitInBuffer) return consumeBufferedBits(count)
+        fillBuffer()
+        if (count <= bitInBuffer) return consumeBufferedBits(count)
+        return readAcrossBuffer(count)
     }
 
     internal fun readBits32(count: Int): UInt {
@@ -113,7 +128,7 @@ internal data class BitSource32( // @formatter:off
         fillBuffer()
         if (count <= bitInBuffer) return consumeBufferedBits(count)
         requireBits(count)
-        return readBufferedBits(count)
+        return readAcrossBuffer(count)
     }
 
     internal fun peekBits32(count: Int): UInt {
@@ -136,9 +151,9 @@ internal data class BitSource32( // @formatter:off
     override fun requestBits(count: Int): Boolean {
         require(count >= 0) { "count must not be negative" }
         if (count <= bitInBuffer) return true
-        val missingBits = count.toLong() - bitInBuffer
-        val missingBytes = (missingBits + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS
-        return source.request(missingBytes)
+        val missingBits = count - bitInBuffer
+        val missingBytes = (missingBits shr 3) + if (missingBits and 7 == 0) 0 else 1
+        return source.request(missingBytes.toLong())
     }
 
     override fun requireBits(count: Int) {
@@ -168,8 +183,8 @@ internal data class BitSource32( // @formatter:off
         checkReadCount(count)
         fillBuffer()
         requireBits(count)
-        val highBits = readBufferedBits(count - UInt.SIZE_BITS)
-        val lowBits = readBufferedBits(UInt.SIZE_BITS)
+        val highBits = readAvailableBits32(count - UInt.SIZE_BITS)
+        val lowBits = readAvailableBits32(UInt.SIZE_BITS)
         return (highBits.toULong() shl UInt.SIZE_BITS) or lowBits.toULong()
     }
 
@@ -177,24 +192,29 @@ internal data class BitSource32( // @formatter:off
         require(count >= 0) { "Bit count must not be negative" }
         if (count == 0) return
         if (count <= bitInBuffer) {
-            buffer = (buffer shl (count - 1)) shl 1
-            bitInBuffer -= count
+            discardBufferedBits(count)
             return
         }
         fillBuffer()
         if (count <= bitInBuffer) {
-            buffer = (buffer shl (count - 1)) shl 1
-            bitInBuffer -= count
+            discardBufferedBits(count)
             return
         }
         requireBits(count)
         var remaining = count
-        while (remaining > 0) {
+        if (bitInBuffer > 0) {
+            remaining -= bitInBuffer
+            discardBufferedBits(bitInBuffer)
+        }
+        val bytes = remaining shr 3
+        if (bytes > 0) {
+            source.skip(bytes.toLong())
+            addFetchedBytes(bytes)
+            remaining -= bytes shl 3
+        }
+        if (remaining > 0) {
             fillBuffer()
-            val take = if (remaining <= bitInBuffer) remaining else bitInBuffer
-            buffer = (buffer shl (take - 1)) shl 1
-            bitInBuffer -= take
-            remaining -= take
+            discardBufferedBits(remaining)
         }
     }
 
@@ -207,7 +227,8 @@ internal data class BitSource32( // @formatter:off
         if (isClosed) return
         buffer = 0U
         bitInBuffer = 0
-        bitsFetched = 0L
+        fetchedByteLow = 0U
+        fetchedByteHigh = 0U
     }
 
     override fun close() {

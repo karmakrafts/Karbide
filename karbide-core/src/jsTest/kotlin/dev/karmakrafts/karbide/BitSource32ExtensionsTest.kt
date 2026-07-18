@@ -98,4 +98,25 @@ class BitSource32ExtensionsTest {
             assertEquals(0xABCDEFU, source.readBits32(24))
         }
     }
+
+    @Test
+    fun `Track position across buffered reads skips and reset`() {
+        val buffer = Buffer()
+        buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23, 0x45, 0x67))
+
+        buffer.bitSource().use { source ->
+            source.readBits32(3)
+            assertEquals(0L, source.byte)
+            assertEquals(3, source.bit)
+
+            source.skipBits(37)
+            assertEquals(5L, source.byte)
+            assertEquals(0, source.bit)
+            assertEquals(0x45U, source.readBits32(8))
+
+            source.reset()
+            assertEquals(0L, source.byte)
+            assertEquals(0, source.bit)
+        }
+    }
 }
