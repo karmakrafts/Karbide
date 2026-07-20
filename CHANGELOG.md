@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.11.1]
+
 ### Changed
 
 - Use `BitSink32` and `BitSource32` for all 32-bit platforms
