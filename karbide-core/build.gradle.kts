@@ -99,7 +99,8 @@ kotlin {
                 group("macos")
                 group("ios")
                 group("tvos")
-                group("watchos")
+                withWatchosArm64()
+                withWatchosSimulatorArm64()
                 withWasmJs()
                 withWasmWasi()
             }
