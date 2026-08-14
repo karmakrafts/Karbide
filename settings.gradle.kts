@@ -1,5 +1,3 @@
-import java.time.Duration
-
 /*
  * Copyright 2026 Karma Krafts
  *
@@ -15,6 +13,8 @@ import java.time.Duration
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import java.time.Duration
 
 rootProject.name = "karbide"
 

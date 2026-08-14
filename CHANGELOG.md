@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Gradle 9.7.0
+- Updated to AGP 9.3.1
+
 ## [1.11.1]
 
 ### Changed
