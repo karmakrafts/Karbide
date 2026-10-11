@@ -2,16 +2,16 @@
 
 java = "17"
 
-androidGradle = "9.3.1" # https://developer.android.com/reference/tools/gradle-api
-karbide = "1.11.2"
-kotlin = "2.4.10" # https://github.com/JetBrains/kotlin/releases
+androidGradle = "9.4.1" # https://developer.android.com/reference/tools/gradle-api
+karbide = "1.12.0"
+kotlin = "2.4.21" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.9.1" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.2.0" # https://github.com/Kotlin/dokka/releases
-karmaConventions = "1.20.0" # https://github.com/karmakrafts/karma-conventions/tags
+karmaConventions = "1.21.0" # https://github.com/karmakrafts/karma-conventions/tags
 
 # karbide-benchmarks
 
-kotlinxBenchmark = "0.4.17" # https://github.com/Kotlin/kotlinx-benchmark/releases
+kotlinxBenchmark = "0.5.0" # https://github.com/Kotlin/kotlinx-benchmark/releases
 jmh = "1.37" # https://github.com/openjdk/jmh/tags
 
 [libraries]
