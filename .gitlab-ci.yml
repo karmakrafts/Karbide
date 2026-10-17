@@ -149,7 +149,6 @@ test:linux:arm64:
   script:
     - chmod +x karbide-core/build/bin/linuxArm64/debugTest/test.kexe
     - ./karbide-core/build/bin/linuxArm64/debugTest/test.kexe
-    - ./gradlew clean jvmTest --stacktrace
   tags:
     - linux
     - docker
