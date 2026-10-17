@@ -224,9 +224,8 @@ test:js:browser:
   script:
     - ./gradlew clean jsBrowserTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 test:wasm:browser:
   stage: test
@@ -237,9 +236,8 @@ test:wasm:browser:
   script:
     - ./gradlew clean wasmJsBrowserTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 test:js:node:
   stage: test
@@ -250,9 +248,8 @@ test:js:node:
   script:
     - ./gradlew clean jsNodeTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 test:wasm:node:
   stage: test
@@ -263,9 +260,8 @@ test:wasm:node:
   script:
     - ./gradlew clean wasmJsNodeTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 test:wasi:node:
   stage: test
@@ -276,9 +272,8 @@ test:wasi:node:
   script:
     - ./gradlew clean wasmWasiNodeTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 # ------------------------------ Publish
 
