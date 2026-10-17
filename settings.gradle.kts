@@ -53,11 +53,6 @@ nmcpSettings {
     }
 }
 
-// When we are running Android device tests in CI, we use software rendering so we can be headless
-if(System.getenv("CI_PROJECT_ID") != null) {
-    System.setProperty("android.testoptions.manageddevices.emulator.gpu", "swiftshader_indirect")
-}
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include("karbide-core")
 include("karbide-benchmarks")
