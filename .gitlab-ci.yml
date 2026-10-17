@@ -106,7 +106,7 @@ security:
 
 # ------------------------------ Test
 
-test:android:amd64:
+test:android:arm64:
   stage: test
   interruptible: true
   rules:
@@ -115,9 +115,8 @@ test:android:amd64:
   script:
     - ./gradlew clean pixel6Api36AndroidDeviceTest --stacktrace
   tags:
-    - linux
-    - shell
-    - amd64
+    - macos
+    - arm64
 
 test:linux:amd64:
   stage: test
