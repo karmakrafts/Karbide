@@ -8,7 +8,7 @@ workflow:
 
 stages:
   - check_changelog
-  - build
+  - test
   - security
   - publish
   - release
@@ -104,18 +104,182 @@ security:
   tags:
     - macos
 
-# ------------------------------ Build
+# ------------------------------ Test
 
-build:
-  stage: build
+test:android:amd64:
+  stage: test
   interruptible: true
   rules:
     - *if-merge-request
     - *if-main
   script:
-    - ./gradlew clean build --stacktrace
+    - ./gradlew clean pixel6Api36AndroidDeviceTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:linux:amd64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean linuxX64Test linuxArm64TestBinaries jvmTest --stacktrace
+  artifacts:
+    name: "karbide-tests-$CI_COMMIT_REF_SLUG"
+    paths:
+      - karbide-core/build/bin/linuxArm64/debugTest/test.kexe
+    expire_in: 1 days
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:linux:arm64:
+  stage: test
+  interruptible: true
+  needs:
+    - test:linux:amd64
+  dependencies:
+    - test:linux:amd64
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - chmod +x karbide-core/build/bin/linuxArm64/debugTest/test.kexe
+    - ./karbide-core/build/bin/linuxArm64/debugTest/test.kexe
+    - ./gradlew clean jvmTest --stacktrace
+  tags:
+    - linux
+    - docker
+    - arm64
+
+test:macos:arm64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean macosArm64Test jvmTest --stacktrace
   tags:
     - macos
+    - arm64
+
+test:ios:arm64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean iosSimulatorArm64Test --stacktrace
+  tags:
+    - macos
+    - arm64
+
+test:tvos:arm64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean tvosSimulatorArm64Test --stacktrace
+  tags:
+    - macos
+    - arm64
+
+test:watchos:arm64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean watchosSimulatorArm64Test --stacktrace
+  tags:
+    - macos
+    - arm64
+
+test:windows:amd64:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean mingwX64Test jvmTest --stacktrace
+  tags:
+    - windows
+    - amd64
+
+test:js:browser:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean jsBrowserTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:wasm:browser:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean wasmJsBrowserTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:js:node:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean jsNodeTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:wasm:node:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean wasmJsNodeTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
+
+test:wasi:node:
+  stage: test
+  interruptible: true
+  rules:
+    - *if-merge-request
+    - *if-main
+  script:
+    - ./gradlew clean wasmWasiNodeTest --stacktrace
+  tags:
+    - linux
+    - shell
+    - amd64
 
 # ------------------------------ Publish
 
