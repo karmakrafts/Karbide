@@ -24,7 +24,7 @@ import kotlin.test.assertFailsWith
 
 class BitSource32ExtensionsTest {
     @Test
-    fun `Read zero to 32 bits across word boundaries`() {
+    fun readZeroTo32BitsAcrossWordBoundaries() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23))
 
@@ -37,7 +37,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Read 32 bits in LSB first order`() {
+    fun read32BitsInLsbFirstOrder() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0x01, 0x02, 0x04, 0x08))
 
@@ -47,7 +47,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Read bits validates count and preserves partial input on EOF`() {
+    fun readBitsValidatesCountAndPreservesPartialInputOnEof() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte()))
 
@@ -60,7 +60,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Peek zero to 32 bits without consuming across word boundaries`() {
+    fun peekZeroTo32BitsWithoutConsumingAcrossWordBoundaries() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23))
 
@@ -76,7 +76,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Peek 32 bits in LSB first order without consuming`() {
+    fun peek32BitsInLsbFirstOrderWithoutConsuming() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0x01, 0x02, 0x04, 0x08))
 
@@ -87,7 +87,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Peek bits validates count and preserves partial input on EOF`() {
+    fun peekBitsValidatesCountAndPreservesPartialInputOnEof() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte()))
 
@@ -100,7 +100,7 @@ class BitSource32ExtensionsTest {
     }
 
     @Test
-    fun `Track position across buffered reads skips and reset`() {
+    fun trackPositionAcrossBufferedReadsSkipsAndReset() {
         val buffer = Buffer()
         buffer.write(byteArrayOf(0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x01, 0x23, 0x45, 0x67))
 

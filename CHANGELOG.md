@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Added
+
+- Android device tests
+
+### Changed
+
+- Updated to Karma Conventions 1.22.0
+
 ## [1.12.0]
 
 ### Changed

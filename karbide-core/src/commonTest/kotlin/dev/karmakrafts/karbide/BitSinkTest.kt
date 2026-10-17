@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 
 class BitSinkTest {
     @Test
-    fun `Write an odd number of bits`() {
+    fun writeAnOddNumberOfBits() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeNibble(0b0000U)
@@ -39,7 +39,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write bits within same byte`() {
+    fun writeBitsWithinSameByte() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeNibble(0b0000U)
@@ -49,7 +49,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write bits beyond byte boundary`() {
+    fun writeBitsBeyondByteBoundary() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeUByte(0U)
@@ -61,7 +61,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write numeric types`() {
+    fun writeNumericTypes() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeByte(0x12)
@@ -91,7 +91,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write unsigned numeric types`() {
+    fun writeUnsignedNumericTypes() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeUByte(0x12U)
@@ -113,7 +113,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write ULong beyond word boundary`() {
+    fun writeULongBeyondWordBoundary() {
         val expected = byteArrayOf(
             0xA1.toByte(), 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(), 0x05
         )
@@ -134,11 +134,33 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write repeated word boundaries`() {
+    fun writeRepeatedWordBoundaries() {
         val expected = byteArrayOf(
-            0x01, 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(),
-            0xF1.toByte(), 0x23, 0x45, 0x67, 0x89.toByte(), 0xAB.toByte(), 0xCD.toByte(), 0xEF.toByte(),
-            0x0F, 0xED.toByte(), 0xCB.toByte(), 0xA9.toByte(), 0x87.toByte(), 0x65, 0x43, 0x21, 0xA0.toByte()
+            0x01,
+            0x23,
+            0x45,
+            0x67,
+            0x89.toByte(),
+            0xAB.toByte(),
+            0xCD.toByte(),
+            0xEF.toByte(),
+            0xF1.toByte(),
+            0x23,
+            0x45,
+            0x67,
+            0x89.toByte(),
+            0xAB.toByte(),
+            0xCD.toByte(),
+            0xEF.toByte(),
+            0x0F,
+            0xED.toByte(),
+            0xCB.toByte(),
+            0xA9.toByte(),
+            0x87.toByte(),
+            0x65,
+            0x43,
+            0x21,
+            0xA0.toByte()
         )
         for (bitOrder in BitOrder.entries) {
             val buffer = Buffer()
@@ -162,7 +184,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write byte array`() {
+    fun writeByteArray() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x05)
         buffer.bitSink().use { sink ->
@@ -175,7 +197,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write padding`() {
+    fun writePadding() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBit(1U)
@@ -194,7 +216,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write padding beyond word boundary`() {
+    fun writePaddingBeyondWordBoundary() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeNibble(0U)
@@ -210,7 +232,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Pad until next byte`() {
+    fun padUntilNextByte() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBit(1U)
@@ -224,7 +246,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Flush on close`() {
+    fun flushOnClose() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBit(1U)
@@ -233,7 +255,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write bits in LSB order`() {
+    fun writeBitsInLsbOrder() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBitsLsb(4, 0b0011UL)
@@ -243,7 +265,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write bits in LSB order beyond byte boundary`() {
+    fun writeBitsInLsbOrderBeyondByteBoundary() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBitsLsb(12, 0b1011_0100_1110UL)
@@ -253,7 +275,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write numeric types in LSB order`() {
+    fun writeNumericTypesInLsbOrder() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeByteLsb(0x12)
@@ -273,7 +295,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write unsigned numeric types in LSB order`() {
+    fun writeUnsignedNumericTypesInLsbOrder() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeUByteLsb(0x12U)
@@ -289,7 +311,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write byte array and string in LSB order`() {
+    fun writeByteArrayAndStringInLsbOrder() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02, 0x03)
         buffer.bitSink().use { sink ->
@@ -306,7 +328,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write numeric types in LE LSB order`() {
+    fun writeNumericTypesInLeLsbOrder() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeShortLeLsb(0x1234)
@@ -324,7 +346,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write unsigned numeric types in LE LSB order`() {
+    fun writeUnsignedNumericTypesInLeLsbOrder() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeUShortLeLsb(0x1234U)
@@ -338,7 +360,7 @@ class BitSinkTest {
     }
 
     @Test
-    fun `Write bits with LSB first bit order`() {
+    fun writeBitsWithLsbFirstBitOrder() {
         val buffer = Buffer()
         buffer.bitSink(bitOrder = BitOrder.LSB_FIRST).use { sink ->
             sink.writeBits(4, 0b1011UL)

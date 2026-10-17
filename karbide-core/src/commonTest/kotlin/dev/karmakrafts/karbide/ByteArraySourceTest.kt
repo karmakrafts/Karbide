@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 
 class ByteArraySourceTest {
     @Test
-    fun `Read from source`() {
+    fun readFromSource() {
         val data = byteArrayOf(1, 2, 3, 4, 5)
         val source = data.source()
         val buffer = Buffer()
@@ -38,7 +38,7 @@ class ByteArraySourceTest {
     }
 
     @Test
-    fun `Read with offset and size`() {
+    fun readWithOffsetAndSize() {
         val data = byteArrayOf(0, 1, 2, 3, 4, 5, 6)
         val source = data.source(1, 4) // should read 1, 2, 3, 4
         val buffer = Buffer()
@@ -52,7 +52,7 @@ class ByteArraySourceTest {
     }
 
     @Test
-    fun `Reset source`() {
+    fun resetSource() {
         val data = byteArrayOf(1, 2, 3)
         val source = data.source()
         val buffer = Buffer()
@@ -70,7 +70,7 @@ class ByteArraySourceTest {
     }
 
     @Test
-    fun `EOF check`() {
+    fun eofCheck() {
         val data = byteArrayOf(1, 2)
         val source = data.source()
         val buffer = Buffer()
@@ -80,7 +80,7 @@ class ByteArraySourceTest {
     }
 
     @Test
-    fun `Empty source`() {
+    fun emptySource() {
         val data = byteArrayOf()
         val source = data.source()
         val buffer = Buffer()

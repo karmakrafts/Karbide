@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 
 class BitSourceTest {
     @Test
-    fun `Read an odd number of bits`() {
+    fun readAnOddNumberOfBits() {
         val buffer = Buffer()
         buffer.writeUByte(0b0000_0011U)
         buffer.writeUByte(0b1000_0000U)
@@ -42,7 +42,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits within same byte`() {
+    fun readBitsWithinSameByte() {
         val buffer = Buffer()
         buffer.writeUByte(0b0000_0011U)
         buffer.bitSource().use { source ->
@@ -52,7 +52,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits beyond byte boundary`() {
+    fun readBitsBeyondByteBoundary() {
         val buffer = Buffer()
         buffer.writeUByte(0b0000_0000U)
         buffer.writeUByte(0b0000_0000U)
@@ -64,7 +64,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read numeric types`() {
+    fun readNumericTypes() {
         val buffer = Buffer()
         buffer.writeByte(0x12)
         buffer.writeShort(0x1234)
@@ -94,7 +94,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read unsigned numeric types`() {
+    fun readUnsignedNumericTypes() {
         val buffer = Buffer()
         buffer.writeUByte(0x12U)
         buffer.writeUShort(0x1234U)
@@ -116,7 +116,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read byte array`() {
+    fun readByteArray() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02)
         buffer.write(data)
@@ -129,7 +129,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Skip bits nibbles and bytes`() {
+    fun skipBitsNibblesAndBytes() {
         val buffer = Buffer()
         buffer.writeUByte(0xBCU)
         buffer.writeUByte(0x4AU)
@@ -149,7 +149,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Skip until next byte`() {
+    fun skipUntilNextByte() {
         val buffer = Buffer()
         buffer.writeUByte(0b1011_1111U)
         buffer.writeUByte(0x4AU)
@@ -161,7 +161,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits in LSB order`() {
+    fun readBitsInLsbOrder() {
         val buffer = Buffer()
         buffer.writeUByte(0xC5U)
         buffer.bitSource().use { source ->
@@ -171,7 +171,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits in LSB order beyond byte boundary`() {
+    fun readBitsInLsbOrderBeyondByteBoundary() {
         val buffer = Buffer()
         buffer.writeUByte(0x72U)
         buffer.writeUByte(0xD0U)
@@ -181,7 +181,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read numeric types in LSB order`() {
+    fun readNumericTypesInLsbOrder() {
         val buffer = Buffer()
         buffer.writeByte(0x12.toByte().reverseBits())
         buffer.writeShort(0x1234.toShort().reverseBits())
@@ -201,7 +201,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read unsigned numeric types in LSB order`() {
+    fun readUnsignedNumericTypesInLsbOrder() {
         val buffer = Buffer()
         buffer.writeUByte(0x12U.toUByte().reverseBits())
         buffer.writeUShort(0x1234U.toUShort().reverseBits())
@@ -217,7 +217,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read byte array and string in LSB order`() {
+    fun readByteArrayAndStringInLsbOrder() {
         val buffer = Buffer()
         val data = byteArrayOf(0x01, 0x02, 0x03)
         for (b in data) {
@@ -237,7 +237,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read numeric types in LE LSB order`() {
+    fun readNumericTypesInLeLsbOrder() {
         val buffer = Buffer()
         buffer.writeShort(0x1234.toShort().reverseBytes().reverseBits())
         buffer.writeInt(0x12345678.reverseBytes().reverseBits())
@@ -255,7 +255,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read unsigned numeric types in LE LSB order`() {
+    fun readUnsignedNumericTypesInLeLsbOrder() {
         val buffer = Buffer()
         buffer.writeUShort(0x1234U.toUShort().reverseBytes().reverseBits())
         buffer.writeUInt(0x12345678U.reverseBytes().reverseBits())
@@ -269,7 +269,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits with LSB first bit order`() {
+    fun readBitsWithLsbFirstBitOrder() {
         val buffer = Buffer()
         buffer.writeUByte(0xADU)
         buffer.bitSource(bitOrder = BitOrder.LSB_FIRST).use { source ->
@@ -279,7 +279,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read 64 bits across buffer boundaries`() {
+    fun read64BitsAcrossBufferBoundaries() {
         val buffer = Buffer()
         buffer.writeUByte(0xD2U)
         buffer.writeULong(0x3456789ABCDEF080UL)
@@ -292,7 +292,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Read bits throws before consuming partial data`() {
+    fun readBitsThrowsBeforeConsumingPartialData() {
         val buffer = Buffer()
         buffer.writeUByte(0xACU)
         buffer.bitSource().use { source ->
@@ -306,7 +306,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Skip bits throws before consuming partial data`() {
+    fun skipBitsThrowsBeforeConsumingPartialData() {
         val buffer = Buffer()
         buffer.writeUByte(0xACU)
         buffer.bitSource().use { source ->
@@ -319,7 +319,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Peek bits does not consume data`() {
+    fun peekBitsDoesNotConsumeData() {
         val buffer = Buffer()
         buffer.writeUByte(0b1100_1010U)
         buffer.writeUByte(0b0110_0000U)
@@ -336,7 +336,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Peek 64 bits does not consume data`() {
+    fun peek64BitsDoesNotConsumeData() {
         val buffer = Buffer()
         buffer.writeULong(0x1234567890ABCDEFUL)
         buffer.bitSource().use { source ->
@@ -348,7 +348,7 @@ class BitSourceTest {
     }
 
     @Test
-    fun `Peek 64 bits across buffer boundaries`() {
+    fun peek64BitsAcrossBufferBoundaries() {
         val buffer = Buffer()
         buffer.writeUByte(0xD2U)
         buffer.writeULong(0x3456789ABCDEF080UL)

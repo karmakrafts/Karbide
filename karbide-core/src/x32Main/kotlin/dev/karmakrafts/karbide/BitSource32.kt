@@ -31,8 +31,7 @@ internal data class BitSource32( // @formatter:off
     private var isClosed: Boolean = false
 
     override val byte: Long
-        get() = ((fetchedByteHigh.toLong() shl Int.SIZE_BITS) or fetchedByteLow.toLong()) -
-                ((bitInBuffer + 7) shr 3)
+        get() = ((fetchedByteHigh.toLong() shl Int.SIZE_BITS) or fetchedByteLow.toLong()) - ((bitInBuffer + 7) shr 3)
     override val bit: Int get() = (-bitInBuffer) and 7
 
     override val exhausted: Boolean

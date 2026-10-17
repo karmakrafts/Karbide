@@ -25,7 +25,7 @@ import kotlin.test.assertFailsWith
 
 class BitSink32ExtensionsTest {
     @Test
-    fun `Write zero to 32 bits across word boundaries`() {
+    fun writeZeroTo32BitsAcrossWordBoundaries() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             sink.writeBits32(0, UInt.MAX_VALUE)
@@ -40,7 +40,7 @@ class BitSink32ExtensionsTest {
     }
 
     @Test
-    fun `Write 32 bits in LSB first order`() {
+    fun write32BitsInLsbFirstOrder() {
         val buffer = Buffer()
         buffer.bitSink(bitOrder = BitOrder.LSB_FIRST).use { sink ->
             sink.writeBits32(32, 0x80402010U)
@@ -50,7 +50,7 @@ class BitSink32ExtensionsTest {
     }
 
     @Test
-    fun `Write bits validates count without changing output`() {
+    fun writeBitsValidatesCountWithoutChangingOutput() {
         val buffer = Buffer()
         buffer.bitSink().use { sink ->
             assertFailsWith<IllegalArgumentException> { sink.writeBits32(-1, UInt.MAX_VALUE) }
@@ -62,7 +62,7 @@ class BitSink32ExtensionsTest {
     }
 
     @Test
-    fun `Track position across buffered and emitted words`() {
+    fun trackPositionAcrossBufferedAndEmittedWords() {
         for (bitOrder in BitOrder.entries) {
             val buffer = Buffer()
             buffer.bitSink(bitOrder = bitOrder).use { sink ->

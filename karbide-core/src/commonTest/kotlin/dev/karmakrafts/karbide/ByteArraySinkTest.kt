@@ -24,7 +24,7 @@ import kotlin.test.assertTrue
 class ByteArraySinkTest {
 
     @Test
-    fun `Write to sink and convert to byte array`() {
+    fun writeToSinkAndConvertToByteArray() {
         val sink = ByteArraySink()
         val buffer = Buffer()
         buffer.write(byteArrayOf(1, 2, 3, 4, 5))
@@ -36,7 +36,7 @@ class ByteArraySinkTest {
     }
 
     @Test
-    fun `Reset sink`() {
+    fun resetSink() {
         val sink = ByteArraySink()
         val buffer = Buffer()
         buffer.write(byteArrayOf(1, 2, 3))
@@ -47,7 +47,7 @@ class ByteArraySinkTest {
     }
 
     @Test
-    fun `Close sink`() {
+    fun closeSink() {
         val sink = ByteArraySink()
         val buffer = Buffer()
         buffer.write(byteArrayOf(1, 2, 3))
@@ -58,7 +58,7 @@ class ByteArraySinkTest {
     }
 
     @Test
-    fun `Write multiple times`() {
+    fun writeMultipleTimes() {
         val sink = ByteArraySink()
         val buffer = Buffer()
         buffer.write(byteArrayOf(1, 2))
@@ -72,7 +72,7 @@ class ByteArraySinkTest {
     }
 
     @Test
-    fun `toByteArray consumes the buffer`() {
+    fun toByteArrayConsumesTheBuffer() {
         val sink = ByteArraySink()
         val buffer = Buffer()
         buffer.write(byteArrayOf(1, 2, 3))

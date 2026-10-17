@@ -21,6 +21,8 @@ import dev.karmakrafts.conventions.dokka.withKotlinxIo
 import dev.karmakrafts.conventions.kotlin.defaultCompilerOptions
 import dev.karmakrafts.conventions.kotlin.withAndroidLibrary
 import dev.karmakrafts.conventions.kotlin.withBrowser
+import dev.karmakrafts.conventions.kotlin.withDefaultDeviceTests
+import dev.karmakrafts.conventions.kotlin.withDefaultHostTests
 import dev.karmakrafts.conventions.kotlin.withJvm
 import dev.karmakrafts.conventions.kotlin.withNative
 import dev.karmakrafts.conventions.kotlin.withNodeJs
@@ -51,7 +53,10 @@ kotlin {
     }
     defaultCompilerOptions()
     withSourcesJar()
-    withAndroidLibrary("$group.core")
+    withAndroidLibrary("$group.core") {
+        withDefaultHostTests()
+        withDefaultDeviceTests()
+    }
     withNative {
         compilations {
             named("main") {
@@ -87,7 +92,6 @@ kotlin {
             group("x32") {
                 withAndroidNativeArm32()
                 withAndroidNativeX86()
-                withWatchosArm32()
                 withJs()
             }
             group("x64") {

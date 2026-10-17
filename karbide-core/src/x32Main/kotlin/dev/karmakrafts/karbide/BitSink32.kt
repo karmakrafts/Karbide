@@ -31,8 +31,8 @@ internal data class BitSink32( // @formatter:off
     private var isClosed: Boolean = false
 
     override val byte: Long
-        get() = ((emittedByteHigh.toUInt().toLong() shl Int.SIZE_BITS) or emittedByteLow.toUInt().toLong()) +
-                (bitInBuffer shr 3)
+        get() = ((emittedByteHigh.toUInt().toLong() shl Int.SIZE_BITS) or emittedByteLow.toUInt()
+            .toLong()) + (bitInBuffer shr 3)
     override val bit: Int get() = bitInBuffer and 7 // % 8
 
     // Keep the emitted-byte position split into two words so buffer writes do not
