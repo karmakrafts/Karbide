@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [1.13.0]
+
 ### Added
 
 - Android device tests
