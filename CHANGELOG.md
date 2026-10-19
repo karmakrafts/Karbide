@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Karma Conventions 1.22.1
+
 ## [1.13.0]
 
 ### Added
