@@ -321,14 +321,14 @@ test:wasm:node:
     - macos
     - arm64
 
-test:wasi:node:
+test:wasi:wasmtime:
   stage: test
   interruptible: true
   rules:
     - *if-merge-request
     - *if-main
   script:
-    - ./gradlew clean wasmWasiNodeTest --stacktrace
+    - ./gradlew clean wasmWasiWasmtimeTest --stacktrace
   artifacts:
     when: always
     reports:
