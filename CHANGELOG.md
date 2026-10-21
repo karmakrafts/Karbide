@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+### Changed
+
+- Updated to Gradle 9.8.2
+- Updated to Kotlin 2.5.0-Beta2
+- Updated to Dokka 2.3.0-Beta
+- Updated to Karma Conventions 1.23.0.310-SNAPSHOT
+- Added test reports to CI jobs
+- Switched to Kotlin/JS ES2020 target
+
 ## [1.13.1]
 
 ### Changed

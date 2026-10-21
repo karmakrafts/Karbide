@@ -55,4 +55,29 @@ class ByteUtilsTest {
     fun reverseULongBytes() {
         assertEquals(0xEFCDAB9078563412UL, 0x1234567890ABCDEFUL.reverseBytes())
     }
+
+    @Test
+    fun reverseBytesForEveryBit() {
+        for (bit in 0 until Long.SIZE_BITS) {
+            val value = 1L shl bit
+            val expected = 1L shl ((Long.SIZE_BYTES - 1 - bit / Byte.SIZE_BITS) * Byte.SIZE_BITS + bit % Byte.SIZE_BITS)
+            assertEquals(expected, value.reverseBytes(), "bit=$bit")
+            assertEquals(expected.inv(), value.inv().reverseBytes(), "bit=$bit, inverted")
+            assertEquals(expected.toULong(), value.toULong().reverseBytes())
+            assertEquals(expected.inv().toULong(), value.inv().toULong().reverseBytes())
+            assertEquals(value, value.reverseBytes().reverseBytes())
+            if (bit < Int.SIZE_BITS) {
+                val expectedInt = (expected ushr Int.SIZE_BITS).toInt()
+                assertEquals(expectedInt, value.toInt().reverseBytes())
+                assertEquals(expectedInt.inv(), value.toInt().inv().reverseBytes())
+                assertEquals(expectedInt.toUInt(), value.toUInt().reverseBytes())
+            }
+            if (bit < Short.SIZE_BITS) {
+                val expectedShort = (expected ushr (Long.SIZE_BITS - Short.SIZE_BITS)).toShort()
+                assertEquals(expectedShort, value.toShort().reverseBytes())
+                assertEquals(expectedShort.toInt().inv().toShort(), value.toInt().inv().toShort().reverseBytes())
+                assertEquals(expectedShort.toUShort(), value.toUShort().reverseBytes())
+            }
+        }
+    }
 }

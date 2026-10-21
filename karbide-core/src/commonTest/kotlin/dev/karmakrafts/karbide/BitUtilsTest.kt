@@ -103,4 +103,52 @@ class BitUtilsTest {
         assertEquals(0x0000000080000000UL, 0x0000000000000001UL.reverseBits(32))
         assertEquals(0UL, 0xFFFFFFFFFFFFFFFFUL.reverseBits(0))
     }
+
+    @Test
+    fun reverseByteBitsForEveryCount() {
+        for (value in Byte.MIN_VALUE..Byte.MAX_VALUE) {
+            val byte = value.toByte()
+            for (count in 0..Byte.SIZE_BITS) {
+                assertEquals(byte.reverseBitsCommon(count), byte.reverseBits(count), "value=$byte, count=$count")
+                assertEquals(byte.toUByte().reverseBitsCommon(count), byte.toUByte().reverseBits(count))
+            }
+        }
+    }
+
+    @Test
+    fun reverseShortBitsForEveryCount() {
+        val values = listOf(0, -1, Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt(), 0x1234, 0xAAAA) +
+            (0 until Short.SIZE_BITS).flatMap { listOf(1 shl it, (1 shl it).inv()) }
+        for (value in values) {
+            val short = value.toShort()
+            for (count in 0..Short.SIZE_BITS) {
+                assertEquals(short.reverseBitsCommon(count), short.reverseBits(count), "value=$short, count=$count")
+                assertEquals(short.toUShort().reverseBitsCommon(count), short.toUShort().reverseBits(count))
+            }
+        }
+    }
+
+    @Test
+    fun reverseIntBitsForEveryCount() {
+        val values = listOf(0, -1, Int.MIN_VALUE, Int.MAX_VALUE, 0x12345678, 0xAAAAAAAA.toInt()) +
+            (0 until Int.SIZE_BITS).flatMap { listOf(1 shl it, (1 shl it).inv()) }
+        for (value in values) {
+            for (count in 0..Int.SIZE_BITS) {
+                assertEquals(value.reverseBitsCommon(count), value.reverseBits(count), "value=$value, count=$count")
+                assertEquals(value.toUInt().reverseBitsCommon(count), value.toUInt().reverseBits(count))
+            }
+        }
+    }
+
+    @Test
+    fun reverseLongBitsForEveryCount() {
+        val values = listOf(0L, -1L, Long.MIN_VALUE, Long.MAX_VALUE, 0x0123456789ABCDEFL, 0xAAAAAAAAAAAAAAAAUL.toLong()) +
+            (0 until Long.SIZE_BITS).flatMap { listOf(1L shl it, (1L shl it).inv()) }
+        for (value in values) {
+            for (count in 0..Long.SIZE_BITS) {
+                assertEquals(value.reverseBitsCommon(count), value.reverseBits(count), "value=$value, count=$count")
+                assertEquals(value.toULong().reverseBitsCommon(count), value.toULong().reverseBits(count))
+            }
+        }
+    }
 }

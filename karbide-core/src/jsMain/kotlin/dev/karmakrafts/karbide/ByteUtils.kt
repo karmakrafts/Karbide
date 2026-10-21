@@ -19,7 +19,7 @@
 package dev.karmakrafts.karbide
 
 /**
- * These intrinsics are handwritten inline JS to force a more strict ASM.JS coercion.
+ * These intrinsics use handwritten inline JS for fixed-width integer operations.
  */
 
 @JsFun(
@@ -57,15 +57,11 @@ actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 @JsFun(
     """
 (x) => {
-    const names = Object.keys(x);
-    const loName = names[0];
-    const hiName = names[1];
-    const lo = x[loName] | 0;
-    const hi = x[hiName] | 0;
-    const result = Object.create(Object.getPrototypeOf(x));
-    result[loName] = ((hi & 0xFF) << 24) | ((hi & 0xFF00) << 8) | ((hi >>> 8) & 0xFF00) | ((hi >>> 24) & 0xFF);
-    result[hiName] = ((lo & 0xFF) << 24) | ((lo & 0xFF00) << 8) | ((lo >>> 8) & 0xFF00) | ((lo >>> 24) & 0xFF);
-    return result;
+    x = BigInt.asUintN(64, x);
+    x = ((x >> BigInt(8)) & BigInt("0x00FF00FF00FF00FF")) | ((x & BigInt("0x00FF00FF00FF00FF")) << BigInt(8));
+    x = ((x >> BigInt(16)) & BigInt("0x0000FFFF0000FFFF")) | ((x & BigInt("0x0000FFFF0000FFFF")) << BigInt(16));
+    x = (x >> BigInt(32)) | ((x & BigInt("0xFFFFFFFF")) << BigInt(32));
+    return BigInt.asIntN(64, x);
 }
 """
 )

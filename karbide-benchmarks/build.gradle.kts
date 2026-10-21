@@ -20,8 +20,10 @@ import dev.karmakrafts.conventions.kotlin.withJvm
 import dev.karmakrafts.conventions.kotlin.withNative
 import dev.karmakrafts.conventions.kotlin.withNodeJs
 import dev.karmakrafts.conventions.kotlin.withWasmWasi
+import dev.karmakrafts.conventions.kotlin.withWasmtime
 import dev.karmakrafts.conventions.kotlin.withWeb
 import kotlinx.benchmark.gradle.BenchmarkConfiguration
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -37,14 +39,15 @@ kotlin {
     withNative()
     withWeb {
         compilerOptions {
-            target = "es2015"
+            target = "es2020"
         }
         useEsModules()
         withBrowser()
         withNodeJs()
     }
     withWasmWasi {
-        withNodeJs()
+        @OptIn(ExperimentalWasmDsl::class) //
+        withWasmtime()
     }
     applyDefaultHierarchyTemplate()
     sourceSets {
@@ -70,7 +73,7 @@ benchmark {
         register("mingwX64")
         register("js")
         register("wasmJs")
-        register("wasmWasi")
+        //register("wasmWasi") TODO: re-enable this once kotlinx.benchmark supports it
     }
     configurations {
         fun BenchmarkConfiguration.defaultConfig() {

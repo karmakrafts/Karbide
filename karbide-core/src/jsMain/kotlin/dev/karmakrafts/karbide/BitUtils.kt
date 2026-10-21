@@ -19,7 +19,7 @@
 package dev.karmakrafts.karbide
 
 /**
- * These intrinsics are handwritten inline JS to force a more strict ASM.JS coercion.
+ * These intrinsics use handwritten inline JS for fixed-width integer operations.
  */
 
 @JsFun(
@@ -80,32 +80,14 @@ actual fun Int.reverseBits(count: Int): Int = if (count == 0) reverseBitsCommon(
 @JsFun(
     """
 (x, count) => {
-    const names = Object.keys(x);
-    const loName = names[0];
-    const hiName = names[1];
-    var lo = x[loName] | 0;
-    var hi = x[hiName] | 0;
-    count = count | 0;
-    lo = ((lo >>> 1) & 0x55555555) | ((lo & 0x55555555) << 1);
-    lo = ((lo >>> 2) & 0x33333333) | ((lo & 0x33333333) << 2);
-    lo = ((lo >>> 4) & 0x0F0F0F0F) | ((lo & 0x0F0F0F0F) << 4);
-    lo = ((lo >>> 8) & 0x00FF00FF) | ((lo & 0x00FF00FF) << 8);
-    lo = (lo >>> 16) | (lo << 16);
-    hi = ((hi >>> 1) & 0x55555555) | ((hi & 0x55555555) << 1);
-    hi = ((hi >>> 2) & 0x33333333) | ((hi & 0x33333333) << 2);
-    hi = ((hi >>> 4) & 0x0F0F0F0F) | ((hi & 0x0F0F0F0F) << 4);
-    hi = ((hi >>> 8) & 0x00FF00FF) | ((hi & 0x00FF00FF) << 8);
-    hi = (hi >>> 16) | (hi << 16);
-    const result = Object.create(Object.getPrototypeOf(x));
-    if (count <= 32) {
-        result[loName] = ((lo >>> (32 - count)) & ((count | -count) >> 31)) | 0;
-        result[hiName] = 0;
-        return result;
-    }
-    count = (64 - count) | 0;
-    result[loName] = ((hi >>> count) | ((lo << (32 - count)) & ((count | -count) >> 31))) | 0;
-    result[hiName] = (lo >>> count) | 0;
-    return result;
+    x = BigInt.asUintN(64, x);
+    x = ((x >> BigInt(1)) & BigInt("0x5555555555555555")) | ((x & BigInt("0x5555555555555555")) << BigInt(1));
+    x = ((x >> BigInt(2)) & BigInt("0x3333333333333333")) | ((x & BigInt("0x3333333333333333")) << BigInt(2));
+    x = ((x >> BigInt(4)) & BigInt("0x0F0F0F0F0F0F0F0F")) | ((x & BigInt("0x0F0F0F0F0F0F0F0F")) << BigInt(4));
+    x = ((x >> BigInt(8)) & BigInt("0x00FF00FF00FF00FF")) | ((x & BigInt("0x00FF00FF00FF00FF")) << BigInt(8));
+    x = ((x >> BigInt(16)) & BigInt("0x0000FFFF0000FFFF")) | ((x & BigInt("0x0000FFFF0000FFFF")) << BigInt(16));
+    x = (x >> BigInt(32)) | ((x & BigInt("0xFFFFFFFF")) << BigInt(32));
+    return BigInt.asIntN(64, x >> BigInt(64 - count));
 }
 """
 )

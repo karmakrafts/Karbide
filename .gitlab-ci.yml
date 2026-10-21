@@ -114,6 +114,11 @@ test:android:arm64:
     - *if-main
   script:
     - ./gradlew clean pixel6Api36AndroidDeviceTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/outputs/androidTest-results/managedDevice/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -128,9 +133,13 @@ test:linux:amd64:
     - ./gradlew clean linuxX64Test linuxArm64TestBinaries jvmTest --stacktrace
   artifacts:
     name: "karbide-tests-$CI_COMMIT_REF_SLUG"
+    when: always
     paths:
       - karbide-core/build/bin/linuxArm64/debugTest/test.kexe
     expire_in: 1 days
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - linux
     - shell
@@ -148,7 +157,12 @@ test:linux:arm64:
     - *if-main
   script:
     - chmod +x karbide-core/build/bin/linuxArm64/debugTest/test.kexe
-    - ./karbide-core/build/bin/linuxArm64/debugTest/test.kexe
+    - ./gradlew clean linuxArm64StandaloneTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - linux
     - docker
@@ -162,6 +176,11 @@ test:macos:arm64:
     - *if-main
   script:
     - ./gradlew clean macosArm64Test jvmTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -174,6 +193,11 @@ test:ios:arm64:
     - *if-main
   script:
     - ./gradlew clean iosSimulatorArm64Test --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -186,6 +210,11 @@ test:tvos:arm64:
     - *if-main
   script:
     - ./gradlew clean tvosSimulatorArm64Test --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -198,6 +227,11 @@ test:watchos:arm64:
     - *if-main
   script:
     - ./gradlew clean watchosSimulatorArm64Test --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -210,6 +244,11 @@ test:windows:amd64:
     - *if-main
   script:
     - ./gradlew clean mingwX64Test jvmTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - windows
     - amd64
@@ -222,6 +261,11 @@ test:js:browser:
     - *if-main
   script:
     - ./gradlew clean jsBrowserTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -234,6 +278,11 @@ test:wasm:browser:
     - *if-main
   script:
     - ./gradlew clean wasmJsBrowserTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -246,6 +295,11 @@ test:js:node:
     - *if-main
   script:
     - ./gradlew clean jsNodeTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -258,6 +312,11 @@ test:wasm:node:
     - *if-main
   script:
     - ./gradlew clean wasmJsNodeTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -270,6 +329,11 @@ test:wasi:node:
     - *if-main
   script:
     - ./gradlew clean wasmWasiNodeTest --stacktrace
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
