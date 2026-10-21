@@ -118,7 +118,7 @@ test:android:arm64:
     when: always
     reports:
       junit:
-        - build/outputs/androidTest-results/managedDevice/**/TEST-*.xml
+        - karbide-core/build/outputs/androidTest-results/managedDevice/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -139,7 +139,7 @@ test:linux:amd64:
     expire_in: 1 days
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - linux
     - shell
@@ -162,7 +162,7 @@ test:linux:arm64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - linux
     - docker
@@ -180,7 +180,7 @@ test:macos:arm64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -197,7 +197,7 @@ test:ios:arm64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -214,7 +214,7 @@ test:tvos:arm64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -231,7 +231,7 @@ test:watchos:arm64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -248,7 +248,7 @@ test:windows:amd64:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - windows
     - amd64
@@ -265,7 +265,7 @@ test:js:browser:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -282,7 +282,7 @@ test:wasm:browser:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -299,7 +299,7 @@ test:js:node:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -316,7 +316,7 @@ test:wasm:node:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
@@ -333,7 +333,7 @@ test:wasi:node:
     when: always
     reports:
       junit:
-        - build/test-results/**/TEST-*.xml
+        - karbide-core/build/test-results/**/TEST-*.xml
   tags:
     - macos
     - arm64
