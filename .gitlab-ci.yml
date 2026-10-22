@@ -157,7 +157,7 @@ test:linux:arm64:
     - *if-main
   script:
     - chmod +x karbide-core/build/bin/linuxArm64/debugTest/test.kexe
-    - ./gradlew karbide-core:linuxArm64StandaloneTest --stacktrace
+    - ./gradlew karbide-core:linuxArm64StandaloneTest jvmTest --stacktrace
   artifacts:
     when: always
     reports:
