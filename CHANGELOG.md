@@ -6,7 +6,7 @@
 - Updated to NMCP 1.6.2
 - Updated to Kotlin 2.5.0-Beta2
 - Updated to Dokka 2.3.0-Beta
-- Updated to Karma Conventions 1.23.0.313-SNAPSHOT
+- Updated to Karma Conventions 1.23.0.315-SNAPSHOT
 - Added test reports to CI jobs
 - Switched to Kotlin/JS ES2020 target
 
