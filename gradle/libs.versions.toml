@@ -7,7 +7,7 @@ karbide = "1.14.0"
 kotlin = "2.5.0-Beta2" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.9.1" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.3.0-Beta" # https://github.com/Kotlin/dokka/releases
-karmaConventions = "1.23.0.312-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
+karmaConventions = "1.23.0.313-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
 
 # karbide-benchmarks
 
