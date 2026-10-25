@@ -22,7 +22,7 @@ package dev.karmakrafts.karbide
  * @param count The number of bits to read.
  * @return The bits read as a [UInt].
  */
-fun BitSource.readBits32(count: Int): UInt {
+public fun BitSource.readBits32(count: Int): UInt {
     require(this is BitSource32)
     return readBits32(count)
 }
@@ -33,7 +33,7 @@ fun BitSource.readBits32(count: Int): UInt {
  * @param count The number of bits to peek.
  * @return The bits read as a [UInt].
  */
-fun BitSource.peekBits32(count: Int): UInt {
+public fun BitSource.peekBits32(count: Int): UInt {
     require(this is BitSource32)
     return peekBits32(count)
 }

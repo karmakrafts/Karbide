@@ -24,7 +24,7 @@ package dev.karmakrafts.karbide
  *
  * @return The short read.
  */
-fun BitSource.peekShortLeLsb(): Short = peekShortLsb().reverseBytes()
+public fun BitSource.peekShortLeLsb(): Short = peekShortLsb().reverseBytes()
 
 /**
  * Read an [Int] (32 bits) from the [BitSource] in little endian and LSB order
@@ -32,7 +32,7 @@ fun BitSource.peekShortLeLsb(): Short = peekShortLsb().reverseBytes()
  *
  * @return The integer read.
  */
-fun BitSource.peekIntLeLsb(): Int = peekIntLsb().reverseBytes()
+public fun BitSource.peekIntLeLsb(): Int = peekIntLsb().reverseBytes()
 
 /**
  * Read a [Long] (64 bits) from the [BitSource] in little endian and LSB order
@@ -40,7 +40,7 @@ fun BitSource.peekIntLeLsb(): Int = peekIntLsb().reverseBytes()
  *
  * @return The long read.
  */
-fun BitSource.peekLongLeLsb(): Long = peekLongLsb().reverseBytes()
+public fun BitSource.peekLongLeLsb(): Long = peekLongLsb().reverseBytes()
 
 /**
  * Read a [Float] (32 bits) from the [BitSource] in little endian and LSB order
@@ -48,7 +48,7 @@ fun BitSource.peekLongLeLsb(): Long = peekLongLsb().reverseBytes()
  *
  * @return The float read.
  */
-fun BitSource.peekFloatLeLsb(): Float = Float.fromBits(peekIntLeLsb())
+public fun BitSource.peekFloatLeLsb(): Float = Float.fromBits(peekIntLeLsb())
 
 /**
  * Read a [Double] (64 bits) from the [BitSource] in little endian and LSB order
@@ -56,7 +56,7 @@ fun BitSource.peekFloatLeLsb(): Float = Float.fromBits(peekIntLeLsb())
  *
  * @return The double read.
  */
-fun BitSource.peekDoubleLeLsb(): Double = Double.fromBits(peekLongLeLsb())
+public fun BitSource.peekDoubleLeLsb(): Double = Double.fromBits(peekLongLeLsb())
 
 /**
  * Read a [UShort] (16 bits) from the [BitSource] in little endian and LSB order
@@ -64,7 +64,7 @@ fun BitSource.peekDoubleLeLsb(): Double = Double.fromBits(peekLongLeLsb())
  *
  * @return The unsigned short read.
  */
-fun BitSource.peekUShortLeLsb(): UShort = peekUShortLsb().reverseBytes()
+public fun BitSource.peekUShortLeLsb(): UShort = peekUShortLsb().reverseBytes()
 
 /**
  * Read a [UInt] (32 bits) from the [BitSource] in little endian and LSB order
@@ -72,7 +72,7 @@ fun BitSource.peekUShortLeLsb(): UShort = peekUShortLsb().reverseBytes()
  *
  * @return The unsigned integer read.
  */
-fun BitSource.peekUIntLeLsb(): UInt = peekUIntLsb().reverseBytes()
+public fun BitSource.peekUIntLeLsb(): UInt = peekUIntLsb().reverseBytes()
 
 /**
  * Read a [ULong] (64 bits) from the [BitSource] in little endian and LSB order
@@ -80,7 +80,7 @@ fun BitSource.peekUIntLeLsb(): UInt = peekUIntLsb().reverseBytes()
  *
  * @return The unsigned long read.
  */
-fun BitSource.peekULongLeLsb(): ULong = peekULongLsb().reverseBytes()
+public fun BitSource.peekULongLeLsb(): ULong = peekULongLsb().reverseBytes()
 
 // ------------------------------ Reading ------------------------------
 
@@ -89,53 +89,53 @@ fun BitSource.peekULongLeLsb(): ULong = peekULongLsb().reverseBytes()
  *
  * @return The short read.
  */
-fun BitSource.readShortLeLsb(): Short = readShortLsb().reverseBytes()
+public fun BitSource.readShortLeLsb(): Short = readShortLsb().reverseBytes()
 
 /**
  * Read an [Int] (32 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The integer read.
  */
-fun BitSource.readIntLeLsb(): Int = readIntLsb().reverseBytes()
+public fun BitSource.readIntLeLsb(): Int = readIntLsb().reverseBytes()
 
 /**
  * Read a [Long] (64 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The long read.
  */
-fun BitSource.readLongLeLsb(): Long = readLongLsb().reverseBytes()
+public fun BitSource.readLongLeLsb(): Long = readLongLsb().reverseBytes()
 
 /**
  * Read a [Float] (32 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The float read.
  */
-fun BitSource.readFloatLeLsb(): Float = Float.fromBits(readIntLeLsb())
+public fun BitSource.readFloatLeLsb(): Float = Float.fromBits(readIntLeLsb())
 
 /**
  * Read a [Double] (64 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The double read.
  */
-fun BitSource.readDoubleLeLsb(): Double = Double.fromBits(readLongLeLsb())
+public fun BitSource.readDoubleLeLsb(): Double = Double.fromBits(readLongLeLsb())
 
 /**
  * Read a [UShort] (16 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The unsigned short read.
  */
-fun BitSource.readUShortLeLsb(): UShort = readUShortLsb().reverseBytes()
+public fun BitSource.readUShortLeLsb(): UShort = readUShortLsb().reverseBytes()
 
 /**
  * Read a [UInt] (32 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The unsigned integer read.
  */
-fun BitSource.readUIntLeLsb(): UInt = readUIntLsb().reverseBytes()
+public fun BitSource.readUIntLeLsb(): UInt = readUIntLsb().reverseBytes()
 
 /**
  * Read a [ULong] (64 bits) from the [BitSource] in little endian and LSB order.
  *
  * @return The unsigned long read.
  */
-fun BitSource.readULongLeLsb(): ULong = readULongLsb().reverseBytes()
+public fun BitSource.readULongLeLsb(): ULong = readULongLsb().reverseBytes()

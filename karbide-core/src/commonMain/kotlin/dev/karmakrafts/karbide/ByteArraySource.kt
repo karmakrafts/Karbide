@@ -27,10 +27,10 @@ import kotlin.math.min
  * @property offset The offset in the array to start reading from.
  * @property size The number of bytes to read from the array.
  */
-class ByteArraySource internal constructor( // @formatter:off
-    var array: ByteArray,
-    var offset: Int,
-    var size: Int
+public class ByteArraySource internal constructor( // @formatter:off
+    public var array: ByteArray,
+    public var offset: Int,
+    public var size: Int
 ) : RawSource { // @formatter:on
     private var totalOffset: Int = 0
 
@@ -54,14 +54,14 @@ class ByteArraySource internal constructor( // @formatter:off
     /**
      * Reset the source to the beginning.
      */
-    fun reset() {
+    public fun reset() {
         totalOffset = 0
     }
 
     /**
      * Close the source.
      */
-    override fun close() = Unit
+    override fun close(): Unit = Unit
 }
 
 /**
@@ -71,7 +71,7 @@ class ByteArraySource internal constructor( // @formatter:off
  * @param size The number of bytes to read from the array.
  * @return A new [ByteArraySource] instance.
  */
-fun ByteArray.source( // @formatter:off
+public fun ByteArray.source( // @formatter:off
     offset: Int = 0,
     size: Int = this@source.size
 ): ByteArraySource = ByteArraySource(this, offset, size) // @formatter:on

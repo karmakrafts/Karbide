@@ -22,84 +22,84 @@ package dev.karmakrafts.karbide
  * @param count The number of bits to write.
  * @param bits The bits to write as a [ULong].
  */
-fun BitSink.writeBitsLsb(count: Int, bits: ULong) = writeBits(count, bits.reverseBits(count))
+public fun BitSink.writeBitsLsb(count: Int, bits: ULong): Unit = writeBits(count, bits.reverseBits(count))
 
 /**
  * Write a [Byte] (8 bits) to the [BitSink] in LSB order.
  *
  * @param value The byte value to write.
  */
-fun BitSink.writeByteLsb(value: Byte) = writeBitsLsb(Byte.SIZE_BITS, value.toULong())
+public fun BitSink.writeByteLsb(value: Byte): Unit = writeBitsLsb(Byte.SIZE_BITS, value.toULong())
 
 /**
  * Write a [Short] (16 bits) to the [BitSink] in LSB order.
  *
  * @param value The short value to write.
  */
-fun BitSink.writeShortLsb(value: Short) = writeBitsLsb(Short.SIZE_BITS, value.toULong())
+public fun BitSink.writeShortLsb(value: Short): Unit = writeBitsLsb(Short.SIZE_BITS, value.toULong())
 
 /**
  * Write an [Int] (32 bits) to the [BitSink] in LSB order.
  *
  * @param value The integer value to write.
  */
-fun BitSink.writeIntLsb(value: Int) = writeBitsLsb(Int.SIZE_BITS, value.toULong())
+public fun BitSink.writeIntLsb(value: Int): Unit = writeBitsLsb(Int.SIZE_BITS, value.toULong())
 
 /**
  * Write a [Long] (64 bits) to the [BitSink] in LSB order.
  *
  * @param value The long value to write.
  */
-fun BitSink.writeLongLsb(value: Long) = writeBitsLsb(Long.SIZE_BITS, value.toULong())
+public fun BitSink.writeLongLsb(value: Long): Unit = writeBitsLsb(Long.SIZE_BITS, value.toULong())
 
 /**
  * Write a [Float] (32 bits) to the [BitSink] in LSB order.
  *
  * @param value The float value to write.
  */
-fun BitSink.writeFloatLsb(value: Float) = writeIntLsb(value.toRawBits())
+public fun BitSink.writeFloatLsb(value: Float): Unit = writeIntLsb(value.toRawBits())
 
 /**
  * Write a [Double] (64 bits) to the [BitSink] in LSB order.
  *
  * @param value The double value to write.
  */
-fun BitSink.writeDoubleLsb(value: Double) = writeLongLsb(value.toRawBits())
+public fun BitSink.writeDoubleLsb(value: Double): Unit = writeLongLsb(value.toRawBits())
 
 /**
  * Write a [UByte] (8 bits) to the [BitSink] in LSB order.
  *
  * @param value The unsigned byte value to write.
  */
-fun BitSink.writeUByteLsb(value: UByte) = writeBitsLsb(Byte.SIZE_BITS, value.toULong())
+public fun BitSink.writeUByteLsb(value: UByte): Unit = writeBitsLsb(Byte.SIZE_BITS, value.toULong())
 
 /**
  * Write a [UShort] (16 bits) to the [BitSink] in LSB order.
  *
  * @param value The unsigned short value to write.
  */
-fun BitSink.writeUShortLsb(value: UShort) = writeBitsLsb(Short.SIZE_BITS, value.toULong())
+public fun BitSink.writeUShortLsb(value: UShort): Unit = writeBitsLsb(Short.SIZE_BITS, value.toULong())
 
 /**
  * Write a [UInt] (32 bits) to the [BitSink] in LSB order.
  *
  * @param value The unsigned integer value to write.
  */
-fun BitSink.writeUIntLsb(value: UInt) = writeBitsLsb(Int.SIZE_BITS, value.toULong())
+public fun BitSink.writeUIntLsb(value: UInt): Unit = writeBitsLsb(Int.SIZE_BITS, value.toULong())
 
 /**
  * Write a [ULong] (64 bits) to the [BitSink] in LSB order.
  *
  * @param value The unsigned long value to write.
  */
-fun BitSink.writeULongLsb(value: ULong) = writeBitsLsb(Long.SIZE_BITS, value)
+public fun BitSink.writeULongLsb(value: ULong): Unit = writeBitsLsb(Long.SIZE_BITS, value)
 
 /**
  * Write a [ByteArray] to the [BitSink] with each byte in LSB order.
  *
  * @param value The byte array to write.
  */
-fun BitSink.writeByteArrayLsb(value: ByteArray) {
+public fun BitSink.writeByteArrayLsb(value: ByteArray) {
     for (byte in value) {
         writeByteLsb(byte)
     }
@@ -110,4 +110,4 @@ fun BitSink.writeByteArrayLsb(value: ByteArray) {
  *
  * @param value The string value to write.
  */
-fun BitSink.writeStringLsb(value: String) = writeByteArrayLsb(value.encodeToByteArray())
+public fun BitSink.writeStringLsb(value: String): Unit = writeByteArrayLsb(value.encodeToByteArray())

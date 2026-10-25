@@ -25,7 +25,7 @@ package dev.karmakrafts.karbide
  * @param count The number of bits to read.
  * @return The bits read as a [ULong].
  */
-fun BitSource.peekBitsLsb(count: Int): ULong = peekBits(count).reverseBits(count)
+public fun BitSource.peekBitsLsb(count: Int): ULong = peekBits(count).reverseBits(count)
 
 /**
  * Read a [Byte] (8 bits) from the [BitSource] in LSB order without
@@ -33,7 +33,7 @@ fun BitSource.peekBitsLsb(count: Int): ULong = peekBits(count).reverseBits(count
  *
  * @return The byte read.
  */
-fun BitSource.peekByteLsb(): Byte = peekBitsLsb(Byte.SIZE_BITS).toByte()
+public fun BitSource.peekByteLsb(): Byte = peekBitsLsb(Byte.SIZE_BITS).toByte()
 
 /**
  * Read a [Short] (16 bits) from the [BitSource] in LSB order without
@@ -41,7 +41,7 @@ fun BitSource.peekByteLsb(): Byte = peekBitsLsb(Byte.SIZE_BITS).toByte()
  *
  * @return The short read.
  */
-fun BitSource.peekShortLsb(): Short = peekBitsLsb(Short.SIZE_BITS).toShort()
+public fun BitSource.peekShortLsb(): Short = peekBitsLsb(Short.SIZE_BITS).toShort()
 
 /**
  * Read an [Int] (32 bits) from the [BitSource] in LSB order without
@@ -49,7 +49,7 @@ fun BitSource.peekShortLsb(): Short = peekBitsLsb(Short.SIZE_BITS).toShort()
  *
  * @return The integer read.
  */
-fun BitSource.peekIntLsb(): Int = peekBitsLsb(Int.SIZE_BITS).toInt()
+public fun BitSource.peekIntLsb(): Int = peekBitsLsb(Int.SIZE_BITS).toInt()
 
 /**
  * Read a [Long] (64 bits) from the [BitSource] in LSB order without
@@ -57,7 +57,7 @@ fun BitSource.peekIntLsb(): Int = peekBitsLsb(Int.SIZE_BITS).toInt()
  *
  * @return The long read.
  */
-fun BitSource.peekLongLsb(): Long = peekBitsLsb(Long.SIZE_BITS).toLong()
+public fun BitSource.peekLongLsb(): Long = peekBitsLsb(Long.SIZE_BITS).toLong()
 
 /**
  * Read a [Float] (32 bits) from the [BitSource] in LSB order without
@@ -65,7 +65,7 @@ fun BitSource.peekLongLsb(): Long = peekBitsLsb(Long.SIZE_BITS).toLong()
  *
  * @return The float read.
  */
-fun BitSource.peekFloatLsb(): Float = Float.fromBits(peekIntLsb())
+public fun BitSource.peekFloatLsb(): Float = Float.fromBits(peekIntLsb())
 
 /**
  * Read a [Double] (64 bits) from the [BitSource] in LSB order without
@@ -73,7 +73,7 @@ fun BitSource.peekFloatLsb(): Float = Float.fromBits(peekIntLsb())
  *
  * @return The double read.
  */
-fun BitSource.peekDoubleLsb(): Double = Double.fromBits(peekLongLsb())
+public fun BitSource.peekDoubleLsb(): Double = Double.fromBits(peekLongLsb())
 
 /**
  * Read a [UByte] (8 bits) from the [BitSource] in LSB order without
@@ -81,7 +81,7 @@ fun BitSource.peekDoubleLsb(): Double = Double.fromBits(peekLongLsb())
  *
  * @return The unsigned byte read.
  */
-fun BitSource.peekUByteLsb(): UByte = peekBitsLsb(UByte.SIZE_BITS).toUByte()
+public fun BitSource.peekUByteLsb(): UByte = peekBitsLsb(UByte.SIZE_BITS).toUByte()
 
 /**
  * Read a [UShort] (16 bits) from the [BitSource] in LSB order without
@@ -89,7 +89,7 @@ fun BitSource.peekUByteLsb(): UByte = peekBitsLsb(UByte.SIZE_BITS).toUByte()
  *
  * @return The unsigned short read.
  */
-fun BitSource.peekUShortLsb(): UShort = peekBitsLsb(UShort.SIZE_BITS).toUShort()
+public fun BitSource.peekUShortLsb(): UShort = peekBitsLsb(UShort.SIZE_BITS).toUShort()
 
 /**
  * Read a [UInt] (32 bits) from the [BitSource] in LSB order without
@@ -97,7 +97,7 @@ fun BitSource.peekUShortLsb(): UShort = peekBitsLsb(UShort.SIZE_BITS).toUShort()
  *
  * @return The unsigned integer read.
  */
-fun BitSource.peekUIntLsb(): UInt = peekBitsLsb(UInt.SIZE_BITS).toUInt()
+public fun BitSource.peekUIntLsb(): UInt = peekBitsLsb(UInt.SIZE_BITS).toUInt()
 
 /**
  * Read a [ULong] (64 bits) from the [BitSource] in LSB order without
@@ -105,7 +105,7 @@ fun BitSource.peekUIntLsb(): UInt = peekBitsLsb(UInt.SIZE_BITS).toUInt()
  *
  * @return The unsigned long read.
  */
-fun BitSource.peekULongLsb(): ULong = peekBitsLsb(ULong.SIZE_BITS)
+public fun BitSource.peekULongLsb(): ULong = peekBitsLsb(ULong.SIZE_BITS)
 
 // ------------------------------ Reading ------------------------------
 
@@ -115,77 +115,77 @@ fun BitSource.peekULongLsb(): ULong = peekBitsLsb(ULong.SIZE_BITS)
  * @param count The number of bits to read.
  * @return The bits read as a [ULong].
  */
-fun BitSource.readBitsLsb(count: Int): ULong = readBits(count).reverseBits(count)
+public fun BitSource.readBitsLsb(count: Int): ULong = readBits(count).reverseBits(count)
 
 /**
  * Read a [Byte] (8 bits) from the [BitSource] in LSB order.
  *
  * @return The byte read.
  */
-fun BitSource.readByteLsb(): Byte = readBitsLsb(Byte.SIZE_BITS).toByte()
+public fun BitSource.readByteLsb(): Byte = readBitsLsb(Byte.SIZE_BITS).toByte()
 
 /**
  * Read a [Short] (16 bits) from the [BitSource] in LSB order.
  *
  * @return The short read.
  */
-fun BitSource.readShortLsb(): Short = readBitsLsb(Short.SIZE_BITS).toShort()
+public fun BitSource.readShortLsb(): Short = readBitsLsb(Short.SIZE_BITS).toShort()
 
 /**
  * Read an [Int] (32 bits) from the [BitSource] in LSB order.
  *
  * @return The integer read.
  */
-fun BitSource.readIntLsb(): Int = readBitsLsb(Int.SIZE_BITS).toInt()
+public fun BitSource.readIntLsb(): Int = readBitsLsb(Int.SIZE_BITS).toInt()
 
 /**
  * Read a [Long] (64 bits) from the [BitSource] in LSB order.
  *
  * @return The long read.
  */
-fun BitSource.readLongLsb(): Long = readBitsLsb(Long.SIZE_BITS).toLong()
+public fun BitSource.readLongLsb(): Long = readBitsLsb(Long.SIZE_BITS).toLong()
 
 /**
  * Read a [Float] (32 bits) from the [BitSource] in LSB order.
  *
  * @return The float read.
  */
-fun BitSource.readFloatLsb(): Float = Float.fromBits(readIntLsb())
+public fun BitSource.readFloatLsb(): Float = Float.fromBits(readIntLsb())
 
 /**
  * Read a [Double] (64 bits) from the [BitSource] in LSB order.
  *
  * @return The double read.
  */
-fun BitSource.readDoubleLsb(): Double = Double.fromBits(readLongLsb())
+public fun BitSource.readDoubleLsb(): Double = Double.fromBits(readLongLsb())
 
 /**
  * Read a [UByte] (8 bits) from the [BitSource] in LSB order.
  *
  * @return The unsigned byte read.
  */
-fun BitSource.readUByteLsb(): UByte = readBitsLsb(UByte.SIZE_BITS).toUByte()
+public fun BitSource.readUByteLsb(): UByte = readBitsLsb(UByte.SIZE_BITS).toUByte()
 
 /**
  * Read a [UShort] (16 bits) from the [BitSource] in LSB order.
  *
  * @return The unsigned short read.
  */
-fun BitSource.readUShortLsb(): UShort = readBitsLsb(UShort.SIZE_BITS).toUShort()
+public fun BitSource.readUShortLsb(): UShort = readBitsLsb(UShort.SIZE_BITS).toUShort()
 
 /**
  * Read a [UInt] (32 bits) from the [BitSource] in LSB order.
  *
  * @return The unsigned integer read.
  */
-fun BitSource.readUIntLsb(): UInt = readBitsLsb(UInt.SIZE_BITS).toUInt()
+public fun BitSource.readUIntLsb(): UInt = readBitsLsb(UInt.SIZE_BITS).toUInt()
 
 /**
  * Read a [ULong] (64 bits) from the [BitSource] in LSB order.
  *
  * @return The unsigned long read.
  */
-fun BitSource.readULongLsb(): ULong = readBitsLsb(ULong.SIZE_BITS)
+public fun BitSource.readULongLsb(): ULong = readBitsLsb(ULong.SIZE_BITS)
 
 /**
  * Read a [ByteArray] of the specified size from the [BitSource].
@@ -193,7 +193,7 @@ fun BitSource.readULongLsb(): ULong = readBitsLsb(ULong.SIZE_BITS)
  * @param count The number of bytes to read.
  * @return The byte array read.
  */
-fun BitSource.readByteArrayLsb(count: Int): ByteArray = ByteArray(count) {
+public fun BitSource.readByteArrayLsb(count: Int): ByteArray = ByteArray(count) {
     readByteLsb()
 }
 
@@ -203,4 +203,4 @@ fun BitSource.readByteArrayLsb(count: Int): ByteArray = ByteArray(count) {
  * @param length The number of characters to read.
  * @return The string read.
  */
-fun BitSource.readStringLsb(length: Int): String = readByteArrayLsb(length).decodeToString()
+public fun BitSource.readStringLsb(length: Int): String = readByteArrayLsb(length).decodeToString()

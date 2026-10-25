@@ -37,7 +37,7 @@ package dev.karmakrafts.karbide
 )
 private external fun reverseBitsImpl(x: Byte, count: Int): Byte
 
-actual fun Byte.reverseBits(count: Int): Byte =
+public actual fun Byte.reverseBits(count: Int): Byte =
     if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
@@ -56,7 +56,7 @@ actual fun Byte.reverseBits(count: Int): Byte =
 )
 private external fun reverseBitsImpl(x: Short, count: Int): Short
 
-actual fun Short.reverseBits(count: Int): Short =
+public actual fun Short.reverseBits(count: Int): Short =
     if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
@@ -75,7 +75,8 @@ actual fun Short.reverseBits(count: Int): Short =
 )
 private external fun reverseBitsImpl(x: Int, count: Int): Int
 
-actual fun Int.reverseBits(count: Int): Int = if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
+public actual fun Int.reverseBits(count: Int): Int =
+    if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @JsFun(
     """
@@ -93,17 +94,17 @@ actual fun Int.reverseBits(count: Int): Int = if (count == 0) reverseBitsCommon(
 )
 private external fun reverseBitsImpl(x: Long, count: Int): Long
 
-actual fun Long.reverseBits(count: Int): Long =
+public actual fun Long.reverseBits(count: Int): Long =
     if (count == 0) reverseBitsCommon(count) else reverseBitsImpl(this, count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
+public actual inline fun UByte.reverseBits(count: Int): UByte = toByte().reverseBits(count).toUByte()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
+public actual inline fun UShort.reverseBits(count: Int): UShort = toShort().reverseBits(count).toUShort()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
+public actual inline fun UInt.reverseBits(count: Int): UInt = toInt().reverseBits(count).toUInt()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()
+public actual inline fun ULong.reverseBits(count: Int): ULong = toLong().reverseBits(count).toULong()

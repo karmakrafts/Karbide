@@ -23,7 +23,7 @@ import kotlinx.io.readByteArray
 /**
  * A [RawSink] implementation that writes to a [ByteArray].
  */
-class ByteArraySink : RawSink {
+public class ByteArraySink : RawSink {
     private val buffer: Buffer = Buffer()
 
     /**
@@ -39,7 +39,7 @@ class ByteArraySink : RawSink {
     /**
      * Reset the sink by clearing the internal buffer.
      */
-    fun reset() {
+    public fun reset() {
         buffer.clear()
     }
 
@@ -48,12 +48,12 @@ class ByteArraySink : RawSink {
      *
      * @return The content of this sink.
      */
-    fun toByteArray(): ByteArray = buffer.readByteArray()
+    public fun toByteArray(): ByteArray = buffer.readByteArray()
 
     /**
      * Flush the sink.
      */
-    override fun flush() = Unit
+    override fun flush(): Unit = Unit
 
     /**
      * Close the sink.

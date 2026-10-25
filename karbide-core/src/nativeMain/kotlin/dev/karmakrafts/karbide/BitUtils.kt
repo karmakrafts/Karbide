@@ -28,27 +28,27 @@ import kotlinx.cinterop.ExperimentalForeignApi
  */
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UByte.reverseBits(count: Int): UByte = reverseBitsCommon(count)
+public actual inline fun UByte.reverseBits(count: Int): UByte = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UShort.reverseBits(count: Int): UShort = reverseBitsCommon(count)
+public actual inline fun UShort.reverseBits(count: Int): UShort = reverseBitsCommon(count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun UInt.reverseBits(count: Int): UInt =
+public actual inline fun UInt.reverseBits(count: Int): UInt =
     if (count == 0) 0U else karbide_bitreverse32(this) shr (UInt.SIZE_BITS - count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun ULong.reverseBits(count: Int): ULong =
+public actual inline fun ULong.reverseBits(count: Int): ULong =
     if (count == 0) 0UL else karbide_bitreverse64(this) shr (ULong.SIZE_BITS - count)
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun Byte.reverseBits(count: Int): Byte = toUByte().reverseBits(count).toByte()
+public actual inline fun Byte.reverseBits(count: Int): Byte = toUByte().reverseBits(count).toByte()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun Short.reverseBits(count: Int): Short = toUShort().reverseBits(count).toShort()
+public actual inline fun Short.reverseBits(count: Int): Short = toUShort().reverseBits(count).toShort()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun Int.reverseBits(count: Int): Int = toUInt().reverseBits(count).toInt()
+public actual inline fun Int.reverseBits(count: Int): Int = toUInt().reverseBits(count).toInt()
 
 @Suppress("NOTHING_TO_INLINE")
-actual inline fun Long.reverseBits(count: Int): Long = toULong().reverseBits(count).toLong()
+public actual inline fun Long.reverseBits(count: Int): Long = toULong().reverseBits(count).toLong()

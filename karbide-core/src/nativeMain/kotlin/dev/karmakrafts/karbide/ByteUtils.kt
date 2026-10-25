@@ -25,13 +25,13 @@ import kotlin.experimental.ExperimentalNativeApi
  */
 
 @NoInline
-actual fun Short.reverseBytes(): Short {
+public actual fun Short.reverseBytes(): Short {
     val value = toUInt()
     return (((value shl 8) and 0xFF00U) or ((value shr 8) and 0x00FFU)).toShort()
 }
 
 @NoInline
-actual fun Int.reverseBytes(): Int {
+public actual fun Int.reverseBytes(): Int {
     val value = toUInt()
     // @formatter:off
     return (((value and 0x000000FFU) shl 24) or
@@ -42,7 +42,7 @@ actual fun Int.reverseBytes(): Int {
 }
 
 @NoInline
-actual fun Long.reverseBytes(): Long {
+public actual fun Long.reverseBytes(): Long {
     val value = toULong()
     // @formatter:off
     return (((value and 0x00000000000000FFUL) shl 56) or

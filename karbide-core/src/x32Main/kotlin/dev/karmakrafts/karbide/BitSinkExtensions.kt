@@ -22,7 +22,7 @@ package dev.karmakrafts.karbide
  * @param count The number of bits to write.
  * @param bits The bits to write as a [UInt].
  */
-fun BitSink.writeBits32(count: Int, bits: UInt) {
+public fun BitSink.writeBits32(count: Int, bits: UInt) {
     require(this is BitSink32)
     writeBits32(count, bits)
 }

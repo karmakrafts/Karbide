@@ -35,7 +35,7 @@ package dev.karmakrafts.karbide
 )
 private external fun reverseBytesImpl(x: Short): Short
 
-actual fun Short.reverseBytes(): Short = reverseBytesImpl(this)
+public actual fun Short.reverseBytes(): Short = reverseBytesImpl(this)
 
 @JsFun(
     """
@@ -52,7 +52,7 @@ actual fun Short.reverseBytes(): Short = reverseBytesImpl(this)
 )
 private external fun reverseBytesImpl(x: Int): Int
 
-actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
+public actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 
 @JsFun(
     """
@@ -67,4 +67,4 @@ actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 )
 private external fun reverseBytesImpl(x: Long): Long
 
-actual fun Long.reverseBytes(): Long = reverseBytesImpl(this)
+public actual fun Long.reverseBytes(): Long = reverseBytesImpl(this)

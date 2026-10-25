@@ -21,21 +21,21 @@ import kotlinx.io.Sink
 /**
  * Interface for writing individual bits to a sink.
  */
-interface BitSink : AutoCloseable {
+public interface BitSink : AutoCloseable {
     /**
      * The bit order of this bit sink.
      */
-    val bitOrder: BitOrder
+    public val bitOrder: BitOrder
 
     /**
      * The current byte offset in the sink.
      */
-    val byte: Long
+    public val byte: Long
 
     /**
      * The current bit offset within the current byte (0-7).
      */
-    val bit: Int
+    public val bit: Int
 
     /**
      * Write the specified number of bits to the sink.
@@ -43,7 +43,7 @@ interface BitSink : AutoCloseable {
      * @param count The number of bits to write.
      * @param bits The bits to write as a [ULong].
      */
-    fun writeBits(count: Int, bits: ULong)
+    public fun writeBits(count: Int, bits: ULong)
 
     /**
      * Write the specified number of padding bits to the sink.
@@ -51,26 +51,26 @@ interface BitSink : AutoCloseable {
      * @param count The number of bits to write.
      * @param value The value of the bits to write (0 or 1).
      */
-    fun padBits(count: Int, value: UByte)
+    public fun padBits(count: Int, value: UByte)
 
     /**
      * Write the specified number of padding bits to the sink.
      *
      * @param value The value of the bits to write (0 or 1).
      */
-    fun padToNextByte(value: UByte)
+    public fun padToNextByte(value: UByte)
 
     /**
      * Flush any remaining data buffered internally into the
      * underlying [Sink].
      */
-    fun flush()
+    public fun flush()
 
     /**
      * Reset the internal state of this sink.
      * This will reset [bit] and [byte] counters to 0.
      */
-    fun reset()
+    public fun reset()
 }
 
 /**
@@ -81,7 +81,7 @@ interface BitSink : AutoCloseable {
  * @param bitOrder Whether bits are written out LSB or MSB first.
  * @return A new [BitSink] instance.
  */
-expect fun BitSink( // @formatter:off
+public expect fun BitSink( // @formatter:off
     sink: Sink,
     isSinkOwned: Boolean = true,
     bitOrder: BitOrder = BitOrder.MSB_FIRST
@@ -94,7 +94,7 @@ expect fun BitSink( // @formatter:off
  * @param bitOrder Whether bits are written out LSB or MSB first.
  * @return A new [BitSink] instance.
  */
-fun Sink.bitSink( // @formatter:off
+public fun Sink.bitSink( // @formatter:off
     isSinkOwned: Boolean = true,
     bitOrder: BitOrder = BitOrder.MSB_FIRST
 ): BitSink = BitSink(this, isSinkOwned, bitOrder) // @formatter:on

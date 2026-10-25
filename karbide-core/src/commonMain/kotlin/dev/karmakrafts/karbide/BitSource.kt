@@ -22,21 +22,21 @@ import kotlinx.io.Source
 /**
  * Interface for reading individual bits from a source.
  */
-interface BitSource : AutoCloseable {
+public interface BitSource : AutoCloseable {
     /**
      * The bit order of this bit source.
      */
-    val bitOrder: BitOrder
+    public val bitOrder: BitOrder
 
     /**
      * The current byte offset in the source.
      */
-    val byte: Long
+    public val byte: Long
 
     /**
      * The current bit offset within the current byte (0-7).
      */
-    val bit: Int
+    public val bit: Int
 
     /**
      * Whether the source has been exhausted and all bits have been read.
@@ -44,7 +44,7 @@ interface BitSource : AutoCloseable {
      * This is only true when the internal bit buffer is empty and the underlying source is exhausted. Use
      * [requestBits] or [requireBits] to check whether a specific number of bits can be read.
      */
-    val exhausted: Boolean
+    public val exhausted: Boolean
 
     /**
      * Request that at least [count] bits are available without consuming them.
@@ -52,7 +52,7 @@ interface BitSource : AutoCloseable {
      * @param count The number of bits that should be available.
      * @return `true` if at least [count] bits can be read, `false` otherwise.
      */
-    fun requestBits(count: Int): Boolean
+    public fun requestBits(count: Int): Boolean
 
     /**
      * Require that at least [count] bits are available without consuming them.
@@ -60,7 +60,7 @@ interface BitSource : AutoCloseable {
      * @param count The number of bits that should be available.
      * @throws EOFException If fewer than [count] bits are available.
      */
-    fun requireBits(count: Int)
+    public fun requireBits(count: Int)
 
     /**
      * Read the specified number of bits without consuming them.
@@ -68,7 +68,7 @@ interface BitSource : AutoCloseable {
      * @param count The number of bits to peek.
      * @return The bits read as a [ULong].
      */
-    fun peekBits(count: Int): ULong
+    public fun peekBits(count: Int): ULong
 
     /**
      * Read the specified number of bits from the source.
@@ -76,25 +76,25 @@ interface BitSource : AutoCloseable {
      * @param count The number of bits to read.
      * @return The bits read as a [ULong].
      */
-    fun readBits(count: Int): ULong
+    public fun readBits(count: Int): ULong
 
     /**
      * Skip the specified number of bits in the source.
      *
      * @param count The number of bits to skip.
      */
-    fun skipBits(count: Int)
+    public fun skipBits(count: Int)
 
     /**
      * Align the reader to the next byte boundary.
      */
-    fun skipUntilNextByte()
+    public fun skipUntilNextByte()
 
     /**
      * Reset the internal state of this source.
      * This will reset [bit] and [byte] counters to 0.
      */
-    fun reset()
+    public fun reset()
 }
 
 /**
@@ -105,7 +105,7 @@ interface BitSource : AutoCloseable {
  * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
-expect fun BitSource( // @formatter:off
+public expect fun BitSource( // @formatter:off
     source: Source,
     isSourceOwned: Boolean = true,
     bitOrder: BitOrder = BitOrder.MSB_FIRST
@@ -118,7 +118,7 @@ expect fun BitSource( // @formatter:off
  * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
-fun Source.bitSource( // @formatter:off
+public fun Source.bitSource( // @formatter:off
     isSourceOwned: Boolean = true,
     bitOrder: BitOrder = BitOrder.MSB_FIRST
 ): BitSource = BitSource(this, isSourceOwned, bitOrder) // @formatter:on

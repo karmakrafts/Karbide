@@ -26,53 +26,53 @@ import kotlinx.io.writeUShort
  *
  * @param value the value to write.
  */
-fun Sink.writeShortLeFast(value: Short) = writeShort(value.reverseBytes())
+public fun Sink.writeShortLeFast(value: Short): Unit = writeShort(value.reverseBytes())
 
 /**
  * Writes an [Int] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeIntLeFast(value: Int) = writeInt(value.reverseBytes())
+public fun Sink.writeIntLeFast(value: Int): Unit = writeInt(value.reverseBytes())
 
 /**
  * Writes a [Long] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeLongLeFast(value: Long) = writeLong(value.reverseBytes())
+public fun Sink.writeLongLeFast(value: Long): Unit = writeLong(value.reverseBytes())
 
 /**
  * Writes a [Float] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeFloatLeFast(value: Float) = writeIntLeFast(value.toBits())
+public fun Sink.writeFloatLeFast(value: Float): Unit = writeIntLeFast(value.toBits())
 
 /**
  * Writes a [Double] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeDoubleLeFast(value: Double) = writeLongLeFast(value.toBits())
+public fun Sink.writeDoubleLeFast(value: Double): Unit = writeLongLeFast(value.toBits())
 
 /**
  * Writes a [UShort] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeUShortLeFast(value: UShort) = writeUShort(value.reverseBytes())
+public fun Sink.writeUShortLeFast(value: UShort): Unit = writeUShort(value.reverseBytes())
 
 /**
  * Writes a [UInt] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeUIntLeFast(value: UInt) = writeUInt(value.reverseBytes())
+public fun Sink.writeUIntLeFast(value: UInt): Unit = writeUInt(value.reverseBytes())
 
 /**
  * Writes a [ULong] value to this [Sink] in little-endian byte order.
  *
  * @param value the value to write.
  */
-fun Sink.writeULongLeFast(value: ULong) = writeULong(value.reverseBytes())
+public fun Sink.writeULongLeFast(value: ULong): Unit = writeULong(value.reverseBytes())

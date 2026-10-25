@@ -21,7 +21,7 @@ package dev.karmakrafts.karbide
 import kotlinx.io.Sink
 import kotlin.jvm.JvmName
 
-actual fun BitSink( // @formatter:off
+public actual fun BitSink( // @formatter:off
     sink: Sink,
     isSinkOwned: Boolean,
     bitOrder: BitOrder
