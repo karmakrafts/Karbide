@@ -81,14 +81,29 @@ public actual fun Int.reverseBits(count: Int): Int =
 @JsFun(
     """
 (x, count) => {
-    x = BigInt.asUintN(64, x);
-    x = ((x >> BigInt(1)) & BigInt("0x5555555555555555")) | ((x & BigInt("0x5555555555555555")) << BigInt(1));
-    x = ((x >> BigInt(2)) & BigInt("0x3333333333333333")) | ((x & BigInt("0x3333333333333333")) << BigInt(2));
-    x = ((x >> BigInt(4)) & BigInt("0x0F0F0F0F0F0F0F0F")) | ((x & BigInt("0x0F0F0F0F0F0F0F0F")) << BigInt(4));
-    x = ((x >> BigInt(8)) & BigInt("0x00FF00FF00FF00FF")) | ((x & BigInt("0x00FF00FF00FF00FF")) << BigInt(8));
-    x = ((x >> BigInt(16)) & BigInt("0x0000FFFF0000FFFF")) | ((x & BigInt("0x0000FFFF0000FFFF")) << BigInt(16));
-    x = (x >> BigInt(32)) | ((x & BigInt("0xFFFFFFFF")) << BigInt(32));
-    return BigInt.asIntN(64, x >> BigInt(64 - count));
+    count = count | 0;
+    let lo = Number(BigInt.asIntN(32, x)) | 0;
+    let hi = Number(x >> BigInt(32)) | 0;
+    lo = (((lo >>> 1) & 0x55555555) | ((lo & 0x55555555) << 1)) | 0;
+    lo = (((lo >>> 2) & 0x33333333) | ((lo & 0x33333333) << 2)) | 0;
+    lo = (((lo >>> 4) & 0x0F0F0F0F) | ((lo & 0x0F0F0F0F) << 4)) | 0;
+    lo = (((lo >>> 8) & 0x00FF00FF) | ((lo & 0x00FF00FF) << 8)) | 0;
+    lo = ((lo >>> 16) | (lo << 16)) | 0;
+    hi = (((hi >>> 1) & 0x55555555) | ((hi & 0x55555555) << 1)) | 0;
+    hi = (((hi >>> 2) & 0x33333333) | ((hi & 0x33333333) << 2)) | 0;
+    hi = (((hi >>> 4) & 0x0F0F0F0F) | ((hi & 0x0F0F0F0F) << 4)) | 0;
+    hi = (((hi >>> 8) & 0x00FF00FF) | ((hi & 0x00FF00FF) << 8)) | 0;
+    hi = ((hi >>> 16) | (hi << 16)) | 0;
+    let shift = (64 - count) | 0;
+    if (shift >= 32) {
+        hi = (lo >>> (shift - 32)) | 0;
+        lo = 0;
+    }
+    else if (shift > 0) {
+        hi = ((hi >>> shift) | (lo << (32 - shift))) | 0;
+        lo = (lo >>> shift) | 0;
+    }
+    return (BigInt(lo) << BigInt(32)) | BigInt(hi >>> 0);
 }
 """
 )

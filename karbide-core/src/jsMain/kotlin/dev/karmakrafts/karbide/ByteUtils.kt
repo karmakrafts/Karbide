@@ -57,11 +57,21 @@ public actual fun Int.reverseBytes(): Int = reverseBytesImpl(this)
 @JsFun(
     """
 (x) => {
-    x = BigInt.asUintN(64, x);
-    x = ((x >> BigInt(8)) & BigInt("0x00FF00FF00FF00FF")) | ((x & BigInt("0x00FF00FF00FF00FF")) << BigInt(8));
-    x = ((x >> BigInt(16)) & BigInt("0x0000FFFF0000FFFF")) | ((x & BigInt("0x0000FFFF0000FFFF")) << BigInt(16));
-    x = (x >> BigInt(32)) | ((x & BigInt("0xFFFFFFFF")) << BigInt(32));
-    return BigInt.asIntN(64, x);
+    let lo = Number(BigInt.asIntN(32, x)) | 0;
+    let hi = Number(x >> BigInt(32)) | 0;
+    lo = (
+        ((lo & 0xFF) << 24) |
+        ((lo & 0xFF00) << 8) |
+        ((lo >>> 8) & 0xFF00) |
+        ((lo >>> 24) & 0xFF)
+    ) | 0;
+    hi = (
+        ((hi & 0xFF) << 24) |
+        ((hi & 0xFF00) << 8) |
+        ((hi >>> 8) & 0xFF00) |
+        ((hi >>> 24) & 0xFF)
+    ) | 0;
+    return (BigInt(lo) << BigInt(32)) | BigInt(hi >>> 0);
 }
 """
 )
