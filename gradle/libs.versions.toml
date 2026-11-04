@@ -2,12 +2,12 @@
 
 java = "17"
 
-androidGradle = "9.4.1" # https://developer.android.com/reference/tools/gradle-api
+androidGradle = "9.5.0" # https://developer.android.com/reference/tools/gradle-api
 karbide = "1.14.0"
 kotlin = "2.5.0-Beta2" # https://github.com/JetBrains/kotlin/releases
-kotlinxIo = "0.9.1" # https://github.com/Kotlin/kotlinx-io/releases
+kotlinxIo = "0.9.2" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.3.0-Beta" # https://github.com/Kotlin/dokka/releases
-karmaConventions = "1.23.0.315-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
+karmaConventions = "1.23.0.317-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
 
 # karbide-benchmarks
 
