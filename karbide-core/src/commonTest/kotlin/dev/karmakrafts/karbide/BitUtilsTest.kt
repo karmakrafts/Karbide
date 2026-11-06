@@ -118,12 +118,7 @@ class BitUtilsTest {
     @Test
     fun reverseShortBitsForEveryCount() {
         val values = listOf(
-            0,
-            -1,
-            Short.MIN_VALUE.toInt(),
-            Short.MAX_VALUE.toInt(),
-            0x1234,
-            0xAAAA
+            0, -1, Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt(), 0x1234, 0xAAAA
         ) + (0 until Short.SIZE_BITS).flatMap { listOf(1 shl it, (1 shl it).inv()) }
         for (value in values) {
             val short = value.toShort()
@@ -137,12 +132,7 @@ class BitUtilsTest {
     @Test
     fun reverseIntBitsForEveryCount() {
         val values = listOf(
-            0,
-            -1,
-            Int.MIN_VALUE,
-            Int.MAX_VALUE,
-            0x12345678,
-            0xAAAAAAAA.toInt()
+            0, -1, Int.MIN_VALUE, Int.MAX_VALUE, 0x12345678, 0xAAAAAAAA.toInt()
         ) + (0 until Int.SIZE_BITS).flatMap { listOf(1 shl it, (1 shl it).inv()) }
         for (value in values) {
             for (count in 0..Int.SIZE_BITS) {
@@ -155,12 +145,7 @@ class BitUtilsTest {
     @Test
     fun reverseLongBitsForEveryCount() {
         val values = listOf(
-            0L,
-            -1L,
-            Long.MIN_VALUE,
-            Long.MAX_VALUE,
-            0x0123456789ABCDEFL,
-            0xAAAAAAAAAAAAAAAAUL.toLong()
+            0L, -1L, Long.MIN_VALUE, Long.MAX_VALUE, 0x0123456789ABCDEFL, 0xAAAAAAAAAAAAAAAAUL.toLong()
         ) + (0 until Long.SIZE_BITS).flatMap { listOf(1L shl it, (1L shl it).inv()) }
         for (value in values) {
             for (count in 0..Long.SIZE_BITS) {

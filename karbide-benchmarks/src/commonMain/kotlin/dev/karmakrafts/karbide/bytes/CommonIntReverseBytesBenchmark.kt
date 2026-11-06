@@ -30,12 +30,10 @@ open class CommonIntReverseBytesBenchmark {
 
     private fun Int.reverseBytes(): Int {
         val value = toUInt()
-        // @formatter:off
         return (((value and 0x000000FFU) shl 24) or
             ((value and 0x0000FF00U) shl 8) or
             ((value and 0x00FF0000U) shr 8) or
             ((value and 0xFF000000U) shr 24)).toInt()
-        // @formatter:on
     }
 
     @JvmName("run")

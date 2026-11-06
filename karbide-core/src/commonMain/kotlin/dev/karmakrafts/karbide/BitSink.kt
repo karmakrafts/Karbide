@@ -81,11 +81,9 @@ public interface BitSink : AutoCloseable {
  * @param bitOrder Whether bits are written out LSB or MSB first.
  * @return A new [BitSink] instance.
  */
-public expect fun BitSink( // @formatter:off
-    sink: Sink,
-    isSinkOwned: Boolean = true,
-    bitOrder: BitOrder = BitOrder.MSB_FIRST
-): BitSink // @formatter:on
+public expect fun BitSink(
+    sink: Sink, isSinkOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSink
 
 /**
  * Create a new [BitSink] from the current [Sink].
@@ -94,7 +92,6 @@ public expect fun BitSink( // @formatter:off
  * @param bitOrder Whether bits are written out LSB or MSB first.
  * @return A new [BitSink] instance.
  */
-public fun Sink.bitSink( // @formatter:off
-    isSinkOwned: Boolean = true,
-    bitOrder: BitOrder = BitOrder.MSB_FIRST
-): BitSink = BitSink(this, isSinkOwned, bitOrder) // @formatter:on
+public fun Sink.bitSink(
+    isSinkOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSink = BitSink(this, isSinkOwned, bitOrder)

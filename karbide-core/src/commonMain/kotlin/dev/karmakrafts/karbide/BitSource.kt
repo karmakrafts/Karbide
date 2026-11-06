@@ -105,11 +105,9 @@ public interface BitSource : AutoCloseable {
  * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
-public expect fun BitSource( // @formatter:off
-    source: Source,
-    isSourceOwned: Boolean = true,
-    bitOrder: BitOrder = BitOrder.MSB_FIRST
-): BitSource // @formatter:on
+public expect fun BitSource(
+    source: Source, isSourceOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSource
 
 /**
  * Create a new [BitSource] from the current [Source].
@@ -118,7 +116,6 @@ public expect fun BitSource( // @formatter:off
  * @param bitOrder Whether bits are read in LSB or MSB first.
  * @return A new [BitSource] instance.
  */
-public fun Source.bitSource( // @formatter:off
-    isSourceOwned: Boolean = true,
-    bitOrder: BitOrder = BitOrder.MSB_FIRST
-): BitSource = BitSource(this, isSourceOwned, bitOrder) // @formatter:on
+public fun Source.bitSource(
+    isSourceOwned: Boolean = true, bitOrder: BitOrder = BitOrder.MSB_FIRST
+): BitSource = BitSource(this, isSourceOwned, bitOrder)

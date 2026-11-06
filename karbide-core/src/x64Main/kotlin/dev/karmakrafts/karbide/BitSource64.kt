@@ -19,11 +19,9 @@ package dev.karmakrafts.karbide
 import kotlinx.io.EOFException
 import kotlinx.io.Source
 
-internal data class BitSource64( // @formatter:off
-    private val source: Source,
-    private val isSourceOwned: Boolean,
-    override val bitOrder: BitOrder
-) : BitSource { // @formatter:on
+internal data class BitSource64(
+    private val source: Source, private val isSourceOwned: Boolean, override val bitOrder: BitOrder
+) : BitSource {
     private val isMsbFirst: Boolean = bitOrder == BitOrder.MSB_FIRST
 
     private var isClosed: Boolean = false

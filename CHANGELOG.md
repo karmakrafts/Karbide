@@ -6,9 +6,9 @@
 - Updated to NMCP 1.6.2
 - Updated to Kotlin 2.5.0-Beta2
 - Updated to kotlinx.io 0.9.2
-- Updated to Dokka 2.3.0-Beta
-- Updated to Karma Conventions 1.23.0.317-SNAPSHOT
-- Updated to AGP 9.5.0
+- Updated to Dokka 2.3.0
+- Updated to Karma Conventions 1.23.0.320-SNAPSHOT
+- Updated to AGP 9.5.1
 - Added test reports to CI jobs
 - Switched to Kotlin/JS ES2020 target
 

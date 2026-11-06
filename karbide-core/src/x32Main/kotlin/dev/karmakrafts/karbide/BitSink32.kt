@@ -21,11 +21,9 @@ import kotlinx.io.writeUByte
 import kotlinx.io.writeUInt
 import kotlinx.io.writeUIntLe
 
-internal data class BitSink32( // @formatter:off
-    private val sink: Sink,
-    private val isSinkOwned: Boolean,
-    override val bitOrder: BitOrder
-) : BitSink { // @formatter:on
+internal data class BitSink32(
+    private val sink: Sink, private val isSinkOwned: Boolean, override val bitOrder: BitOrder
+) : BitSink {
     private val isMsbFirst: Boolean = bitOrder == BitOrder.MSB_FIRST
 
     private var isClosed: Boolean = false

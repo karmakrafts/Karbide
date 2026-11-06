@@ -21,8 +21,6 @@ package dev.karmakrafts.karbide
 import kotlinx.io.Sink
 import kotlin.jvm.JvmName
 
-public actual fun BitSink( // @formatter:off
-    sink: Sink,
-    isSinkOwned: Boolean,
-    bitOrder: BitOrder
-): BitSink = BitSink32(sink, isSinkOwned, bitOrder) // @formatter:on
+public actual fun BitSink(
+    sink: Sink, isSinkOwned: Boolean, bitOrder: BitOrder
+): BitSink = BitSink32(sink, isSinkOwned, bitOrder)

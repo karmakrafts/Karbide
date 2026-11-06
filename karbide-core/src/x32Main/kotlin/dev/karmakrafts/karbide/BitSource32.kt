@@ -21,11 +21,9 @@ import kotlinx.io.Source
 import kotlinx.io.readUInt
 import kotlinx.io.readUIntLe
 
-internal data class BitSource32( // @formatter:off
-    private val source: Source,
-    private val isSourceOwned: Boolean,
-    override val bitOrder: BitOrder
-) : BitSource { // @formatter:on
+internal data class BitSource32(
+    private val source: Source, private val isSourceOwned: Boolean, override val bitOrder: BitOrder
+) : BitSource {
     private val isMsbFirst: Boolean = bitOrder == BitOrder.MSB_FIRST
 
     private var isClosed: Boolean = false

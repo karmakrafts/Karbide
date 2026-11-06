@@ -21,8 +21,6 @@ package dev.karmakrafts.karbide
 import kotlinx.io.Source
 import kotlin.jvm.JvmName
 
-public actual fun BitSource( // @formatter:off
-    source: Source,
-    isSourceOwned: Boolean,
-    bitOrder: BitOrder
-): BitSource = BitSource64(source, isSourceOwned, bitOrder) // @formatter:on
+public actual fun BitSource(
+    source: Source, isSourceOwned: Boolean, bitOrder: BitOrder
+): BitSource = BitSource64(source, isSourceOwned, bitOrder)
