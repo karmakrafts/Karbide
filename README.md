@@ -1,11 +1,6 @@
 # Karbide
 
 [![](https://git.karmakrafts.dev/kk/karbide/badges/master/pipeline.svg)](https://git.karmakrafts.dev/kk/karbide/-/pipelines)
-[![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.maven.apache.org%2Fmaven2%2Fdev%2Fkarmakrafts%2Fkarbide%2Fkarbide-core%2Fmaven-metadata.xml
-)](https://git.karmakrafts.dev/kk/karbide/-/packages)
-[![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdev%2Fkarmakrafts%2Fkarbide%2Fkarbide-core%2Fmaven-metadata.xml
-)](https://git.karmakrafts.dev/kk/karbide/-/packages)
-[![](https://img.shields.io/badge/2.4.21-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/)
 [![](https://img.shields.io/badge/documentation-black?logo=kotlin)](https://docs.karmakrafts.dev/karbide-core)
 
 ![](https://img.shields.io/badge/-JVM-blue?logo=kotlin&labelColor=black)
@@ -14,6 +9,11 @@
 ![](https://img.shields.io/badge/-JS-gold?logo=kotlin&labelColor=black)
 ![](https://img.shields.io/badge/-WASM/JS-orange?logo=kotlin&labelColor=black)
 ![](https://img.shields.io/badge/-WASM/WASI-purple?logo=kotlin&labelColor=black)
+
+| Release | Kotlin |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| [![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.maven.apache.org%2Fmaven2%2Fdev%2Fkarmakrafts%2Fkarbide%2Fkarbide-core%2Fmaven-metadata.xml)](https://git.karmakrafts.dev/kk/karbide/-/packages) | [![](https://img.shields.io/badge/2.4.21-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/) |
+| [![](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fdev%2Fkarmakrafts%2Fkarbide%2Fkarbide-core%2Fmaven-metadata.xml)](https://git.karmakrafts.dev/kk/karbide/-/packages) | [![](https://img.shields.io/badge/2.5.0--RC2-blue?logo=kotlin&label=kotlin)](https://kotlinlang.org/) |
 
 This library allows treating any kotlinx.io `Source` or `Sink` as a bit stream!
 
