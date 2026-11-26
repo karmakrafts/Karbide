@@ -7,11 +7,11 @@ karbide = "1.14.0"
 kotlin = "2.5.0-RC2" # https://github.com/JetBrains/kotlin/releases
 kotlinxIo = "0.9.3" # https://github.com/Kotlin/kotlinx-io/releases
 dokka = "2.3.0" # https://github.com/Kotlin/dokka/releases
-karmaConventions = "1.23.0.327-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
+karmaConventions = "1.23.0.328-SNAPSHOT" # https://github.com/karmakrafts/karma-conventions/tags
 
 # karbide-benchmarks
 
-kotlinxBenchmark = "0.6.0-rc" # https://github.com/Kotlin/kotlinx-benchmark/releases
+kotlinxBenchmark = "0.6.0-rc2" # https://github.com/Kotlin/kotlinx-benchmark/releases
 jmh = "1.37" # https://github.com/openjdk/jmh/tags
 
 [libraries]
