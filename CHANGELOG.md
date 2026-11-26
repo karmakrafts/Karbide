@@ -4,11 +4,12 @@
 
 - Updated to Gradle 9.9.2
 - Updated to NMCP 1.6.2
-- Updated to Kotlin 2.5.0-Beta2
-- Updated to kotlinx.io 0.9.2
+- Updated to Kotlin 2.5.0-RC2
+- Updated to kotlinx.io 0.9.3
+- Updated to kotlinx.benchmark 0.6.0-RC
 - Updated to Dokka 2.3.0
-- Updated to Karma Conventions 1.23.0.320-SNAPSHOT
-- Updated to AGP 9.5.1
+- Updated to Karma Conventions 1.23.0.327-SNAPSHOT
+- Updated to AGP 9.5.3
 - Added test reports to CI jobs
 - Switched to Kotlin/JS ES2020 target
 
