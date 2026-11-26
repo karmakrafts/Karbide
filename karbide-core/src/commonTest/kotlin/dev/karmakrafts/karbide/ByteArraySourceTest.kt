@@ -57,7 +57,7 @@ class ByteArraySourceTest {
         val source = data.source()
         val buffer = Buffer()
 
-        source.readAtMostTo(buffer, 2)
+        val _ = source.readAtMostTo(buffer, 2)
         source.reset()
         buffer.clear()
 
