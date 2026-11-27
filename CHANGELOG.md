@@ -2,7 +2,7 @@
 
 ### Changed
 
-- Updated to Gradle 9.9.2
+- Updated to Gradle 9.9.3
 - Updated to NMCP 1.6.2
 - Updated to Kotlin 2.5.0-RC2
 - Updated to kotlinx.io 0.9.3
